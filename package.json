@@ -1,0 +1,42 @@
+{
+  "name": "elm-lang-de",
+  "description": "Website elm-lang.de",
+  "version": "0.1.0",
+  "license": "UNLICENSED",
+  "homepage": "http://elm-lang.de",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dennisreimann/elm-lang-de.git"
+  },
+  "bugs": {
+    "url": "https://github.com/dennisreimann/elm-lang-de/issues"
+  },
+  "author": {
+    "name": "Dennis Reimann",
+    "email": "mail@dennisreimann.de",
+    "url": "https://dennisreimann.de/"
+  },
+  "devDependencies": {
+    "autoprefixer": "^6.3.6",
+    "copy-webpack-plugin": "^4.0.1",
+    "css-loader": "^0.26.0",
+    "elm": "^0.18.0",
+    "elm-hot-loader": "^0.4.0",
+    "elm-webpack-loader": "^3.0.6",
+    "extract-text-webpack-plugin": "^1.0.1",
+    "file-loader": "^0.9.0",
+    "html-webpack-plugin": "^2.17.0",
+    "postcss-loader": "^1.1.1",
+    "style-loader": "^0.13.1",
+    "stylus": "^0.54.5",
+    "stylus-loader": "^2.3.1",
+    "webpack": "^1.13.1",
+    "webpack-dev-server": "^1.14.1",
+    "webpack-merge": "^0.17.0"
+  },
+  "scripts": {
+    "env": "env",
+    "build": "rm -rf dist/* && webpack",
+    "start": "webpack-dev-server --hot --inline --content-base src/"
+  }
+}
