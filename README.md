@@ -2,7 +2,7 @@
 
 ## Setup
 
-Prerequesite is the package manager [https://yarnpkg.com/en/docs/install].
+Prerequesite is the package manager [Yarn](https://yarnpkg.com/en/docs/install).
 
 ```bash
 $ yarn install
