@@ -3,24 +3,8 @@
   color $color-white
   text-align center
 
-  &__inner
-    display flex
-
-  &__title
-    margin-right $space-normal
-    padding $space-small $space-small $space-small $space-large
-    background-image url('/svgs/elm-logo-mono.svg')
-    background-repeat no-repeat
-    background-size 2.25rem
-    background-position 0 45%
-    font-size $font-size-huge
-    color $color-white
-    text-decoration none
-
-  &__nav
-    flex 1
-
 .nav
+  @extend $wrapped
   display flex
   align-items center
 
@@ -30,9 +14,23 @@
     font-size $font-size-head
     padding 1rem
     transition all .25s ease-out
+    cursor pointer
+
     &:hover
     &--current
       color $color-white
+
+    // logo
+    &:first-child
+      margin-right $space-normal
+      padding $space-small $space-small $space-small $space-large
+      background-image url('/svgs/elm-logo-mono.svg')
+      background-repeat no-repeat
+      background-size 2.25rem
+      background-position 0 45%
+      font-size $font-size-huge
+      color $color-white
+      text-decoration none
 
   &__item + &__item
     margin-left $space-small

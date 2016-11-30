@@ -25,6 +25,9 @@ view model =
                 DevelopersPage ->
                     Html.map DevelopersMsg
                         (Developers.View.view model.developers)
+
+                NotFound ->
+                    div [] [ text "404" ]
     in
         div
             [ class "overall" ]
@@ -41,32 +44,31 @@ view model =
 
 pageHeader : Model -> Html Msg
 pageHeader model =
-    header
-        [ class "header" ]
-        [ div [ class "header__inner wrap" ]
-            [ a
-                [ class "header__title", href "/" ]
-                [ text "Elm" ]
-            , nav
-                [ class "header__nav nav" ]
-                [ navItem (model.page == EventsPage) EventsPage "Termine"
-                , navItem (model.page == DevelopersPage) DevelopersPage "Entwickler"
+    let
+        navLink =
+            navItem model.page
+    in
+        header
+            [ class "header" ]
+            [ nav
+                [ class "nav" ]
+                [ navLink HomePage "Elm"
+                , navLink EventsPage "Termine"
+                , navLink DevelopersPage "Entwickler"
                 ]
             ]
-        ]
 
 
-navItem : Bool -> Page -> String -> Html Msg
-navItem isCurrent page title =
+navItem : Page -> Page -> String -> Html Msg
+navItem currentPage page title =
     let
         classes =
             [ ( "nav__item", True )
-            , ( "nav__item--current", isCurrent )
+            , ( "nav__item--current", currentPage == page )
             ]
     in
         a
-            [ href "#"
-            , classList classes
-            , onClick (ChangePage page)
+            [ classList classes
+            , onClick (Navigate page)
             ]
             [ text title ]

@@ -9,6 +9,15 @@ type Page
     = HomePage
     | EventsPage
     | DevelopersPage
+    | NotFound
+
+
+type Msg
+    = Navigate Page
+    | ChangePage Page
+    | HomepageMsg Homepage.Types.Msg
+    | EventsMsg Events.Types.Msg
+    | DevelopersMsg Developers.Types.Msg
 
 
 type alias Model =
@@ -17,10 +26,3 @@ type alias Model =
     , events : Events.Types.Model
     , developers : Developers.Types.Model
     }
-
-
-type Msg
-    = ChangePage Page
-    | HomepageMsg Homepage.Types.Msg
-    | EventsMsg Events.Types.Msg
-    | DevelopersMsg Developers.Types.Msg

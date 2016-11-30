@@ -4,25 +4,36 @@ import Types exposing (..)
 import Homepage.State
 import Events.State
 import Developers.State
+import Navigation exposing (Location, newUrl)
+import Site exposing (pageToHash, hashToPage)
 
 
-initialModel : Model
-initialModel =
-    { page = HomePage
+initialModel : Page -> Model
+initialModel page =
+    { page = page
     , homepage = Homepage.State.initialModel
     , events = Events.State.initialModel
     , developers = Developers.State.initialModel
     }
 
 
-init : ( Model, Cmd Msg )
-init =
-    ( initialModel, Cmd.none )
+init : Location -> ( Model, Cmd Msg )
+init location =
+    let
+        page =
+            hashToPage location.hash
+    in
+        ( initialModel page, Cmd.none )
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
+        Navigate page ->
+            -- leave the model untouched and issue a command to
+            -- change the url, which then triggers ChangePage
+            ( model, newUrl <| pageToHash page )
+
         ChangePage page ->
             ( { model | page = page }, Cmd.none )
 

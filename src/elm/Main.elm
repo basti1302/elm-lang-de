@@ -1,14 +1,15 @@
 module Main exposing (..)
 
-import Html
 import Types exposing (Model, Msg)
 import State exposing (init, update, subscriptions)
 import View exposing (view)
+import Site exposing (locationToMsg)
+import Navigation
 
 
 main : Program Never Model Msg
 main =
-    Html.program
+    Navigation.program locationToMsg
         { init = init
         , update = update
         , subscriptions = subscriptions
