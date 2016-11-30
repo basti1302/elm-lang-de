@@ -1,0 +1,38 @@
+.header
+  background #60B5CC
+  color $color-white
+  text-align center
+
+  &__inner
+    display flex
+
+  &__title
+    margin-right $space-normal
+    padding $space-small $space-small $space-small $space-large
+    background-image url('/svgs/elm-logo-mono.svg')
+    background-repeat no-repeat
+    background-size 2.25rem
+    background-position 0 45%
+    font-size $font-size-huge
+    color $color-white
+    text-decoration none
+
+  &__nav
+    flex 1
+
+.nav
+  display flex
+  align-items center
+
+  &__item
+    color $color-dark-blue
+    text-decoration none
+    font-size $font-size-head
+    padding 1rem
+    transition all .25s ease-out
+    &:hover
+    &--current
+      color $color-white
+
+  &__item + &__item
+    margin-left $space-small

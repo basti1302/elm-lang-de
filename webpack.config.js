@@ -77,6 +77,13 @@ if (TARGET_ENV === 'development') {
         },
       ],
     },
+
+    stylus: {
+      import: [
+        '../styles/lib/variables.styl',
+        '../styles/lib/mediaQueries.styl',
+      ]
+    }
   });
 }
 

@@ -1,0 +1,27 @@
+mq_to($to)
+  s("screen and (max-width: %s)", $to - 1)
+mq_from($from)
+  s("screen and (min-width: %s)", $from)
+mq_from_to($from, $to)
+  s("screen and (min-width: %s) and (max-width: %s)", $from, $to - 1)
+mq_from_and_print($from)
+  s("screen and (min-width: %s), print", $from)
+
+$mq-xs-width = 360px
+$mq-s-width = 560px
+$mq-m-width = 760px
+$mq-l-width = 960px
+
+$mq-up_to_XS = mq_to($mq-xs-width)
+$mq-up_to_S = mq_to($mq-s-width)
+$mq-up_to_M = mq_to($mq-m-width)
+$mq-up_to_L = mq_to($mq-l-width)
+
+$mq-XS_to_S = mq_from_to($mq-xs-width, $mq-s-width)
+$mq-S_to_M = mq_from_to($mq-s-width, $mq-m-width)
+$mq-M_to_L = mq_from_to($mq-m-width, $mq-l-width)
+
+$mq-XS_and_up = mq_from($mq-xs-width)
+$mq-S_and_up = mq_from($mq-s-width)
+$mq-M_and_up = mq_from($mq-m-width)
+$mq-L_and_up = mq_from($mq-l-width)

@@ -1,20 +1,32 @@
 *
-  box-sizing border-box
   margin 0
   padding 0
+  outline 0
+  box-sizing border-box
+  vertical-align baseline
+
+html
+  line-height 1.5
+  overflow-x hidden
+  font-family $font-family-sans
+  @media $mq-up_to_S
+    font-size 13px
+  @media $mq-S_to_M
+    font-size 14px
+  @media $mq-M_to_L
+    font-size 15px
+  @media $mq-L_and_up
+    font-size 16px
 
 body
   font-family sans-serif
   background white
 
 a
-  color #004F8E
+  color $color-dark-blue
 
-.header
-  text-align center
-  padding 1em 2em
-  background #60B5CC
-  color #FFF
-
-  &__title
-    font-size 1.5em
+.wrap
+  padding-left $space-large
+  padding-right $space-large
+  max-width 960px
+  margin 0 auto
