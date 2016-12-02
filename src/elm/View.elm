@@ -6,6 +6,7 @@ import Html.Events exposing (onClick)
 import Html.Attributes exposing (class, classList, href)
 import Homepage.View
 import Events.View
+import Developers.Types
 import Developers.View
 
 
@@ -22,7 +23,7 @@ view model =
                     Html.map EventsMsg
                         (Events.View.view model.events)
 
-                DevelopersPage ->
+                DevelopersPage _ ->
                     Html.map DevelopersMsg
                         (Developers.View.view model.developers)
 
@@ -54,7 +55,9 @@ pageHeader model =
                 [ class "nav" ]
                 [ navLink HomePage "Elm"
                 , navLink EventsPage "Termine"
-                , navLink DevelopersPage "Entwickler"
+                , navLink
+                    (DevelopersPage Developers.Types.DeveloperListPage)
+                    "Entwickler"
                 ]
             ]
 

@@ -2,12 +2,25 @@ module Developers.Types exposing (..)
 
 
 type alias Developer =
-    String
+    { name : String
+    , urlFragment : String
+    , profileMarkdown : String
+    }
+
+
+type Page
+    = DeveloperListPage
+    | DeveloperDetailsPage String
 
 
 type alias Model =
-    { developers : List Developer }
+    { page : Page
+    , developers : List Developer
+    , developer : Maybe Developer
+    }
 
 
 type Msg
-    = NoOp
+    = Navigate Page
+    | ChangePage Page
+    | NoOp
