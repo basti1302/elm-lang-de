@@ -75,6 +75,10 @@ if (TARGET_ENV === 'development') {
             'stylus-loader',
           ],
         },
+        {
+          test: /\.markdown$/,
+          loader: 'raw'
+        },
       ],
     },
 
@@ -106,6 +110,10 @@ if (TARGET_ENV === 'production') {
             'postcss-loader',
             'stylus-loader',
           ]),
+        },
+        {
+          test: /\.markdown$/,
+          loader: 'raw'
         },
       ],
     },

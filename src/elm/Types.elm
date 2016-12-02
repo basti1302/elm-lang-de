@@ -8,7 +8,7 @@ import Developers.Types
 type Page
     = HomePage
     | EventsPage
-    | DevelopersPage
+    | DevelopersPage Developers.Types.Page
     | NotFound
 
 
@@ -25,4 +25,9 @@ type alias Model =
     , homepage : Homepage.Types.Model
     , events : Events.Types.Model
     , developers : Developers.Types.Model
+    }
+
+
+type alias Flags =
+    { profiles : List String
     }

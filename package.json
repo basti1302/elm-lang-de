@@ -27,6 +27,7 @@
     "file-loader": "^0.9.0",
     "html-webpack-plugin": "^2.17.0",
     "postcss-loader": "^1.1.1",
+    "raw-loader": "^0.5.1",
     "rimraf": "^2.5.4",
     "style-loader": "^0.13.1",
     "stylus": "^0.54.5",

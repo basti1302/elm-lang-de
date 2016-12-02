@@ -1,5 +1,6 @@
-module Site exposing (..)
+module Site exposing (hashToPage, locationToMsg, pageToHash)
 
+import Developers.Site
 import Navigation exposing (Location)
 import Types exposing (..)
 
@@ -13,18 +14,18 @@ locationToMsg location =
 
 hashToPage : String -> Page
 hashToPage hash =
-    case Debug.log "hash" hash of
-        "" ->
-            HomePage
+    if String.startsWith "#developers" hash then
+        DevelopersPage <| Developers.Site.hashToPage hash
+    else
+        case hash of
+            "" ->
+                HomePage
 
-        "#events" ->
-            EventsPage
+            "#events" ->
+                EventsPage
 
-        "#developers" ->
-            DevelopersPage
-
-        _ ->
-            NotFound
+            _ ->
+                NotFound
 
 
 pageToHash : Page -> String
@@ -36,8 +37,8 @@ pageToHash page =
         EventsPage ->
             "#events"
 
-        DevelopersPage ->
-            "#developers"
+        DevelopersPage subPage ->
+            Developers.Site.pageToHash subPage
 
         NotFound ->
             "#notfound"

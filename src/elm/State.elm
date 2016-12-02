@@ -1,29 +1,32 @@
 module State exposing (init, update, subscriptions)
 
-import Types exposing (..)
-import Homepage.State
-import Events.State
 import Developers.State
+import Developers.Types
+import Events.State
+import Events.Types
+import Homepage.State
+import Homepage.Types
 import Navigation exposing (Location, newUrl)
-import Site exposing (pageToHash, hashToPage)
+import Site exposing (hashToPage, pageToHash)
+import Types exposing (..)
 
 
-initialModel : Page -> Model
-initialModel page =
-    { page = page
+initialModel : Flags -> Page -> Model
+initialModel flags initialPage =
+    { page = initialPage
     , homepage = Homepage.State.initialModel
     , events = Events.State.initialModel
-    , developers = Developers.State.initialModel
+    , developers = Developers.State.initialModel flags.profiles
     }
 
 
-init : Location -> ( Model, Cmd Msg )
-init location =
+init : Flags -> Location -> ( Model, Cmd Msg )
+init flags location =
     let
-        page =
+        initialPage =
             hashToPage location.hash
     in
-        ( initialModel page, Cmd.none )
+        ( initialModel flags initialPage, Cmd.none )
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -35,34 +38,66 @@ update msg model =
             ( model, newUrl <| pageToHash page )
 
         ChangePage page ->
-            ( { model | page = page }, Cmd.none )
-
-        HomepageMsg homeMsg ->
-            let
-                ( homepageModel, cmd ) =
-                    Homepage.State.update homeMsg model.homepage
-            in
-                ( { model | homepage = homepageModel }
-                , Cmd.map HomepageMsg cmd
-                )
-
-        EventsMsg eventMsg ->
-            let
-                ( eventsModel, cmd ) =
-                    Events.State.update eventMsg model.events
-            in
-                ( { model | events = eventsModel }
-                , Cmd.map EventsMsg cmd
-                )
+            handleChangePage page model
 
         DevelopersMsg developerMsg ->
+            handleDeveloperMsg developerMsg model
+
+        EventsMsg eventMsg ->
+            handleEventsMsg eventMsg model
+
+        HomepageMsg homeMsg ->
+            handleHomepageMsg homeMsg model
+
+
+handleChangePage : Page -> Model -> ( Model, Cmd Msg )
+handleChangePage page model =
+    case page of
+        DevelopersPage subPage ->
             let
-                ( developersModel, cmd ) =
-                    Developers.State.update developerMsg model.developers
+                subPageChange =
+                    Developers.Types.ChangePage subPage
             in
-                ( { model | developers = developersModel }
-                , Cmd.map DevelopersMsg cmd
-                )
+                handleDeveloperMsg subPageChange model
+
+        otherwise ->
+            ( { model | page = page }, Cmd.none )
+
+
+handleDeveloperMsg : Developers.Types.Msg -> Model -> ( Model, Cmd Msg )
+handleDeveloperMsg developerMsg model =
+    let
+        ( developersModel, cmd ) =
+            Developers.State.update developerMsg model.developers
+    in
+        ( { model
+            | page = DevelopersPage developersModel.page
+            , developers = developersModel
+          }
+        , Cmd.map DevelopersMsg cmd
+        )
+
+
+handleEventsMsg : Events.Types.Msg -> Model -> ( Model, Cmd Msg )
+handleEventsMsg eventMsg model =
+    let
+        ( eventsModel, cmd ) =
+            Events.State.update eventMsg model.events
+    in
+        ( { model | events = eventsModel }
+        , Cmd.map EventsMsg cmd
+        )
+
+
+handleHomepageMsg : Homepage.Types.Msg -> Model -> ( Model, Cmd Msg )
+handleHomepageMsg homeMsg model =
+    let
+        ( homepageModel, cmd ) =
+            Homepage.State.update homeMsg model.homepage
+    in
+        ( { model | homepage = homepageModel }
+        , Cmd.map HomepageMsg cmd
+        )
 
 
 subscriptions : Model -> Sub Msg
