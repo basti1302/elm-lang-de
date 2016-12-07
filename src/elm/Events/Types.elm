@@ -1,6 +1,12 @@
 module Events.Types exposing (..)
 
 import Date exposing (Date)
+import Html exposing (Html)
+import RemoteData exposing (WebData)
+
+
+type alias Content =
+    Html Msg
 
 
 type alias Event =
@@ -11,8 +17,10 @@ type alias Event =
 
 
 type alias Model =
-    { events : List Event }
+    { events : List Event
+    , content : WebData Content
+    }
 
 
 type Msg
-    = NoOp
+    = ContentResponse (WebData Content)

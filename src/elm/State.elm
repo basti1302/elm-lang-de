@@ -8,22 +8,36 @@ import Navigation exposing (Location, newUrl)
 import Site exposing (pageToHash, hashToPage)
 
 
-initialModel : Page -> Model
-initialModel page =
-    { page = page
-    , homepage = Homepage.State.initialModel
-    , events = Events.State.initialModel
-    , developers = Developers.State.initialModel
-    }
-
-
 init : Location -> ( Model, Cmd Msg )
 init location =
     let
         page =
             hashToPage location.hash
+
+        ( homepageModel, homepageCmd ) =
+            Homepage.State.init
+
+        ( eventsModel, eventsCmd ) =
+            Events.State.init
+
+        ( developersModel, developersCmd ) =
+            Developers.State.init
+
+        initialModel page =
+            { page = page
+            , homepage = homepageModel
+            , events = eventsModel
+            , developers = developersModel
+            }
+
+        cmds =
+            Cmd.batch
+                [ Cmd.map HomepageMsg homepageCmd
+                , Cmd.map EventsMsg eventsCmd
+                , Cmd.map DevelopersMsg developersCmd
+                ]
     in
-        ( initialModel page, Cmd.none )
+        ( initialModel page, cmds )
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )

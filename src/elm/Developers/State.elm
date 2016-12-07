@@ -1,11 +1,13 @@
 module Developers.State exposing (init, initialModel, update, subscriptions)
 
+import RemoteData exposing (..)
 import Developers.Types exposing (..)
 
 
 initialModel : Model
 initialModel =
     { developers = []
+    , content = NotAsked
     }
 
 

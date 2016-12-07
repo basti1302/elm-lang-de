@@ -34,6 +34,13 @@ var commonConfig = {
   },
 
   plugins: [
+    new CopyWebpackPlugin([
+      {
+        from: 'src/content',
+        to: 'content'
+      },
+    ]),
+
     new HtmlWebpackPlugin({
       template: 'src/index.html',
       inject:   'body',
@@ -111,8 +118,6 @@ if (TARGET_ENV === 'production') {
     },
 
     plugins: [
-      new CopyWebpackPlugin([]),
-
       new webpack.optimize.OccurenceOrderPlugin(),
 
       new ExtractTextPlugin('styles/[hash].css', { allChunks: true } ),
