@@ -1,0 +1,32 @@
+resolver: lts-7.13
+
+system-ghc: false
+
+packages:
+- '.'
+
+flags: {}
+
+# elm-lang-de Docker Image
+image:
+  container:
+    base: fpco/stack-run
+    name: basti1302/elm-lang-de-app
+    add:
+      backend: /elm-lang-de/backend
+      frontend: /elm-lang-de/frontend
+
+extra-package-dbs: []
+
+extra-deps:
+- HDBC-postgresql-2.3.2.4
+- HsSyck-0.53
+- dbmigrations-2.0.0
+- http-api-data-0.3.3
+- servant-0.9.1.1
+- servant-client-0.9.1.1
+- servant-ede-0.6
+- servant-server-0.9.1.1
+- servant-ede-0.6
+- uuid-aeson-0.1.0.0
+- yaml-light-0.1.4

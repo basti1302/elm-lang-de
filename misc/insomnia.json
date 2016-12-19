@@ -1,0 +1,133 @@
+{
+	"_type": "export",
+	"__export_format": 3,
+	"__export_date": "2016-12-19T08:48:24.302Z",
+	"__export_source": "insomnia.desktop.app:v4.0.9",
+	"resources": [
+		{
+			"_id": "wrk_784b8ee2f5334ff092fda5db0745646c",
+			"parentId": null,
+			"modified": 1482086884573,
+			"created": 1482086884573,
+			"name": "Insomnia",
+			"description": "",
+			"certificates": [],
+			"_type": "workspace"
+		},
+		{
+			"_id": "env_67cae366707e471c9a7b6e2c6a9c2e17",
+			"parentId": "wrk_784b8ee2f5334ff092fda5db0745646c",
+			"modified": 1482086936164,
+			"created": 1482086936164,
+			"name": "Base Environment",
+			"data": {},
+			"_type": "environment"
+		},
+		{
+			"_id": "jar_a0a63462e9fa437aa8f21c93c4e0f769",
+			"parentId": "wrk_784b8ee2f5334ff092fda5db0745646c",
+			"modified": 1482137274140,
+			"created": 1482086936203,
+			"name": "Default Jar",
+			"cookies": [],
+			"_type": "cookie_jar"
+		},
+		{
+			"_id": "req_214ea74ed9a848799ba7f8b927fbb2c9",
+			"parentId": "wrk_784b8ee2f5334ff092fda5db0745646c",
+			"modified": 1482135611129,
+			"created": 1482086943877,
+			"url": "http://localhost:8000/api/profiles/ad1a2501-b1b7-469f-8681-109a30d3958e",
+			"name": "GET profile",
+			"method": "GET",
+			"body": {
+				"text": ""
+			},
+			"parameters": [],
+			"headers": [],
+			"authentication": {},
+			"metaSortKey": 100,
+			"_type": "request"
+		},
+		{
+			"_id": "req_906bcfe2913344a4a613066ac68717b2",
+			"parentId": "wrk_784b8ee2f5334ff092fda5db0745646c",
+			"modified": 1482089070412,
+			"created": 1482086910619,
+			"url": "http://localhost:8000/api/profiles",
+			"name": "GET profiles",
+			"method": "GET",
+			"body": {
+				"text": ""
+			},
+			"parameters": [],
+			"headers": [],
+			"authentication": {},
+			"metaSortKey": 0,
+			"_type": "request"
+		},
+		{
+			"_id": "req_98b23725bcd944ad88c2180b642aa974",
+			"parentId": "wrk_784b8ee2f5334ff092fda5db0745646c",
+			"modified": 1482089090586,
+			"created": 1482089060168,
+			"url": "http://localhost:8000/api/profiles/a30a3f79-7f3c-4e64-a173-628f09d94b65",
+			"name": "DELETE profile",
+			"method": "DELETE",
+			"body": {
+				"text": ""
+			},
+			"parameters": [],
+			"headers": [],
+			"authentication": {},
+			"metaSortKey": 300,
+			"_type": "request"
+		},
+		{
+			"_id": "req_caa3730391ce4194af02d5e42370df29",
+			"parentId": "wrk_784b8ee2f5334ff092fda5db0745646c",
+			"modified": 1482135545139,
+			"created": 1482087001391,
+			"url": "http://localhost:8000/api/profiles",
+			"name": "POST profile",
+			"method": "POST",
+			"body": {
+				"mimeType": "application/json",
+				"text": "{\n\t\"homepage\": \"http://foo.ly\",\n\t\"bio\": \"bio\",\n\t\"email\": \"fred@foo.ly\",\n\t\"twitterHandle\": \"twitter\",\n\t\"country\": \"DE\",\n\t\"urlFragment\": \"fredurl\",\n\t\"githubUsername\": \"freddiegithub\",\n\t\"zipCode\": \"12345\",\n\t\"name\": \"Fred Freddie\",\n\t\"city\": \"Berlin\",\n\t\"job\": \"Hipster Company\",\n\t\"id\": \"a30a3f79-7f3c-4e64-a173-628f09d94b65\",\n\t\"available\": true\n}"
+			},
+			"parameters": [],
+			"headers": [
+				{
+					"name": "Content-Type",
+					"value": "application/json"
+				}
+			],
+			"authentication": {},
+			"metaSortKey": 200,
+			"_type": "request"
+		},
+		{
+			"_id": "req_d6c1e6cc69de4b4a8ef76c013900c4a3",
+			"parentId": "wrk_784b8ee2f5334ff092fda5db0745646c",
+			"modified": 1482136129745,
+			"created": 1482087704134,
+			"url": "http://localhost:8000/api/profiles/ad1a2501-b1b7-469f-8681-109a30d3958e",
+			"name": "PUT profile",
+			"method": "PUT",
+			"body": {
+				"mimeType": "application/json",
+				"text": "{\n\t\"homepage\": \"https://foo.ly\",\n\t\"bio\": \"bio\",\n\t\"email\": \"\",\n\t\"twitterHandle\": \"twitter\",\n\t\"createdAt\": \"2016-12-19T08:17:55.131083Z\",\n\t\"country\": \"DE\",\n\t\"urlFragment\": \"fred\",\n\t\"githubUsername\": \"\",\n\t\"zipCode\": \"44267\",\n\t\"name\": \"Fred Freddie\",\n\t\"city\": \"Berlin\",\n\t\"job\": \"Hipster Company II\",\n\t\"available\": true\n}\n\t"
+			},
+			"parameters": [],
+			"headers": [
+				{
+					"name": "Content-Type",
+					"value": "application/json"
+				}
+			],
+			"authentication": {},
+			"metaSortKey": 250,
+			"_type": "request"
+		}
+	]
+}

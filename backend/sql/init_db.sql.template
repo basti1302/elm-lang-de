@@ -1,0 +1,34 @@
+DO
+$body$
+BEGIN
+   IF NOT EXISTS (
+      SELECT *
+      FROM   pg_catalog.pg_user
+      WHERE  usename = 'elmlangde') THEN
+
+      CREATE ROLE elmlangde LOGIN
+        PASSWORD '${elmLangDeDatabasePassword}'
+          NOSUPERUSER INHERIT NOCREATEDB NOCREATEROLE NOREPLICATION;
+   END IF;
+END
+$body$;
+
+
+CREATE EXTENSION IF NOT EXISTS dblink WITH SCHEMA PUBLIC;
+
+DO
+$do$
+BEGIN
+   IF EXISTS (SELECT 1 FROM pg_database WHERE datname = 'elmlangde') THEN
+      RAISE NOTICE 'Database elmlangde already exists';
+   ELSE
+      PERFORM dblink_exec('dbname=' || current_database()  -- current db
+                        , 'CREATE DATABASE elmlangde
+                             WITH OWNER = elmlangde
+                                  ENCODING = ''UTF8''
+                                  TABLESPACE = pg_default
+                                  CONNECTION LIMIT = -1;');
+   END IF;
+END
+$do$;
+

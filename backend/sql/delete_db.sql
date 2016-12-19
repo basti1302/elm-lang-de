@@ -1,0 +1,3 @@
+DROP DATABASE IF EXISTS elmlangde;
+DROP ROLE IF EXISTS elmlangde;
+
