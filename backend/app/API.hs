@@ -12,7 +12,6 @@ API.
 -}
 module API (API, proxyApi, StaticFiles) where
 
-import           Html.API (HtmlAPI)
 import           Json.API (JsonAPI)
 
 import           Servant
@@ -28,7 +27,6 @@ type StaticFiles = Raw
 
 type API =
        "api" :> JsonAPI
-  :<|> HtmlAPI
   :<|> StaticFiles
 
 

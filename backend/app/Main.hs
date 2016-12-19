@@ -22,7 +22,6 @@ import           Database.StatementMap
 import qualified Profile.SQL              (prepareStatements)
 import qualified Server
 import qualified Util.Config              as Config
-import           Util.Template
 
 import           Control.Exception        (bracket)
 import           Control.Monad.Catch      (Handler)
@@ -35,7 +34,6 @@ import           Database.HDBC.PostgreSQL as PostgreSQL (Connection,
 import           Network.Wai
 import           Network.Wai.Handler.Warp
 import qualified Servant
-import qualified Servant.EDE              as EDE
 
 
 main :: IO ()
@@ -51,14 +49,6 @@ initialize ::
   -> connection
   -> IO ()
 initialize appConfig connection = do
-  putStrLn "Compiling EDE templates..."
-  templateErrors :: [EDE.TemplateError] <-
-    EDE.loadTemplates API.proxyApi [] "frontend/templates"
-  if null templateErrors
-    then putStrLn "EDE templates have been compiled successfully."
-    else do echoTemplateErrors templateErrors
-            error "There have been errors during EDE template compilation, \
-                  \exiting."
   putStrLn "Compiling prepared SQL statements..."
   dbConnection <- prepareStatements connection
   let
