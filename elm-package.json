@@ -4,7 +4,7 @@
     "repository": "https://github.com/dennisreimann/elm-lang-de.git",
     "license": "UNLICENSED",
     "source-directories": [
-        "src/elm"
+        "frontend/elm"
     ],
     "exposed-modules": [],
     "dependencies": {

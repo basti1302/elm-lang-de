@@ -35,7 +35,7 @@ var commonConfig = {
 
   plugins: [
     new HtmlWebpackPlugin({
-      template: 'src/index.html',
+      template: 'frontend/index.html',
       inject:   'body',
       filename: 'index.html',
     }),
@@ -51,12 +51,21 @@ if (TARGET_ENV === 'development') {
   module.exports = merge(commonConfig, {
     entry: [
       'webpack-dev-server/client?http://localhost:8080',
-      path.join( __dirname, 'src/scripts/index.js' ),
+      path.join( __dirname, 'frontend/scripts/index.js' ),
     ],
 
     devServer: {
       inline: true,
       progress: true,
+      proxy: [
+        // redirect API requests to the Haskell backend
+        {
+          context: [
+            '/api/**',
+          ],
+          target: 'http://localhost:8000',
+        }
+      ]
     },
 
     module: {
@@ -90,7 +99,7 @@ if (TARGET_ENV === 'development') {
 // additional webpack settings for prod env (when invoked via 'npm run build')
 if (TARGET_ENV === 'production') {
   module.exports = merge(commonConfig, {
-    entry: path.join( __dirname, 'src/scripts/index.js'),
+    entry: path.join( __dirname, 'frontend/scripts/index.js'),
 
     module: {
       loaders: [

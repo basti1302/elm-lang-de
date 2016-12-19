@@ -39,6 +39,6 @@
     "postinstall": "elm-package install",
     "env": "env",
     "build": "rimraf dist/* && webpack",
-    "start": "webpack-dev-server --hot --inline --content-base src/"
+    "start": "webpack-dev-server --hot --inline --content-base frontend/"
   }
 }
