@@ -33,6 +33,13 @@ var commonConfig = {
     ],
   },
 
+  stylus: {
+    import: [
+      '../styles/lib/variables.styl',
+      '../styles/lib/mediaQueries.styl',
+    ]
+  },
+
   plugins: [
     new HtmlWebpackPlugin({
       template: 'frontend/index.html',
@@ -85,13 +92,6 @@ if (TARGET_ENV === 'development') {
           ],
         },
       ],
-    },
-
-    stylus: {
-      import: [
-        '../styles/lib/variables.styl',
-        '../styles/lib/mediaQueries.styl',
-      ]
     }
   });
 }
