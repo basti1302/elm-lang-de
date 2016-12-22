@@ -21,6 +21,9 @@ $ # Download front end dependencies and build the Elm sources
 $ yarn install
 ```
 
+If you want to sign in via GitHub in you local development environment you also
+need to follow the instructions given in .github-secret.template.
+
 ## Development
 
 During development you will probably want to have `bin/watch-all.sh` running all the time. It builds the back end and the front end and watches all relevant files for changes. If a back end source file changes, the back end is rebuild and restarted automatically. If a front end source file changes, the front end is rebuild and a browser reload is triggered.

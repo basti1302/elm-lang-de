@@ -12,7 +12,8 @@ API.
 -}
 module API (API, proxyApi, StaticFiles) where
 
-import           Json.API (JsonAPI)
+import           Json.API  (JsonAPI)
+import           OAuth.API (OAuthAPI)
 
 import           Servant
 
@@ -26,7 +27,8 @@ type StaticFiles = Raw
 
 
 type API =
-       "api" :> JsonAPI
+       "api"   :> JsonAPI
+  :<|> "oauth" :> OAuthAPI
   :<|> StaticFiles
 
 

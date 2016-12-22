@@ -31,8 +31,8 @@ import           Data.Monoid              ((<>))
 import           Database.HDBC            hiding (run)
 import           Database.HDBC.PostgreSQL as PostgreSQL (Connection,
                                                          connectPostgreSQL)
-import           Network.Wai
-import           Network.Wai.Handler.Warp
+import qualified Network.Wai              as Wai
+import qualified Network.Wai.Handler.Warp as Warp
 import qualified Servant
 
 
@@ -60,8 +60,19 @@ initialize appConfig connection = do
 
   putStrLn "Upgrading database (dbmigrations)..."
   Migration.upgradeDatabase connection
-  run 8000 $ app appConfig dbConnection
-
+  let
+    webConfig = Config.webConfig appConfig
+    host :: Warp.HostPreference
+    host = Config.bindHost webConfig
+    port = Config.bindPort webConfig
+    serverSettings =
+      Warp.setHost host $
+      Warp.setPort port $
+      Warp.defaultSettings
+  putStrLn $ "Starting elm-lang.de backend on host " ++
+             (show $ Warp.getHost serverSettings) ++ " and port " ++
+             (show $ Warp.getPort serverSettings)
+  Warp.runSettings serverSettings $ app appConfig dbConnection
 
 withPostgreSQL ::
   Config.DbConfig
@@ -125,7 +136,7 @@ app ::
   IConnection connection =>
   Config.AppConfig
   -> DbConnection connection
-  -> Application
+  -> Wai.Application
 app appConfig dbConnection =
   Servant.serve API.proxyApi $ Server.mainServer appConfig dbConnection
   -- TODO Implement sign up/sign in and auth

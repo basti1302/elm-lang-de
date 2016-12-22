@@ -62,6 +62,10 @@ executable elm-lang-de
                      , Database.UUIDConversion
                      , Json.API
                      , Json.Server
+                     , OAuth.API
+                     , OAuth.GitHub.API
+                     , OAuth.GitHub.Server
+                     , OAuth.Server
                      , Profile.API
                      , Profile.API
                      , Profile.Converter
@@ -70,10 +74,11 @@ executable elm-lang-de
                      , Profile.ProfileHeadResponse
                      , Profile.Request
                      , Profile.Response
-                     , Profile.Server
                      , Profile.SQL
+                     , Profile.Server
                      , Server
                      , Util.Config
+                     , Util.Validation
   default-language:    Haskell2010
 
 source-repository head

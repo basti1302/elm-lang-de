@@ -69,6 +69,7 @@ if (TARGET_ENV === 'development') {
         {
           context: [
             '/api/**',
+            '/oauth/**',
           ],
           target: 'http://localhost:8000',
         }

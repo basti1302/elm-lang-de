@@ -3,26 +3,23 @@
 module Util.Config
   ( AppConfig(..)
   , DbConfig(..)
-  , EMailConfig(..)
+  , hasGitHubOAuthConfig
   , readConfig
   , WebConfig(..)
   ) where
 
-import qualified ElmLangDe.Util        as Util
-
-import           Control.Monad
-import           Data.ByteString       (ByteString)
-import           Data.ByteString.Char8 (pack)
-import           Data.Maybe            (fromMaybe, isNothing)
+import           Control.Monad            (unless)
+import           Data.Maybe               (fromMaybe, isJust, isNothing)
+import           Data.String              (fromString)
 import           GHC.Generics
-import           Servant.Client        (Scheme (..))
-import           System.Environment    (lookupEnv)
+import qualified Network.Wai.Handler.Warp as Warp
+import           System.Environment       (lookupEnv)
+import           Text.Read                (readMaybe)
 
 
 data AppConfig = AppConfig
-  { dbConfig    :: DbConfig
-  , eMailConfig :: EMailConfig
-  , webConfig   :: WebConfig
+  { dbConfig  :: DbConfig
+  , webConfig :: WebConfig
   } deriving (Eq, Show, Generic)
 
 
@@ -34,32 +31,29 @@ data DbConfig = DbConfig
   } deriving (Eq, Show, Generic)
 
 
-data EMailConfig = EMailConfig
-  { mailScheme   :: Scheme
-  , mailHost     :: String
-  , mailPort     :: Int
-  , mailPath     :: String
-  , mailApiKey   :: ByteString
-  , mailDisabled :: Bool
-  } deriving (Eq, Show, Generic)
-
-
 data WebConfig = WebConfig
-  { secureCookiesDisabled :: Bool
+  { bindHost              :: Warp.HostPreference
+  , bindPort              :: Int
+  , gitHubClientId        :: Maybe String
+  , gitHubClientSecret    :: Maybe String
+  , secureCookiesDisabled :: Bool
   } deriving (Eq, Show, Generic)
+
+
+hasGitHubOAuthConfig :: WebConfig -> Bool
+hasGitHubOAuthConfig webCfg =
+  isJust (gitHubClientId webCfg) &&
+  isJust (gitHubClientSecret webCfg)
 
 
 readConfig :: IO AppConfig
 readConfig = do
   dbCfg    <- readDbConfig
   putStrLn $ "DB CONFIG: " ++ show(dbCfg { dbPassword = "***" })
-  eMailCfg <- readEMailConfig
-  putStrLn $ "MAIL SERVICE CONFIG: " ++ show(eMailCfg { mailApiKey = pack("***") })
   webCfg   <- readWebConfig
   putStrLn $ "WEB CONFIG: " ++ show(webCfg)
   return AppConfig
          { dbConfig    = dbCfg
-         , eMailConfig = eMailCfg
          , webConfig   = webCfg
          }
 
@@ -78,49 +72,72 @@ readDbConfig = do
          }
 
 
-readEMailConfig :: IO EMailConfig
-readEMailConfig = do
-  mailDisabledFlag   <- lookupFlag "MAIL_DISABLED"
-  mailSchemeMabye    <- lookupEnv  "MAIL_SERVICE_HTTP_SCHEME"
-  let maybeStringToScheme :: Maybe String -> Scheme
-      maybeStringToScheme s =
-          case s of
-            Just "http" -> Http
-            _           -> Https
-      mailHttpScheme = maybeStringToScheme mailSchemeMabye
-  mailHostString     <- lookupEnvWithDefault "MAIL_SERVICE_HTTP_HOST" "api.mailgun.net"
-  mailPortMaybe      <- lookupEnv            "MAIL_SERVICE_HTTP_PORT"
-  let mailPortInt    = fromMaybe 443 $ Util.readWithMaybeToMaybe mailPortMaybe
-  mailPathString     <-
-    lookupEnvWithDefault
-      "MAIL_SERVICE_HTTP_PATH"
-      "TODO: Create a new mailgun account for elm-lang.de"
-  mailSecretMaybe    <- lookupEnv "MAIL_SERVICE_SECRET"
-  when (not mailDisabledFlag && isNothing mailSecretMaybe) $
-     error "No mail service api key (MAIL_SERVICE_SECRET) configured, exiting."
-  let mailSecret     = fromMaybe "" mailSecretMaybe
-  return EMailConfig
-         { mailScheme   = mailHttpScheme
-         , mailHost     = mailHostString
-         , mailPort     = mailPortInt
-         , mailPath     = mailPathString
-         , mailApiKey   = pack mailSecret
-         , mailDisabled = mailDisabledFlag
-         }
-
-
 readWebConfig :: IO WebConfig
 readWebConfig = do
-  secureCookiesDisabledFlag <- lookupFlag "SECURE_COOKIES_DISABLED"
-  return WebConfig
-         { secureCookiesDisabled = secureCookiesDisabledFlag
-         }
+  -- Default value for bind host is HostIPv4, which means
+  -- "any IPv4 or IPv6 hostname, IPv4 preferred", see
+  -- https://hackage.haskell.org/package/warp-3.2.9/docs/Network-Wai-Handler-Warp.html#t:HostPreference
+  hostString                <- lookupEnvWithDefault    "HOST" "HostIPv4"
+  port                      <- lookupEnvIntWithDefault "PORT" 8000
+  ghClientId                <- lookupEnvOptional       "GITHUB_CLIENT_ID"
+  ghClientSecret            <- lookupEnvOptional       "GITHUB_CLIENT_SECRET"
+  secureCookiesDisabledFlag <- lookupFlag              "SECURE_COOKIES_DISABLED"
+  let
+    hostPrefernce :: Warp.HostPreference
+    hostPrefernce = fromString hostString
+    webCfg = WebConfig
+             { bindHost              = hostPrefernce
+             , bindPort              = port
+             , gitHubClientId        = ghClientId
+             , gitHubClientSecret    = ghClientSecret
+             , secureCookiesDisabled = secureCookiesDisabledFlag
+             }
+  unless (hasGitHubOAuthConfig webCfg)
+    ( putStrLn
+      "WARNING: GitHub OAuth cliend ID and/or client secret are not \
+      \configured, sign in via GitHub will not work."
+    )
+  return webCfg
 
 
 lookupEnvWithDefault :: String -> String -> IO String
 lookupEnvWithDefault key defaultValue = do
   maybeValue <- lookupEnv key
   return $ fromMaybe defaultValue maybeValue
+
+
+lookupEnvIntWithDefault :: String -> Int -> IO Int
+lookupEnvIntWithDefault key defaultValue = do
+  maybeValue <- lookupEnv key
+  case maybeValue of
+    Just string -> do
+      let
+        parsed :: Maybe Int
+        parsed = readMaybe string
+      case parsed of
+        Just integer ->
+          return integer
+        Nothing -> do
+          _ <- error
+            ("Error: You provided the string \"" ++ string ++
+             "\" as the value for configuration option " ++ key ++
+             " but this option requires an integer value and I could" ++
+             " not convert \"" ++ string ++ "\" to an integer.")
+          return defaultValue
+    Nothing ->
+      return defaultValue
+
+
+lookupEnvOptional :: String -> IO (Maybe String)
+lookupEnvOptional key = do
+  maybeValue <- lookupEnv key
+  if isNothing maybeValue
+    then do
+      putStrLn $ "Configuration " ++ key ++ " has not been set. Some " ++
+                 "functionality will not be available."
+      return maybeValue
+    else do
+      return maybeValue
 
 
 lookupFlag :: String -> IO Bool
