@@ -57,6 +57,9 @@ executable elm-lang-de
                      , wai
                      , warp
   other-modules:       API
+                     , AppBootstrap.API
+                     , AppBootstrap.Response
+                     , AppBootstrap.Server
                      , Database.Migration
                      , Database.StatementMap
                      , Database.UUIDConversion
@@ -67,8 +70,6 @@ executable elm-lang-de
                      , OAuth.GitHub.Server
                      , OAuth.Server
                      , Profile.API
-                     , Profile.API
-                     , Profile.Converter
                      , Profile.Converter
                      , Profile.Model
                      , Profile.ProfileHeadResponse

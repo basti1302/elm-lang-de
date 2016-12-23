@@ -1,5 +1,7 @@
 module Json.Server (jsonServer) where
 
+import           AppBootstrap.API      (AppBootstrapAPI)
+import           AppBootstrap.Server   (appBootstrapServer)
 import           Database.StatementMap
 import           Json.API              (JsonAPI)
 import           Profile.API           (ProfileAPI)
@@ -15,10 +17,14 @@ jsonServer ::
   Config.AppConfig
   -> DbConnection connection
   -> Server JsonAPI
-jsonServer _ dbConnection =
+jsonServer appConfig dbConnection =
   let
-    profilesAPIHandler :: Server ProfileAPI
-    profilesAPIHandler = profileServer dbConnection
+    webConfig = Config.webConfig appConfig
+    appBootstrapAPIHandler :: Server AppBootstrapAPI
+    appBootstrapAPIHandler = appBootstrapServer webConfig
+    profilesAPIHandler     :: Server ProfileAPI
+    profilesAPIHandler     = profileServer dbConnection
   in
-    profilesAPIHandler
+         appBootstrapAPIHandler
+    :<|> profilesAPIHandler
 

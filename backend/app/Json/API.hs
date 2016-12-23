@@ -3,12 +3,15 @@
 
 module Json.API (JsonAPI) where
 
-import           Profile.API (ProfileAPI)
+import           AppBootstrap.API (AppBootstrapAPI)
+import           Profile.API      (ProfileAPI)
 
 import           Servant
 
 
 type JsonAPI =
-       "profiles"
+       "app-bootstrap"
+       :> AppBootstrapAPI
+  :<|> "profiles"
        :> ProfileAPI
 
