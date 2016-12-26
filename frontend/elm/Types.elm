@@ -3,6 +3,7 @@ module Types exposing (..)
 import Homepage.Types
 import Events.Types
 import Developers.Types
+import RemoteData exposing (WebData)
 
 
 type Page
@@ -13,11 +14,12 @@ type Page
 
 
 type Msg
-    = Navigate Page
+    = AppBootstrapResponse (WebData AppBootstrapResource)
     | ChangePage Page
-    | HomepageMsg Homepage.Types.Msg
-    | EventsMsg Events.Types.Msg
     | DevelopersMsg Developers.Types.Msg
+    | EventsMsg Events.Types.Msg
+    | HomepageMsg Homepage.Types.Msg
+    | Navigate Page
 
 
 type alias Model =
@@ -25,4 +27,10 @@ type alias Model =
     , homepage : Homepage.Types.Model
     , events : Events.Types.Model
     , developers : Developers.Types.Model
+    , gitHubClientId : Maybe String
+    }
+
+
+type alias AppBootstrapResource =
+    { gitHubClientId : Maybe String
     }

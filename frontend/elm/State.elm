@@ -1,11 +1,13 @@
 module State exposing (init, update, subscriptions)
 
-import Types exposing (..)
-import Homepage.State
-import Events.State
+import Data exposing (loadAppBootstrap)
 import Developers.State
+import Events.State
+import Homepage.State
 import Navigation exposing (Location, newUrl)
+import RemoteData exposing (RemoteData(..))
 import Site exposing (pageToHash, hashToPage)
+import Types exposing (..)
 
 
 initialModel : Page -> Model
@@ -14,6 +16,7 @@ initialModel page =
     , homepage = Homepage.State.initialModel
     , events = Events.State.initialModel
     , developers = Developers.State.initialModel
+    , gitHubClientId = Nothing
     }
 
 
@@ -23,7 +26,7 @@ init location =
         page =
             hashToPage location.hash
     in
-        ( initialModel page, Cmd.none )
+        ( initialModel page, loadAppBootstrap )
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -33,6 +36,17 @@ update msg model =
             -- leave the model untouched and issue a command to
             -- change the url, which then triggers ChangePage
             ( model, newUrl <| pageToHash page )
+
+        AppBootstrapResponse (Success appBootstrapResource) ->
+            ( { model
+                | gitHubClientId = appBootstrapResource.gitHubClientId
+              }
+            , Cmd.none
+            )
+
+        AppBootstrapResponse _ ->
+            -- Ignore all other app bootstrap responses for now
+            ( model, Cmd.none )
 
         ChangePage page ->
             ( { model | page = page }, Cmd.none )

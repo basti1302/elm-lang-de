@@ -55,6 +55,7 @@ pageHeader model =
                 [ navLink HomePage "Elm"
                 , navLink EventsPage "Termine"
                 , navLink DevelopersPage "Entwickler"
+                , signInWithGitHub model
                 ]
             ]
 
@@ -72,3 +73,29 @@ navItem currentPage page title =
             , onClick (Navigate page)
             ]
             [ text title ]
+
+
+signInWithGitHub : Model -> Html Msg
+signInWithGitHub model =
+    -- TODO Replace this with properly styled "sign in with github" button that is
+    -- only displayed after we have received a client id. Something the log in pop
+    -- up on angularjs.de would be nice.
+    -- TODO Check if the user is actually already signed in to GitHub.
+    case model.gitHubClientId of
+        Just clientId ->
+            let
+                -- TODO Fetch redirect URL from app bootstrap, too?
+                redirectUrl =
+                    "http://localhost:8080/oauth/github"
+
+                gitHubUrl =
+                    "https://github.com/login/oauth/authorize?client_id=" ++ clientId ++ "&scope=user:email&redirect_uri=" ++ redirectUrl
+            in
+                a
+                    [ class "nav__item"
+                    , href gitHubUrl
+                    ]
+                    [ text "Mit GitHub anmelden" ]
+
+        otherwise ->
+            text "Anmelden mit GitHub zur Zeit nicht verfügbar."
