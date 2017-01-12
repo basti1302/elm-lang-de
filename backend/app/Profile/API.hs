@@ -15,9 +15,6 @@ type ProfileAPI =
   -- GET /api/profiles/{profile-id}
   :<|> Capture "profileId" UUID
       :> Get '[JSON] ProfileResponse
-  -- POST /api/profiles
-  :<|> ReqBody '[JSON] ProfileRequest
-      :> Post '[JSON] ProfileResponse
   -- PUT /api/profiles/{profile-id}
   :<|> Capture "profileId" UUID
       :> ReqBody '[JSON] ProfileRequest

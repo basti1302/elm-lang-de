@@ -3,11 +3,14 @@
 module AppBootstrap.API (AppBootstrapAPI) where
 
 import           AppBootstrap.Response as AppBootstrapResponse
+
+import           Data.Text             (Text)
 import           Servant
 
 
 type AppBootstrapAPI =
   -- GET /api/app-bootstrap
-  Get '[JSON] AppBootstrapResponse
+     Header "Cookie" Text
+  :> Get '[JSON] AppBootstrapResponse
 
 

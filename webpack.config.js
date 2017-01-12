@@ -57,11 +57,11 @@ var commonConfig = {
 if (TARGET_ENV === 'development') {
   module.exports = merge(commonConfig, {
     entry: [
-      'webpack-dev-server/client?http://localhost:8080',
-      path.join( __dirname, 'frontend/scripts/index.js' ),
-    ],
+      'webpack-dev-server/client?http://localhost:7000',
+      path.join( __dirname, 'frontend/scripts/index.js' ), ],
 
     devServer: {
+      port: 7000,
       inline: true,
       progress: true,
       proxy: [

@@ -1,12 +1,15 @@
 {-# LANGUAGE OverloadedStrings   #-}
 {-# LANGUAGE ScopedTypeVariables #-}
 
-module Profile.Server (profileServer) where
+module Profile.Server
+  ( profileServer
+  , signUp
+  ) where
 
 import           Database.StatementMap
-import           ElmLangDe.Util              as Util
 import           Profile.API                 (ProfileAPI)
 import qualified Profile.Converter           as ProfileConverter
+import           Profile.Model               (Profile)
 import qualified Profile.Model               as Profile
 import           Profile.ProfileHeadResponse (ProfileHeadResponse)
 import           Profile.Request             (ProfileRequest)
@@ -22,7 +25,6 @@ import qualified Data.Aeson                  as JSON (encode)
 import           Data.Maybe                  (catMaybes, listToMaybe)
 import           Data.Text                   (Text)
 import qualified Data.Text                   as T
-import qualified Data.Time                   as Time
 import           Data.UUID                   (UUID)
 import qualified Data.UUID                   as UUID
 import           Database.HDBC               (IConnection)
@@ -36,7 +38,6 @@ profileServer ::
 profileServer dbConnection =
        getProfiles dbConnection
   :<|> getProfile dbConnection
-  :<|> postProfile dbConnection
   :<|> putProfile dbConnection
   :<|> deleteProfile dbConnection
 
@@ -86,53 +87,6 @@ fetchOneProfile dbConnection profileId = do
     Nothing -> return $ Left err404
 
 
-postProfile ::
-  IConnection connection =>
-  DbConnection connection
-  -> ProfileRequest
-  -> ExceptT ServantErr IO ProfileResponse
-postProfile dbConnection profileRequest = do
-  result <- liftIO $ withTransaction dbConnection $ \transactedConnection ->
-    createProfile
-      transactedConnection
-      profileRequest
-  case result of
-    Left  err      -> throwE err
-    Right response -> return response
-
-
-createProfile ::
-  DbConnection connection
-  -> ProfileRequest
-  -> IO (Either ServantErr ProfileResponse)
-createProfile dbConnection profileRequest = do
-  profileId <- createUuid
-  createdAt <- Time.getCurrentTime
-  (validationMessages, validatedProfileRequest) <-
-    validateProfile dbConnection profileId profileRequest
-
-  if not (Prelude.null validationMessages)
-    then do
-      let
-        responseBody =
-          ProfileConverter.responseForBadRequest
-            profileId
-            createdAt
-            validationMessages
-            validatedProfileRequest
-      return $ Left $
-        err400 { errBody = JSON.encode responseBody }
-    else do
-      let
-        profile =
-          ProfileConverter.requestToModel
-            profileId createdAt validatedProfileRequest
-      SQL.newProfile dbConnection profile
-      return $ Right $
-        ProfileConverter.modelToResponse
-          profile
-
-
 putProfile ::
   IConnection connection =>
   DbConnection connection
@@ -160,19 +114,15 @@ updateProfile dbConnection profileId profileRequest = do
   case maybeProfile of
     Nothing      ->
       return $ Left $ err404
-    Just currentProfileInDb -> do
-      let
-        createdAt = Profile.createdAt currentProfileInDb
+    Just existingProfile -> do
       (validationMessages, validatedProfileRequest) <-
-        validateProfile dbConnection profileId profileRequest
-
+        validateProfile dbConnection existingProfile profileRequest
       if not (Prelude.null validationMessages)
         then do
           let
             responseBody =
               ProfileConverter.responseForBadRequest
-                profileId
-                createdAt
+                existingProfile
                 validationMessages
                 validatedProfileRequest
           return $ Left $
@@ -181,7 +131,7 @@ updateProfile dbConnection profileId profileRequest = do
           let
             profileUpdate =
               ProfileConverter.requestToModel
-                profileId createdAt validatedProfileRequest
+                existingProfile validatedProfileRequest
           SQL.updateProfile dbConnection profileId profileUpdate
           -- TODO Handle Nothing
           Just updatedProfile <- SQL.profileById dbConnection profileId
@@ -202,16 +152,16 @@ deleteProfile dbConnection profileId = do
 
 validateProfile ::
   DbConnection connection
-  -> UUID
+  -> Profile
   -> ProfileRequest
   -> IO ([Text], ProfileRequest)
-validateProfile dbConnection profileId request = do
+validateProfile dbConnection existingProfile request = do
   let
     checks =
       [ validateNamePresent
       , Validation.validateEMailEmptyOrWellformed
       , Validation.validateURLEmptyOrWellformed
-      , (validateUrlFragmentUnique profileId)
+      , (validateUrlFragmentUnique existingProfile)
       ]
   (messages, validatedRequest) <-
     Validation.validate dbConnection checks request
@@ -239,20 +189,26 @@ validateNamePresent _ request = do
 
 
 validateUrlFragmentUnique ::
-  UUID
+  Profile
   -> DbConnection connection
   -> ProfileRequest
   -> IO (Maybe Text, ProfileRequest)
-validateUrlFragmentUnique profileId dbConnection request = do
+validateUrlFragmentUnique existingProfile dbConnection request = do
   -- TODO Produce proper validation message instead of only correcting the url
   -- fragment.
   let
+    profileId = Profile.id existingProfile
     candidates :: [Maybe Text]
     candidates =
-      [ ProfileRequest.urlFragment    request   -- user provided url fragment
-      , ProfileRequest.githubUsername request   -- use github un as default
-      , Just $ T.pack $ UUID.toString profileId -- last resort: use profile id
-      ]
+      [
+      -- user provided url fragment
+        ProfileRequest.urlFragment request
+      -- use github id as default
+      , ProfileRequest.gitHubUsername request
+      -- use github oauth login as fallback
+      , Just $ Profile.gitHubOAuthLogin existingProfile
+      -- last resort: use profile uuid
+      , Just $ T.pack $ UUID.toString profileId      ]
     -- | Checks for a single candidate for the url fragment whether it is valid,
     -- that is, not empty and unique.
     checkCandidate :: Maybe Text -> IO (Maybe Text)
@@ -276,4 +232,26 @@ validateUrlFragmentUnique profileId dbConnection request = do
     Just validFragment ->
       return
         (Nothing, request { ProfileRequest.urlFragment = Just validFragment })
+
+
+-- | Not accessible via HTTP POST, only used during GitHub OAuth sign up.
+signUp ::
+  IConnection connection =>
+  DbConnection connection
+  -> Profile
+  -> IO ()
+signUp dbConnection profile =
+  liftIO $ withTransaction dbConnection $ \transactedConnection ->
+    createProfile
+      transactedConnection
+      profile
+
+
+createProfile ::
+  DbConnection connection
+  -> Profile
+  -> IO ()
+createProfile dbConnection profile = do
+  SQL.newProfile dbConnection profile
+  return ()
 

@@ -3,10 +3,10 @@ module View exposing (view)
 import Types exposing (..)
 import Html exposing (..)
 import Html.Events exposing (onClick)
-import Html.Attributes exposing (class, classList, href)
+import Html.Attributes exposing (..)
 import Homepage.View
 import Events.View
-import Developers.View
+import Profiles.View
 
 
 view : Model -> Html Msg
@@ -22,9 +22,9 @@ view model =
                     Html.map EventsMsg
                         (Events.View.view model.events)
 
-                DevelopersPage ->
-                    Html.map DevelopersMsg
-                        (Developers.View.view model.developers)
+                ProfilesPage ->
+                    Html.map ProfilesMsg
+                        (Profiles.View.view model.profiles)
 
                 NotFound ->
                     div [] [ text "404" ]
@@ -54,8 +54,8 @@ pageHeader model =
                 [ class "nav" ]
                 [ navLink HomePage "Elm"
                 , navLink EventsPage "Termine"
-                , navLink DevelopersPage "Entwickler"
-                , signInWithGitHub model
+                , navLink ProfilesPage "Entwickler"
+                , authentication model
                 ]
             ]
 
@@ -75,27 +75,55 @@ navItem currentPage page title =
             [ text title ]
 
 
-signInWithGitHub : Model -> Html Msg
-signInWithGitHub model =
+authentication : Model -> Html Msg
+authentication model =
+    -- TODO Clean this up :)
     -- TODO Replace this with properly styled "sign in with github" button that is
-    -- only displayed after we have received a client id. Something the log in pop
-    -- up on angularjs.de would be nice.
-    -- TODO Check if the user is actually already signed in to GitHub.
-    case model.gitHubClientId of
-        Just clientId ->
+    -- only displayed after we have received a client id. Something like the
+    -- log in pop up on angularjs.de would be nice.
+    -- TODO Sign out (requires backend call, deletes github-access-code cookie)
+    case model.auth of
+        SignedIn profile ->
             let
-                -- TODO Fetch redirect URL from app bootstrap, too?
-                redirectUrl =
-                    "http://localhost:8080/oauth/github"
-
-                gitHubUrl =
-                    "https://github.com/login/oauth/authorize?client_id=" ++ clientId ++ "&scope=user:email&redirect_uri=" ++ redirectUrl
+                profileComponents =
+                    if String.isEmpty profile.gitHubAvatarUrl then
+                        [ text profile.name ]
+                    else
+                        [ img
+                            [ src profile.gitHubAvatarUrl
+                            , style
+                                [ ( "width", "40px" )
+                                , ( "border-radius", "20px" )
+                                , ( "border-radius", "20px" )
+                                , ( "vertical-align", "middle" )
+                                , ( "margin-right", "5px" )
+                                ]
+                            ]
+                            []
+                        , text profile.name
+                        ]
             in
-                a
-                    [ class "nav__item"
-                    , href gitHubUrl
-                    ]
-                    [ text "Mit GitHub anmelden" ]
+                div [] profileComponents
 
-        otherwise ->
-            text "Anmelden mit GitHub zur Zeit nicht verfügbar."
+        NotSignedIn ->
+            case model.gitHubClientId of
+                Just clientId ->
+                    let
+                        -- TODO Fetch redirect URL from app bootstrap, too!
+                        redirectUrl =
+                            "http://localhost:7000/oauth/github"
+
+                        gitHubUrl =
+                            "https://github.com/login/oauth/authorize?client_id="
+                                ++ clientId
+                                ++ "&redirect_uri="
+                                ++ redirectUrl
+                    in
+                        a
+                            [ class "nav__item"
+                            , href gitHubUrl
+                            ]
+                            [ text "Mit GitHub anmelden" ]
+
+                otherwise ->
+                    text "..."

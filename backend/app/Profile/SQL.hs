@@ -4,6 +4,7 @@ module Profile.SQL
   , deleteProfile
   , newProfile
   , prepareStatements
+  , profileByGitHubLogin
   , profileById
   , updateProfile
   ) where
@@ -32,17 +33,19 @@ prepareStatements dbConnection = do
      cn = conn dbConnection
    fetchAll          <- prepareFetchAllProfiles       cn
    byId              <- prepareFetchById              cn
+   byGitHubLogin     <- prepareFetchByGitHubLogin     cn
    insert            <- prepareInsert                 cn
    delete            <- prepareDelete                 cn
    update            <- prepareUpdate                 cn
    fragmentUrlUnique <- prepareCheckUrlFragmentUnique cn
    let
-     statements = ( Map.insert ProfileFetchById         byId
-                  $ Map.insert ProfileFetchAll          fetchAll
-                  $ Map.insert ProfileDelete            delete
-                  $ Map.insert ProfileInsert            insert
-                  $ Map.insert ProfileUpdate            update
-                  $ Map.insert ProfileUrlFragmentUnique fragmentUrlUnique
+     statements = ( Map.insert ProfileFetchById          byId
+                  $ Map.insert ProfileFetchByGitHubLogin byGitHubLogin
+                  $ Map.insert ProfileFetchAll           fetchAll
+                  $ Map.insert ProfileDelete             delete
+                  $ Map.insert ProfileInsert             insert
+                  $ Map.insert ProfileUpdate             update
+                  $ Map.insert ProfileUrlFragmentUnique  fragmentUrlUnique
                   $ (stmts dbConnection)
                   )
    return $ dbConnection { stmts = statements }
@@ -55,22 +58,26 @@ prepareInsert ::
 prepareInsert connection =
  prepare connection
    "INSERT INTO profiles ( \
-   \ id,              \
-   \ name,            \
-   \ url_fragment,    \
-   \ job,             \
-   \ bio,             \
-   \ available,       \
-   \ zip_code,        \
-   \ city,            \
-   \ country,         \
-   \ email,           \
-   \ homepage,        \
-   \ github_username, \
-   \ twitter_handle,  \
-   \ created_at       \
-   \ ) values         \
-   \ (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
+   \ id,                   \
+   \ name,                 \
+   \ url_fragment,         \
+   \ job,                  \
+   \ bio,                  \
+   \ available,            \
+   \ zip_code,             \
+   \ city,                 \
+   \ country,              \
+   \ email,                \
+   \ homepage,             \
+   \ signup_method,        \
+   \ github_oauth_login,   \
+   \ github_username,      \
+   \ github_avatar_url,    \
+   \ gravatar_id,          \
+   \ twitter_handle,       \
+   \ created_at            \
+   \ ) values              \
+   \ (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
 
 
 newProfile ::
@@ -80,20 +87,24 @@ newProfile ::
 newProfile dbConnection profile = do
   traceIO $ "newProfile " ++ show(profile)
   let
-    params = [ toSql $ Profile.id              profile
-             , toSql $ Profile.name            profile
-             , toSql $ Profile.urlFragment     profile
-             , toSql $ Profile.job             profile
-             , toSql $ Profile.bio             profile
-             , toSql $ Profile.available       profile
-             , toSql $ Profile.zipCode         profile
-             , toSql $ Profile.city            profile
-             , toSql $ Profile.country         profile
-             , toSql $ Profile.email           profile
-             , toSql $ Profile.homepage        profile
-             , toSql $ Profile.githubUsername  profile
-             , toSql $ Profile.twitterHandle   profile
-             , toSql $ Profile.createdAt       profile
+    params = [ toSql $ Profile.id               profile
+             , toSql $ Profile.name             profile
+             , toSql $ Profile.urlFragment      profile
+             , toSql $ Profile.job              profile
+             , toSql $ Profile.bio              profile
+             , toSql $ Profile.available        profile
+             , toSql $ Profile.zipCode          profile
+             , toSql $ Profile.city             profile
+             , toSql $ Profile.country          profile
+             , toSql $ Profile.email            profile
+             , toSql $ Profile.homepage         profile
+             , toSql $ Profile.signUpMethod     profile
+             , toSql $ Profile.gitHubOAuthLogin profile
+             , toSql $ Profile.gitHubUsername   profile
+             , toSql $ Profile.gitHubAvatarUrl  profile
+             , toSql $ Profile.gravatarId       profile
+             , toSql $ Profile.twitterHandle    profile
+             , toSql $ Profile.createdAt        profile
              ]
     stmt = getStatement ProfileInsert dbConnection
   rowsInserted <- execute stmt params
@@ -107,22 +118,26 @@ prepareFetchById ::
   -> IO Statement
 prepareFetchById connection =
   prepare connection
-    "SELECT            \
-    \ id,              \
-    \ name,            \
-    \ url_fragment,    \
-    \ job,             \
-    \ bio,             \
-    \ available,       \
-    \ zip_code,        \
-    \ city,            \
-    \ country,         \
-    \ email,           \
-    \ homepage,        \
-    \ github_username, \
-    \ twitter_handle,  \
-    \ created_at       \
-    \ FROM profiles    \
+    "SELECT               \
+    \ id,                 \
+    \ name,               \
+    \ url_fragment,       \
+    \ job,                \
+    \ bio,                \
+    \ available,          \
+    \ zip_code,           \
+    \ city,               \
+    \ country,            \
+    \ email,              \
+    \ homepage,           \
+    \ signup_method,      \
+    \ github_oauth_login, \
+    \ github_username,    \
+    \ github_avatar_url,  \
+    \ gravatar_id,        \
+    \ twitter_handle,     \
+    \ created_at          \
+    \ FROM profiles       \
     \ WHERE id = ?"
 
 
@@ -140,27 +155,74 @@ profileById dbConnection profileId = do
   return $ Profile.fromRow row
 
 
+prepareFetchByGitHubLogin ::
+  IConnection connection =>
+  connection
+  -> IO Statement
+prepareFetchByGitHubLogin connection =
+  prepare connection
+    "SELECT               \
+    \ id,                 \
+    \ name,               \
+    \ url_fragment,       \
+    \ job,                \
+    \ bio,                \
+    \ available,          \
+    \ zip_code,           \
+    \ city,               \
+    \ country,            \
+    \ email,              \
+    \ homepage,           \
+    \ signup_method,      \
+    \ github_oauth_login, \
+    \ github_username,    \
+    \ github_avatar_url,  \
+    \ gravatar_id,        \
+    \ twitter_handle,     \
+    \ created_at          \
+    \ FROM profiles       \
+    \ WHERE github_oauth_login = ?"
+
+
+profileByGitHubLogin ::
+  DbConnection connection
+  -> String
+  -> IO (Maybe Profile)
+profileByGitHubLogin dbConnection gitHubLogin = do
+  traceIO $ "profileByGitHubLogin " ++ (show gitHubLogin)
+  let
+    stmt = getStatement ProfileFetchByGitHubLogin dbConnection
+    params = [ toSql gitHubLogin ]
+  _ <- execute stmt params
+  row <- fetchRow stmt
+  return $ Profile.fromRow row
+
+
 prepareFetchAllProfiles ::
   IConnection connection =>
   connection
   -> IO Statement
 prepareFetchAllProfiles connection =
   prepare connection
-    "SELECT            \
-    \ id,              \
-    \ name,            \
-    \ url_fragment,    \
-    \ job,             \
-    \ bio,             \
-    \ available,       \
-    \ zip_code,        \
-    \ city,            \
-    \ country,         \
-    \ email,           \
-    \ homepage,        \
-    \ github_username, \
-    \ twitter_handle,  \
-    \ created_at       \
+    "SELECT               \
+    \ id,                 \
+    \ name,               \
+    \ url_fragment,       \
+    \ job,                \
+    \ bio,                \
+    \ available,          \
+    \ zip_code,           \
+    \ city,               \
+    \ country,            \
+    \ email,              \
+    \ homepage,           \
+    \ signup_method,      \
+    \ github_oauth_login, \
+    \ github_username,    \
+    \ github_avatar_url,  \
+    \ gravatar_id,        \
+    \ twitter_handle,     \
+    \ created_at          \
     \ FROM profiles"
 
 
@@ -184,29 +246,32 @@ prepareUpdate ::
   -> IO Statement
 prepareUpdate connection =
   prepare connection
-    "UPDATE profiles SET  \
-    \ name            = ?,\
-    \ url_fragment    = ?,\
-    \ job             = ?,\
-    \ bio             = ?,\
-    \ available       = ?,\
-    \ zip_code        = ?,\
-    \ city            = ?,\
-    \ country         = ?,\
-    \ email           = ?,\
-    \ homepage        = ?,\
-    \ github_username = ?,\
-    \ twitter_handle  = ?\
-    \ WHERE id = ?"
+    "UPDATE profiles SET    \
+    \ name              = ?,\
+    \ url_fragment      = ?,\
+    \ job               = ?,\
+    \ bio               = ?,\
+    \ available         = ?,\
+    \ zip_code          = ?,\
+    \ city              = ?,\
+    \ country           = ?,\
+    \ email             = ?,\
+    \ homepage          = ?,\
+    \ github_username   = ?,\
+    \ github_avatar_url = ?,\
+    \ gravatar_id       = ?,\
+    \ twitter_handle    = ? \
+    \ WHERE id          = ?"
 
 
--- TODO Check if profile exists at all
+-- | Manual profile update from web form.
 updateProfile ::
   DbConnection connection
   -> UUID
   -> Profile
   -> IO ()
 updateProfile dbConnection profileId profile = do
+  -- TODO Check if profile exists at all
   traceIO $ "updateProfile " ++ (show profileId) ++ " " ++ (show profile)
   let
     stmt = getStatement ProfileUpdate dbConnection
@@ -220,7 +285,9 @@ updateProfile dbConnection profileId profile = do
              , toSql $ Profile.country         profile
              , toSql $ Profile.email           profile
              , toSql $ Profile.homepage        profile
-             , toSql $ Profile.githubUsername  profile
+             , toSql $ Profile.gitHubUsername  profile
+             , toSql $ Profile.gitHubAvatarUrl profile
+             , toSql $ Profile.gravatarId      profile
              , toSql $ Profile.twitterHandle   profile
              , toSql profileId
              ]

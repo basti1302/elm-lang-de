@@ -1,6 +1,6 @@
-module Developers.State exposing (init, initialModel, update, subscriptions)
+module Profiles.State exposing (init, initialModel, update, subscriptions)
 
-import Developers.Types exposing (..)
+import Profiles.Types exposing (..)
 
 
 initialModel : Model

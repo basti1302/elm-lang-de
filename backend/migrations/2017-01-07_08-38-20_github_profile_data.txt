@@ -1,0 +1,20 @@
+Description: Adds GitHub specific columns to the profiles table.
+Created: 2017-01-07 08:38:22.411548 UTC
+Depends: 2016-12-17_16-02-28_initial_schema
+Apply: |
+  TRUNCATE profiles;
+  ALTER TABLE profiles ADD COLUMN signup_method varchar NOT NULL;
+  -- github_oauth_login should be identical to github_username when user signed
+  -- up via GitHub OAuth, but github_oauth_login is not user editable, while
+  -- github_username is editable. Probably needs to be nullable when other sign
+  -- up methods are implemented.
+  ALTER TABLE profiles ADD COLUMN github_oauth_login varchar NOT NULL;
+  ALTER TABLE profiles ADD COLUMN github_avatar_url varchar;
+  ALTER TABLE profiles ADD COLUMN gravatar_id varchar;
+
+Revert: |
+  ALTER TABLE profiles DROP COLUMN signup_method;
+  ALTER TABLE profiles DROP COLUMN github_oauth_login;
+  ALTER TABLE profiles DROP COLUMN github_avatar_url;
+  ALTER TABLE profiles DROP COLUMN gravatar_id;
+

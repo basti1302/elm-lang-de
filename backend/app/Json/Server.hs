@@ -21,7 +21,7 @@ jsonServer appConfig dbConnection =
   let
     webConfig = Config.webConfig appConfig
     appBootstrapAPIHandler :: Server AppBootstrapAPI
-    appBootstrapAPIHandler = appBootstrapServer webConfig
+    appBootstrapAPIHandler = appBootstrapServer webConfig dbConnection
     profilesAPIHandler     :: Server ProfileAPI
     profilesAPIHandler     = profileServer dbConnection
   in

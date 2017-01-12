@@ -25,6 +25,7 @@ type StatementMap = Map StatementID Statement
 
 data StatementID =
     ProfileFetchById
+  | ProfileFetchByGitHubLogin
   | ProfileFetchAll
   | ProfileDelete
   | ProfileInsert

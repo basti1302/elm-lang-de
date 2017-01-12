@@ -28,7 +28,7 @@ need to follow the instructions given in .github-secret.template.
 
 During development you will probably want to have `bin/watch-all.sh` running all the time. It builds the back end and the front end and watches all relevant files for changes. If a back end source file changes, the back end is rebuild and restarted automatically. If a front end source file changes, the front end is rebuild and a browser reload is triggered.
 
-The webpack dev server runs on [`localhost:8080`](http://localhost:8080). Back end requests are proxied from localhost:8080/api to the back end by the webpack dev server. If for some reason you want to access the back end separately without relying on the webpack dev server proxy you can do so at [`localhost:8000`](http://localhost:8000).
+The webpack dev server runs on [`localhost:7000`](http://localhost:7000). Back end requests are proxied from localhost:7000/api to the back end by the webpack dev server. If for some reason you want to access the back end separately without relying on the webpack dev server proxy you can do so at [`localhost:8000`](http://localhost:8000).
 
 ### Other useful scripts and commands
 
@@ -40,7 +40,7 @@ The webpack dev server runs on [`localhost:8080`](http://localhost:8080). Back e
 * `bin/db-new-migration.sh`: Create a new dbmigrations file in backend/migrations.
 * `bin/db-upgrade.sh`: Executes all outstanding database migrations. You usually do not need this script, since the back end does the same on startup.
 
-The webpack dev server runs on [`localhost:8080`](http://localhost:8080)
+The webpack dev server runs on [`localhost:7000`](http://localhost:7000)
 
 ## Production
 

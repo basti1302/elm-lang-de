@@ -1,7 +1,7 @@
-module Developers.View exposing (view)
+module Profiles.View exposing (view)
 
 import Html exposing (..)
-import Developers.Types exposing (..)
+import Profiles.Types exposing (..)
 
 
 view : Model -> Html Msg

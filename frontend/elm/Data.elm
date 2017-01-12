@@ -1,8 +1,9 @@
 module Data exposing (loadAppBootstrap)
 
 import Http
-import Json.Decode
-import Json.Decode.Pipeline
+import Json.Decode exposing (..)
+import Json.Decode.Pipeline exposing (..)
+import Profiles.Data exposing (decodeProfile)
 import RemoteData
 import Types exposing (..)
 
@@ -14,7 +15,9 @@ loadAppBootstrap =
         |> Cmd.map AppBootstrapResponse
 
 
-decodeAppBootstrap : Json.Decode.Decoder AppBootstrapResource
+decodeAppBootstrap : Decoder AppBootstrapResource
 decodeAppBootstrap =
-    Json.Decode.Pipeline.decode AppBootstrapResource
-        |> Json.Decode.Pipeline.required "gitHubClientId" (Json.Decode.nullable Json.Decode.string)
+    decode AppBootstrapResource
+        |> required "signedIn" bool
+        |> optional "profile" (nullable decodeProfile) Nothing
+        |> required "gitHubClientId" (nullable string)

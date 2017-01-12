@@ -30,7 +30,7 @@ mainServer appConfig dbConnection =
     jsonAPIHandler :: Server JsonAPI
     jsonAPIHandler = jsonServer appConfig dbConnection
     oAuthAPIHandler :: Server OAuthAPI
-    oAuthAPIHandler = oAuthServer webConfig
+    oAuthAPIHandler = oAuthServer webConfig dbConnection
     staticHandler :: Server StaticFiles
     staticHandler = serveDirectory "frontend"
   in

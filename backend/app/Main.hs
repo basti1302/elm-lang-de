@@ -16,7 +16,7 @@ This preparation tasks include:
 module Main where
 
 import qualified API
--- import qualified Auth                     (accessTokenAuthContext)
+import qualified Auth                     (accessTokenAuthContext)
 import qualified Database.Migration       as Migration
 import           Database.StatementMap
 import qualified Profile.SQL              (prepareStatements)
@@ -138,9 +138,7 @@ app ::
   -> DbConnection connection
   -> Wai.Application
 app appConfig dbConnection =
-  Servant.serve API.proxyApi $ Server.mainServer appConfig dbConnection
-  -- TODO Implement sign up/sign in and auth
-  -- serveWithContext API.proxyApi
-  --   (Auth.accessTokenAuthContext dbConnection)
-  --   (Server.mainServer appConfig dbConnection)
+  Servant.serveWithContext API.proxyApi
+     (Auth.accessTokenAuthContext dbConnection)
+     (Server.mainServer appConfig dbConnection)
 

@@ -13,7 +13,7 @@ locationToMsg location =
 
 hashToPage : String -> Page
 hashToPage hash =
-    case Debug.log "hash" hash of
+    case hash of
         "" ->
             HomePage
 
@@ -21,7 +21,7 @@ hashToPage hash =
             EventsPage
 
         "#developers" ->
-            DevelopersPage
+            ProfilesPage
 
         _ ->
             NotFound
@@ -36,7 +36,7 @@ pageToHash page =
         EventsPage ->
             "#events"
 
-        DevelopersPage ->
+        ProfilesPage ->
             "#developers"
 
         NotFound ->

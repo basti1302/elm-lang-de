@@ -11,21 +11,23 @@ import           GHC.Generics
 
 
 data ProfileResponse = ProfileResponse
-  { id             :: UUID
-  , name           :: Text
-  , urlFragment    :: Text
-  , job            :: Text
-  , bio            :: Text
-  , available      :: Bool
-  , zipCode        :: Text
-  , city           :: Text
-  , country        :: Text
-  , email          :: Text
-  , homepage       :: Text
-  , githubUsername :: Text
-  , twitterHandle  :: Text
-  , createdAt      :: UTCTime
-  , messages       :: [Text]
+  { id              :: UUID
+  , name            :: Text
+  , urlFragment     :: Text
+  , job             :: Text
+  , bio             :: Text
+  , available       :: Bool
+  , zipCode         :: Text
+  , city            :: Text
+  , country         :: Text
+  , email           :: Text
+  , homepage        :: Text
+  , gitHubUsername  :: Text
+  , gitHubAvatarUrl :: Text
+  , gravatarId      :: Text
+  , twitterHandle   :: Text
+  , createdAt       :: UTCTime
+  , messages        :: [Text]
   } deriving (Eq, Show, Generic)
 
 

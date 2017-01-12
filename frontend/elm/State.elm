@@ -1,10 +1,10 @@
 module State exposing (init, update, subscriptions)
 
 import Data exposing (loadAppBootstrap)
-import Developers.State
 import Events.State
 import Homepage.State
 import Navigation exposing (Location, newUrl)
+import Profiles.State
 import RemoteData exposing (RemoteData(..))
 import Site exposing (pageToHash, hashToPage)
 import Types exposing (..)
@@ -12,10 +12,11 @@ import Types exposing (..)
 
 initialModel : Page -> Model
 initialModel page =
-    { page = page
+    { auth = NotSignedIn
+    , page = page
     , homepage = Homepage.State.initialModel
     , events = Events.State.initialModel
-    , developers = Developers.State.initialModel
+    , profiles = Profiles.State.initialModel
     , gitHubClientId = Nothing
     }
 
@@ -38,15 +39,29 @@ update msg model =
             ( model, newUrl <| pageToHash page )
 
         AppBootstrapResponse (Success appBootstrapResource) ->
-            ( { model
-                | gitHubClientId = appBootstrapResource.gitHubClientId
-              }
-            , Cmd.none
-            )
+            let
+                auth =
+                    case ( appBootstrapResource.signedIn, appBootstrapResource.profile ) of
+                        ( True, Just profile ) ->
+                            SignedIn profile
 
-        AppBootstrapResponse _ ->
+                        otherwise ->
+                            NotSignedIn
+            in
+                ( { model
+                    | auth = auth
+                    , gitHubClientId = appBootstrapResource.gitHubClientId
+                  }
+                , Cmd.none
+                )
+
+        AppBootstrapResponse err ->
             -- Ignore all other app bootstrap responses for now
-            ( model, Cmd.none )
+            let
+                _ =
+                    Debug.log "AppBootstrap request failed" err
+            in
+                ( model, Cmd.none )
 
         ChangePage page ->
             ( { model | page = page }, Cmd.none )
@@ -69,13 +84,13 @@ update msg model =
                 , Cmd.map EventsMsg cmd
                 )
 
-        DevelopersMsg developerMsg ->
+        ProfilesMsg profileMsg ->
             let
-                ( developersModel, cmd ) =
-                    Developers.State.update developerMsg model.developers
+                ( profilesModel, cmd ) =
+                    Profiles.State.update profileMsg model.profiles
             in
-                ( { model | developers = developersModel }
-                , Cmd.map DevelopersMsg cmd
+                ( { model | profiles = profilesModel }
+                , Cmd.map ProfilesMsg cmd
                 )
 
 
