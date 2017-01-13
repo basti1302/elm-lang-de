@@ -32,11 +32,12 @@ data DbConfig = DbConfig
 
 
 data WebConfig = WebConfig
-  { bindHost              :: Warp.HostPreference
-  , bindPort              :: Int
-  , gitHubClientId        :: Maybe String
-  , gitHubClientSecret    :: Maybe String
-  , secureCookiesDisabled :: Bool
+  { bindHost               :: Warp.HostPreference
+  , bindPort               :: Int
+  , gitHubClientId         :: Maybe String
+  , gitHubClientSecret     :: Maybe String
+  , gitHubOAuthRedirectUrl :: String
+  , secureCookiesDisabled  :: Bool
   } deriving (Eq, Show, Generic)
 
 
@@ -81,16 +82,19 @@ readWebConfig = do
   port                      <- lookupEnvIntWithDefault "PORT" 8000
   ghClientId                <- lookupEnvOptional       "GITHUB_CLIENT_ID"
   ghClientSecret            <- lookupEnvOptional       "GITHUB_CLIENT_SECRET"
+  ghRedirectUrl             <- lookupEnvWithDefault    "GITHUB_REDIRECT_URL"
+                               "https://elm-lang.de/oauth/github"
   secureCookiesDisabledFlag <- lookupFlag              "SECURE_COOKIES_DISABLED"
   let
-    hostPrefernce :: Warp.HostPreference
-    hostPrefernce = fromString hostString
+    hostPreference :: Warp.HostPreference
+    hostPreference = fromString hostString
     webCfg = WebConfig
-             { bindHost              = hostPrefernce
-             , bindPort              = port
-             , gitHubClientId        = ghClientId
-             , gitHubClientSecret    = ghClientSecret
-             , secureCookiesDisabled = secureCookiesDisabledFlag
+             { bindHost               = hostPreference
+             , bindPort               = port
+             , gitHubClientId         = ghClientId
+             , gitHubClientSecret     = ghClientSecret
+             , gitHubOAuthRedirectUrl = ghRedirectUrl
+             , secureCookiesDisabled  = secureCookiesDisabledFlag
              }
   unless (hasGitHubOAuthConfig webCfg)
     ( putStrLn

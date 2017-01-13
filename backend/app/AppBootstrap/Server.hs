@@ -10,6 +10,7 @@ import qualified AppBootstrap.Response      as AppBootstrapResponse
 import           Database.StatementMap
 import qualified OAuth.GitHub.Util
 import qualified Profile.Converter
+import           Profile.Model              (Profile)
 import qualified Util.Config                as Config
 
 import           Control.Monad.IO.Class     (liftIO)
@@ -39,12 +40,7 @@ get webConfig dbConnection cookieHeader = do
     accessToken = AccessToken.Util.readAccessTokenFromCookieHeader cookieHeader
   case accessToken of
     Nothing ->
-      return $
-        NotSignedIn
-             { AppBootstrapResponse.signedIn = False
-             , AppBootstrapResponse.gitHubClientId =
-                 Config.gitHubClientId webConfig
-             }
+      return $ notSignedIn webConfig
     Just token -> do
       eitherProfileOrError <-
         liftIO $
@@ -54,20 +50,31 @@ get webConfig dbConnection cookieHeader = do
           liftIO $
             putStrLn $
             "Error during GitHub OAuth sign in: " ++ (show err)
-          return $
-            NotSignedIn
-                 { AppBootstrapResponse.signedIn = False
-                 , AppBootstrapResponse.gitHubClientId =
-                     Config.gitHubClientId webConfig
-                 }
-        Right profile -> do
-          let
-            profileResponse = Profile.Converter.modelToResponse profile
-          return $
-            SignedIn
-                 { AppBootstrapResponse.signedIn = True
-                 , AppBootstrapResponse.profile = profileResponse
-                 , AppBootstrapResponse.gitHubClientId =
-                     Config.gitHubClientId webConfig
-                 }
+          return $ notSignedIn webConfig
+        Right profile ->
+          return $ signedIn webConfig profile
+
+
+notSignedIn :: Config.WebConfig -> AppBootstrapResponse
+notSignedIn webConfig =
+  NotSignedIn
+  { AppBootstrapResponse.signedIn = False
+  , AppBootstrapResponse.gitHubClientId = Config.gitHubClientId webConfig
+  , AppBootstrapResponse.gitHubOAuthRedirectUrl =
+      Config.gitHubOAuthRedirectUrl webConfig
+  }
+
+
+signedIn :: Config.WebConfig -> Profile -> AppBootstrapResponse
+signedIn webConfig profile =
+  let
+    profileResponse = Profile.Converter.modelToResponse profile
+  in
+    SignedIn
+    { AppBootstrapResponse.signedIn = True
+    , AppBootstrapResponse.profile = profileResponse
+    , AppBootstrapResponse.gitHubClientId = Config.gitHubClientId webConfig
+    , AppBootstrapResponse.gitHubOAuthRedirectUrl =
+        Config.gitHubOAuthRedirectUrl webConfig
+    }
 

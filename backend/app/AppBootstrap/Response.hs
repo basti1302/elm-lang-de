@@ -10,13 +10,15 @@ import           GHC.Generics
 
 data AppBootstrapResponse =
     NotSignedIn
-    { signedIn       :: Bool
-    , gitHubClientId :: Maybe String
+    { signedIn               :: Bool
+    , gitHubClientId         :: Maybe String
+    , gitHubOAuthRedirectUrl :: String
     }
     | SignedIn
-    { signedIn       :: Bool
-    , profile        :: ProfileResponse
-    , gitHubClientId :: Maybe String
+    { signedIn               :: Bool
+    , profile                :: ProfileResponse
+    , gitHubClientId         :: Maybe String
+    , gitHubOAuthRedirectUrl :: String
     }  deriving (Eq, Show, Generic)
 
 

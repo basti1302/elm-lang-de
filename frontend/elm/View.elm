@@ -7,6 +7,7 @@ import Html.Attributes exposing (..)
 import Homepage.View
 import Events.View
 import Profiles.View
+import RemoteData exposing (RemoteData(..))
 
 
 view : Model -> Html Msg
@@ -89,29 +90,21 @@ authentication model =
                     if String.isEmpty profile.gitHubAvatarUrl then
                         [ text profile.name ]
                     else
-                        [ img
-                            [ src profile.gitHubAvatarUrl
-                            , style
-                                [ ( "width", "40px" )
-                                , ( "border-radius", "20px" )
-                                , ( "border-radius", "20px" )
-                                , ( "vertical-align", "middle" )
-                                , ( "margin-right", "5px" )
-                                ]
-                            ]
-                            []
+                        [ img [ src profile.gitHubAvatarUrl ] []
                         , text profile.name
                         ]
             in
-                div [] profileComponents
+                div [ class "signed-in" ] profileComponents
 
         NotSignedIn ->
-            case model.gitHubClientId of
-                Just clientId ->
+            case model.gitHubOAuthConfig of
+                Success gitHubOAuthConfig ->
                     let
-                        -- TODO Fetch redirect URL from app bootstrap, too!
                         redirectUrl =
-                            "http://localhost:7000/oauth/github"
+                            gitHubOAuthConfig.redirectUrl
+
+                        clientId =
+                            gitHubOAuthConfig.clientId
 
                         gitHubUrl =
                             "https://github.com/login/oauth/authorize?client_id="

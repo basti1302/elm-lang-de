@@ -21,3 +21,4 @@ decodeAppBootstrap =
         |> required "signedIn" bool
         |> optional "profile" (nullable decodeProfile) Nothing
         |> required "gitHubClientId" (nullable string)
+        |> required "gitHubOAuthRedirectUrl" (string)

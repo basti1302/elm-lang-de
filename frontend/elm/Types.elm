@@ -3,7 +3,7 @@ module Types exposing (..)
 import Homepage.Types
 import Events.Types
 import Profiles.Types exposing (Profile)
-import RemoteData exposing (WebData)
+import RemoteData exposing (RemoteData, WebData)
 
 
 type Page
@@ -22,13 +22,19 @@ type Msg
     | Navigate Page
 
 
+type alias GitHubOAuthConfig =
+    { clientId : String
+    , redirectUrl : String
+    }
+
+
 type alias Model =
     { auth : AuthenticationState
     , page : Page
     , homepage : Homepage.Types.Model
     , events : Events.Types.Model
     , profiles : Profiles.Types.Model
-    , gitHubClientId : Maybe String
+    , gitHubOAuthConfig : RemoteData String GitHubOAuthConfig
     }
 
 
@@ -41,4 +47,5 @@ type alias AppBootstrapResource =
     { signedIn : Bool
     , profile : Maybe Profile
     , gitHubClientId : Maybe String
+    , gitHubOAuthRedirectUrl : String
     }

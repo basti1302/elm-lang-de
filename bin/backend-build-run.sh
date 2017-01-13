@@ -16,7 +16,10 @@ fi
 # Binding to host 127.0.0.1 prevents the macOS firewall from asking if it is
 # okay to accept incoming connections every time the app is recompiled and
 # restarted. On production, we use the default bind host.
-HOST=127.0.0.1 SECURE_COOKIES_DISABLED=true stack exec elm-lang-de
+HOST=127.0.0.1 \
+  SECURE_COOKIES_DISABLED=true \
+  GITHUB_REDIRECT_URL=http://localhost:7000/oauth/github \
+  stack exec elm-lang-de
 
 popd > /dev/null
 

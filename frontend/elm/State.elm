@@ -17,7 +17,7 @@ initialModel page =
     , homepage = Homepage.State.initialModel
     , events = Events.State.initialModel
     , profiles = Profiles.State.initialModel
-    , gitHubClientId = Nothing
+    , gitHubOAuthConfig = Loading
     }
 
 
@@ -47,10 +47,21 @@ update msg model =
 
                         otherwise ->
                             NotSignedIn
+
+                gitHubOAuthConfig =
+                    case appBootstrapResource.gitHubClientId of
+                        Just clientId ->
+                            Success
+                                { clientId = clientId
+                                , redirectUrl = appBootstrapResource.gitHubOAuthRedirectUrl
+                                }
+
+                        otherwise ->
+                            Failure "No client ID"
             in
                 ( { model
                     | auth = auth
-                    , gitHubClientId = appBootstrapResource.gitHubClientId
+                    , gitHubOAuthConfig = gitHubOAuthConfig
                   }
                 , Cmd.none
                 )
