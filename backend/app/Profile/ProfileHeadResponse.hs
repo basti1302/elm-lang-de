@@ -11,10 +11,14 @@ import           GHC.Generics
 
 
 data ProfileHeadResponse = ProfileHeadResponse
-  { id          :: UUID
-  , name        :: Text
-  , urlFragment :: Text
-  , createdAt   :: UTCTime
+  { id              :: UUID
+  , name            :: Text
+  , urlFragment     :: Text
+  , job             :: Text
+  , city            :: Text
+  , gitHubAvatarUrl :: Text
+  , gravatarId      :: Text
+  , createdAt       :: UTCTime
   } deriving (Eq, Show, Generic)
 
 

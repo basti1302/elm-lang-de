@@ -105,10 +105,14 @@ responseForBadRequest existingProfile messages request =
 modelToHead :: Profile -> ProfileHeadResponse
 modelToHead profile =
   ProfileHeadResponse
-  { ProfileHeadResponse.id             = Profile.id               profile
-  , ProfileHeadResponse.name           = Profile.name             profile
-  , ProfileHeadResponse.urlFragment    = fm $ Profile.urlFragment profile
-  , ProfileHeadResponse.createdAt      = Profile.createdAt        profile
+  { ProfileHeadResponse.id              = Profile.id                   profile
+  , ProfileHeadResponse.name            = Profile.name                 profile
+  , ProfileHeadResponse.urlFragment     = fm $ Profile.urlFragment     profile
+  , ProfileHeadResponse.job             = fm $ Profile.job             profile
+  , ProfileHeadResponse.city            = fm $ Profile.city            profile
+  , ProfileHeadResponse.gitHubAvatarUrl = fm $ Profile.gitHubAvatarUrl profile
+  , ProfileHeadResponse.gravatarId      = fm $ Profile.gravatarId      profile
+  , ProfileHeadResponse.createdAt       = Profile.createdAt            profile
   }
 
 

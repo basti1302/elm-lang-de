@@ -1,0 +1,30 @@
+.profiles
+
+  ul
+    display flex
+    flex-direction row
+    flex-wrap wrap
+    justify-content space-around
+    align-content flex-start
+    align-items flex-start
+    list-style-type none
+    padding 0
+    margin 0
+
+  li
+    width 15rem
+    height 15rem
+    display flex
+    flex-direction column
+    justify-content center
+    align-items center
+    border 1px solid $color-light-grey
+    border-radius .5rem
+    margin .3rem
+    background-color $color-very-light-grey
+    &:hover
+      background-color: $color-white
+
+  img.profil-pic
+    width 80px
+    margin-bottom 1rem

@@ -1,26 +1,29 @@
-module Profiles.State exposing (init, initialModel, update, subscriptions)
+module Profiles.State exposing (init, initialModel, update)
 
 import Profiles.Types exposing (..)
+import Profiles.Data exposing (loadProfiles)
+import RemoteData exposing (RemoteData(..))
+
+
+-- TODO Also load the list when the initial request is to #developers
 
 
 initialModel : Model
 initialModel =
-    { developers = []
+    { profiles = NotAsked
     }
 
 
-init : ( Model, Cmd Msg )
+init : Cmd Msg
 init =
-    ( initialModel, Cmd.none )
+    loadProfiles
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
+        ProfilesResponse data ->
+            ( { model | profiles = data }, Cmd.none )
+
         NoOp ->
             ( model, Cmd.none )
-
-
-subscriptions : Model -> Sub Msg
-subscriptions _ =
-    Sub.none

@@ -1,4 +1,4 @@
-module Events.State exposing (init, initialModel, update, subscriptions)
+module Events.State exposing (init, initialModel, update)
 
 import Events.Types exposing (..)
 
@@ -19,8 +19,3 @@ update msg model =
     case msg of
         NoOp ->
             ( model, Cmd.none )
-
-
-subscriptions : Model -> Sub Msg
-subscriptions _ =
-    Sub.none

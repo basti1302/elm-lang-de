@@ -38,33 +38,20 @@ update msg model =
             -- change the url, which then triggers ChangePage
             ( model, newUrl <| pageToHash page )
 
-        AppBootstrapResponse (Success appBootstrapResource) ->
+        ChangePage page ->
             let
-                auth =
-                    case ( appBootstrapResource.signedIn, appBootstrapResource.profile ) of
-                        ( True, Just profile ) ->
-                            SignedIn profile
+                cmd =
+                    case page of
+                        ProfilesPage ->
+                            Cmd.map ProfilesMsg Profiles.State.init
 
                         otherwise ->
-                            NotSignedIn
-
-                gitHubOAuthConfig =
-                    case appBootstrapResource.gitHubClientId of
-                        Just clientId ->
-                            Success
-                                { clientId = clientId
-                                , redirectUrl = appBootstrapResource.gitHubOAuthRedirectUrl
-                                }
-
-                        otherwise ->
-                            Failure "No client ID"
+                            Cmd.none
             in
-                ( { model
-                    | auth = auth
-                    , gitHubOAuthConfig = gitHubOAuthConfig
-                  }
-                , Cmd.none
-                )
+                ( { model | page = page }, cmd )
+
+        AppBootstrapResponse (Success appBootstrapResource) ->
+            processAppBootstrap model appBootstrapResource
 
         AppBootstrapResponse err ->
             -- Ignore all other app bootstrap responses for now
@@ -73,9 +60,6 @@ update msg model =
                     Debug.log "AppBootstrap request failed" err
             in
                 ( model, Cmd.none )
-
-        ChangePage page ->
-            ( { model | page = page }, Cmd.none )
 
         SignOutClick ->
             ( model, signOut )
@@ -109,6 +93,36 @@ update msg model =
                 ( { model | profiles = profilesModel }
                 , Cmd.map ProfilesMsg cmd
                 )
+
+
+processAppBootstrap : Model -> AppBootstrapResource -> ( Model, Cmd Msg )
+processAppBootstrap model appBootstrapResource =
+    let
+        auth =
+            case ( appBootstrapResource.signedIn, appBootstrapResource.profile ) of
+                ( True, Just profile ) ->
+                    SignedIn profile
+
+                otherwise ->
+                    NotSignedIn
+
+        gitHubOAuthConfig =
+            case appBootstrapResource.gitHubClientId of
+                Just clientId ->
+                    Success
+                        { clientId = clientId
+                        , redirectUrl = appBootstrapResource.gitHubOAuthRedirectUrl
+                        }
+
+                otherwise ->
+                    Failure "No client ID"
+    in
+        ( { model
+            | auth = auth
+            , gitHubOAuthConfig = gitHubOAuthConfig
+          }
+        , Cmd.none
+        )
 
 
 subscriptions : Model -> Sub Msg
