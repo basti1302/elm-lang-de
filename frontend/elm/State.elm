@@ -10,10 +10,10 @@ import Site exposing (pageToHash, hashToPage)
 import Types exposing (..)
 
 
-initialModel : Page -> Model
-initialModel page =
+initialModel : Model
+initialModel =
     { auth = NotSignedIn
-    , page = page
+    , page = HomePage
     , homepage = Homepage.State.initialModel
     , events = Events.State.initialModel
     , profiles = Profiles.State.initialModel
@@ -26,8 +26,17 @@ init location =
     let
         page =
             hashToPage location.hash
+
+        changePageMsg =
+            ChangePage page
+
+        -- Let the update function create Cmds as required, depending on the
+        -- initial view. For example, if the initial view is the Profiles page,
+        -- we need to load the profiles.
+        ( model, initialPageCmd ) =
+            update changePageMsg initialModel
     in
-        ( initialModel page, loadAppBootstrap )
+        model ! (loadAppBootstrap :: [ initialPageCmd ])
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )

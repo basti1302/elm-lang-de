@@ -5,9 +5,6 @@ import Profiles.Data exposing (loadProfiles)
 import RemoteData exposing (RemoteData(..))
 
 
--- TODO Also load the list when the initial request is to #developers
-
-
 initialModel : Model
 initialModel =
     { profiles = NotAsked
