@@ -1,4 +1,4 @@
-module Data exposing (loadAppBootstrap)
+module Data exposing (loadAppBootstrap, signOut)
 
 import Http
 import Json.Decode exposing (..)
@@ -22,3 +22,25 @@ decodeAppBootstrap =
         |> optional "profile" (nullable decodeProfile) Nothing
         |> required "gitHubClientId" (nullable string)
         |> required "gitHubOAuthRedirectUrl" (string)
+
+
+signOut : Cmd Msg
+signOut =
+    noContentRequest "/api/sign-out" "POST"
+        |> Http.send SignOutResponse
+
+
+noContentRequest :
+    String
+    -> String
+    -> Http.Request ()
+noContentRequest url verb =
+    Http.request
+        { method = verb
+        , headers = []
+        , url = url
+        , body = Http.emptyBody
+        , expect = Http.expectStringResponse (\_ -> Ok ())
+        , timeout = Nothing
+        , withCredentials = False
+        }

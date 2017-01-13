@@ -1,5 +1,6 @@
 module Types exposing (..)
 
+import Http
 import Homepage.Types
 import Events.Types
 import Profiles.Types exposing (Profile)
@@ -16,10 +17,12 @@ type Page
 type Msg
     = AppBootstrapResponse (WebData AppBootstrapResource)
     | ChangePage Page
-    | ProfilesMsg Profiles.Types.Msg
     | EventsMsg Events.Types.Msg
     | HomepageMsg Homepage.Types.Msg
     | Navigate Page
+    | ProfilesMsg Profiles.Types.Msg
+    | SignOutClick
+    | SignOutResponse (Result Http.Error ())
 
 
 type alias GitHubOAuthConfig =

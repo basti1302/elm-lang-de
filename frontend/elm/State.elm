@@ -1,6 +1,6 @@
 module State exposing (init, update, subscriptions)
 
-import Data exposing (loadAppBootstrap)
+import Data exposing (loadAppBootstrap, signOut)
 import Events.State
 import Homepage.State
 import Navigation exposing (Location, newUrl)
@@ -76,6 +76,12 @@ update msg model =
 
         ChangePage page ->
             ( { model | page = page }, Cmd.none )
+
+        SignOutClick ->
+            ( model, signOut )
+
+        SignOutResponse _ ->
+            ( { model | auth = NotSignedIn }, Cmd.none )
 
         HomepageMsg homeMsg ->
             let

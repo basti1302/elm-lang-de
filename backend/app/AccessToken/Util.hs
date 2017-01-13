@@ -2,6 +2,7 @@
 
 module AccessToken.Util
   ( accessTokenToCookie
+  , deleteAccessTokenCookie
   , readAccessTokenFromCookieHeader
   , readAccessTokenFromRequest
   ) where
@@ -17,6 +18,7 @@ import qualified Data.Text             as T
 import           Data.Time             (DiffTime, NominalDiffTime,
                                         UTCTime (UTCTime))
 import qualified Data.Time             as Time
+import           Data.Time.Clock.POSIX (posixSecondsToUTCTime)
 import           Network.Wai
 import qualified Web.Cookie            as Cookie
 
@@ -90,6 +92,30 @@ accessTokenToCookie webConfig accessToken = do
   return $ BSC8.unpack $ Data.ByteString.Lazy.toStrict cookieHeaderLazy
 
 
+deleteAccessTokenCookie ::
+  Config.WebConfig
+  -> String
+deleteAccessTokenCookie webConfig =
+  let
+    -- setting validUntil to 01.01.1970 effectively removes the cookie
+    validUntil = posixSecondsToUTCTime 0
+    cookie = Cookie.def
+             { Cookie.setCookieName     = BSC8.pack accessTokenCookieName
+             , Cookie.setCookieValue    = ""
+             , Cookie.setCookiePath     = Just "/"
+             , Cookie.setCookieSecure   =
+                 not $ Config.secureCookiesDisabled webConfig
+             , Cookie.setCookieSameSite = Just Cookie.sameSiteStrict
+             , Cookie.setCookieHttpOnly = True
+             , Cookie.setCookieExpires  = Just validUntil
+             }
+    cookieHeaderLazy = (Data.Binary.Builder.toLazyByteString .
+                    Cookie.renderSetCookie)
+                    cookie
+  in
+    BSC8.unpack $ Data.ByteString.Lazy.toStrict cookieHeaderLazy
+
+
 diffUTCTime :: UTCTime -> UTCTime -> DiffTime
 diffUTCTime (UTCTime daysA secondsA) (UTCTime daysB secondsB) =
    let
@@ -104,6 +130,4 @@ diffUTCTime (UTCTime daysA secondsA) (UTCTime daysB secondsB) =
      differenceInTimeOfDay = secondsB - secondsA
    in
      differenceInDaysConvertedToSecondsAsDiffTime + differenceInTimeOfDay
-
-
 

@@ -71,8 +71,15 @@ lookupIOUserByAccessToken ::
   -> IO (Either ServantErr Profile)
 lookupIOUserByAccessToken dbConnection token = do
   -- TODO
-  -- 1) Use token to fetch email/github id/some unique thing from github
-  -- 2) lookup the profile with this unique thing
+  -- Right now, this implementation is bogus as it tries to find the profile by
+  -- its GitHub login but actually just passes the access token instead of the
+  -- GitHub login. This implementation needs to be fixed/completed as soon as we
+  -- have the first resource that is protected by authorization. That would
+  -- be the page to edit your own profile.
+  -- 1) Exchange token for GitHub login by calling GitHub API
+  -- 2) Lookup the right profile for this login.
+  -- Most of this is already implemented in OAuth/GitHub/..., we just need to
+  -- plug it in here.
   maybeProfile <- Profile.SQL.profileByGitHubLogin dbConnection token
   case maybeProfile of
     Just profile -> return $ Right $ profile

@@ -6,6 +6,8 @@ import           Database.StatementMap
 import           Json.API              (JsonAPI)
 import           Profile.API           (ProfileAPI)
 import           Profile.Server        (profileServer)
+import           SignOut.API           (SignOutAPI)
+import           SignOut.Server        (signOutServer)
 import qualified Util.Config           as Config
 
 import           Database.HDBC         (IConnection)
@@ -24,7 +26,10 @@ jsonServer appConfig dbConnection =
     appBootstrapAPIHandler = appBootstrapServer webConfig dbConnection
     profilesAPIHandler     :: Server ProfileAPI
     profilesAPIHandler     = profileServer dbConnection
+    signOutAPIHandler :: Server SignOutAPI
+    signOutAPIHandler = signOutServer webConfig
   in
          appBootstrapAPIHandler
     :<|> profilesAPIHandler
+    :<|> signOutAPIHandler
 

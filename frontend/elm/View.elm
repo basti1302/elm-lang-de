@@ -7,6 +7,7 @@ import Html.Attributes exposing (..)
 import Homepage.View
 import Events.View
 import Profiles.View
+import Profiles.Types
 import RemoteData exposing (RemoteData(..))
 
 
@@ -78,45 +79,63 @@ navItem currentPage page title =
 
 authentication : Model -> Html Msg
 authentication model =
-    -- TODO Clean this up :)
-    -- TODO Replace this with properly styled "sign in with github" button that is
-    -- only displayed after we have received a client id. Something like the
-    -- log in pop up on angularjs.de would be nice.
-    -- TODO Sign out (requires backend call, deletes github-access-code cookie)
-    case model.auth of
-        SignedIn profile ->
+    -- TODO This compontent could use some more fancyness. Something like the
+    -- log in pop up on angularjs.de would be nice. For now, it will serve,
+    -- though.
+    let
+        signedInStatusComponent =
+            case model.auth of
+                SignedIn profile ->
+                    signedInView profile
+
+                NotSignedIn ->
+                    notSignedInView model
+    in
+        div [ class "signed-in-status" ] signedInStatusComponent
+
+
+signedInView : Profiles.Types.Profile -> List (Html Msg)
+signedInView profile =
+    let
+        nameComponent =
+            span [] [ text profile.name ]
+
+        profileComponents =
+            if String.isEmpty profile.gitHubAvatarUrl then
+                [ nameComponent ]
+            else
+                [ img [ src profile.gitHubAvatarUrl ] []
+                , nameComponent
+                ]
+
+        signOut =
+            button [ onClick SignOutClick ] [ text "Abmelden" ]
+    in
+        profileComponents ++ [ signOut ]
+
+
+notSignedInView : Model -> List (Html Msg)
+notSignedInView model =
+    case model.gitHubOAuthConfig of
+        Success gitHubOAuthConfig ->
             let
-                profileComponents =
-                    if String.isEmpty profile.gitHubAvatarUrl then
-                        [ text profile.name ]
-                    else
-                        [ img [ src profile.gitHubAvatarUrl ] []
-                        , text profile.name
-                        ]
+                redirectUrl =
+                    gitHubOAuthConfig.redirectUrl
+
+                clientId =
+                    gitHubOAuthConfig.clientId
+
+                gitHubUrl =
+                    "https://github.com/login/oauth/authorize?client_id="
+                        ++ clientId
+                        ++ "&redirect_uri="
+                        ++ redirectUrl
             in
-                div [ class "signed-in" ] profileComponents
+                [ a
+                    [ href gitHubUrl
+                    ]
+                    [ text "Mit GitHub anmelden" ]
+                ]
 
-        NotSignedIn ->
-            case model.gitHubOAuthConfig of
-                Success gitHubOAuthConfig ->
-                    let
-                        redirectUrl =
-                            gitHubOAuthConfig.redirectUrl
-
-                        clientId =
-                            gitHubOAuthConfig.clientId
-
-                        gitHubUrl =
-                            "https://github.com/login/oauth/authorize?client_id="
-                                ++ clientId
-                                ++ "&redirect_uri="
-                                ++ redirectUrl
-                    in
-                        a
-                            [ class "nav__item"
-                            , href gitHubUrl
-                            ]
-                            [ text "Mit GitHub anmelden" ]
-
-                otherwise ->
-                    text "..."
+        otherwise ->
+            [ span [] [ text "..." ] ]

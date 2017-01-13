@@ -84,6 +84,8 @@ executable elm-lang-de
                      , Profile.SQL
                      , Profile.Server
                      , Server
+                     , SignOut.API
+                     , SignOut.Server
                      , Util.Config
                      , Util.Validation
   default-language:    Haskell2010
