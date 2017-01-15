@@ -1,4 +1,9 @@
-module Profiles.Data exposing (decodeProfile, loadProfiles)
+module Profiles.Data
+    exposing
+        ( decodeProfile
+        , loadProfileList
+        , loadProfileDetails
+        )
 
 import Http
 import Json.Decode exposing (..)
@@ -7,12 +12,12 @@ import Profiles.Types exposing (..)
 import RemoteData
 
 
-loadProfiles : Cmd Msg
-loadProfiles =
+loadProfileList : Cmd Msg
+loadProfileList =
     -- TODO Server side pagination!
     Http.get "/api/profiles" decodeProfiles
         |> RemoteData.sendRequest
-        |> Cmd.map ProfilesResponse
+        |> Cmd.map ProfileListResponse
 
 
 decodeProfiles : Decoder (List ProfileHead)
@@ -31,6 +36,13 @@ decodeProfileHead =
         |> optional "gitHubAvatarUrl" string ""
         |> optional "gravatarId" string ""
         |> optional "createdAt" string ""
+
+
+loadProfileDetails : String -> Cmd Msg
+loadProfileDetails urlFragment =
+    Http.get ("/api/profiles/" ++ urlFragment) decodeProfile
+        |> RemoteData.sendRequest
+        |> Cmd.map ProfileDetailsResponse
 
 
 decodeProfile : Decoder Profile

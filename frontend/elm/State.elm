@@ -5,8 +5,9 @@ import Events.State
 import Homepage.State
 import Navigation exposing (Location, newUrl)
 import Profiles.State
+import Profiles.Types
 import RemoteData exposing (RemoteData(..))
-import Site exposing (pageToHash, hashToPage)
+import Routes exposing (pageToHash, hashToPage)
 import Types exposing (..)
 
 
@@ -49,15 +50,23 @@ update msg model =
 
         ChangePage page ->
             let
-                cmd =
+                ( updatedModel, cmd ) =
                     case page of
-                        ProfilesPage ->
-                            Cmd.map ProfilesMsg Profiles.State.init
+                        -- TODO Right now, the profile list is loaded *every*
+                        -- time the user clicks on a link that leads to an URL
+                        -- like "#developers.*". Do we want that?
+                        ProfilesPage subPage ->
+                            let
+                                subMsg =
+                                    Profiles.Types.ChangePage subPage
+                                        |> ProfilesMsg
+                            in
+                                update subMsg model
 
                         otherwise ->
-                            Cmd.none
+                            ( model, Cmd.none )
             in
-                ( { model | page = page }, cmd )
+                ( { updatedModel | page = page }, cmd )
 
         AppBootstrapResponse (Success appBootstrapResource) ->
             processAppBootstrap model appBootstrapResource

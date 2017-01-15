@@ -24,7 +24,7 @@ view model =
                     Html.map EventsMsg
                         (Events.View.view model.events)
 
-                ProfilesPage ->
+                ProfilesPage _ ->
                     Html.map ProfilesMsg
                         (Profiles.View.view model.profiles)
 
@@ -56,7 +56,7 @@ pageHeader model =
                 [ class "nav" ]
                 [ navLink HomePage "Elm"
                 , navLink EventsPage "Termine"
-                , navLink ProfilesPage "Entwickler"
+                , navLink (ProfilesPage Profiles.Types.ListPage) "Entwickler"
                 , authentication model
                 ]
             ]
@@ -64,6 +64,9 @@ pageHeader model =
 
 navItem : Page -> Page -> String -> Html Msg
 navItem currentPage page title =
+    -- TODO Shouldn't navItem produce simple links with the proper #anchor as
+    -- href? We might be able to drop the Navigate messages and Routes#pageToHash
+    -- completely.
     let
         classes =
             [ ( "nav__item", True )

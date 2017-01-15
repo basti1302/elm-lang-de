@@ -3,20 +3,20 @@ Created: 2016-12-17 16:02:30.06681 UTC
 Depends:
 Apply: |
   CREATE TABLE IF NOT EXISTS profiles (
-    id              uuid primary key,
-    name            varchar not null,
-    url_fragment    varchar,
-    job             varchar,
-    bio             varchar,
-    available       boolean not null default false,
-    zip_code        varchar,
-    city            varchar,
-    country         varchar,
-    email           varchar,
-    homepage        varchar,
-    github_username varchar,
-    twitter_handle  varchar,
-    created_at      timestamp with time zone
+    id              UUID PRIMARY KEY,
+    name            VARCHAR NOT NULL,
+    url_fragment    VARCHAR UNIQUE,
+    job             VARCHAR,
+    bio             VARCHAR,
+    available       BOOLEAN NOT NULL DEFAULT FALSE,
+    zip_code        VARCHAR,
+    city            VARCHAR,
+    country         VARCHAR,
+    email           VARCHAR,
+    homepage        VARCHAR,
+    github_username VARCHAR,
+    twitter_handle  VARCHAR,
+    created_at      TIMESTAMP WITH TIME ZONE
   );
 
 Revert: |

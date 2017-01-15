@@ -25,7 +25,6 @@ import qualified Data.Aeson                  as JSON (encode)
 import           Data.Maybe                  (catMaybes, listToMaybe)
 import           Data.Text                   (Text)
 import qualified Data.Text                   as T
-import           Data.UUID                   (UUID)
 import qualified Data.UUID                   as UUID
 import           Database.HDBC               (IConnection)
 import           Servant
@@ -63,12 +62,12 @@ fetchAllProfiles dbConnection = do
 getProfile ::
   IConnection connection =>
   DbConnection connection
-  -> UUID
+  -> Text
   -> ExceptT ServantErr IO ProfileResponse
-getProfile dbConnection profileId = do
+getProfile dbConnection profileUrlFragment = do
   result <- liftIO $
             withTransaction dbConnection $ \transactedConnection ->
-              fetchOneProfile transactedConnection profileId
+              fetchOneProfile transactedConnection profileUrlFragment
   case result of
     Right profile -> return profile
     Left err      -> throwE err
@@ -76,10 +75,10 @@ getProfile dbConnection profileId = do
 
 fetchOneProfile ::
   DbConnection connection
-  -> UUID
+  -> Text
   -> IO (Either ServantErr ProfileResponse)
-fetchOneProfile dbConnection profileId = do
-  maybeProfile <- SQL.profileById dbConnection profileId
+fetchOneProfile dbConnection profileUrlFragment = do
+  maybeProfile <- SQL.profileByUrlFragment dbConnection profileUrlFragment
   case maybeProfile of
     Just profile ->
       return $
@@ -90,14 +89,14 @@ fetchOneProfile dbConnection profileId = do
 putProfile ::
   IConnection connection =>
   DbConnection connection
-  -> UUID
+  -> Text
   -> ProfileRequest
   -> ExceptT ServantErr IO ProfileResponse
-putProfile dbConnection profileId profileRequest = do
+putProfile dbConnection profileUrlFragment profileRequest = do
   result <- liftIO $ withTransaction dbConnection $ \transactedConnection ->
     updateProfile
       transactedConnection
-      profileId
+      profileUrlFragment
       profileRequest
   case result of
     Left  err      -> throwE err
@@ -106,11 +105,11 @@ putProfile dbConnection profileId profileRequest = do
 
 updateProfile ::
   DbConnection connection
-  -> UUID
+  -> Text
   -> ProfileRequest
   -> IO (Either ServantErr ProfileResponse)
-updateProfile dbConnection profileId profileRequest = do
-  maybeProfile <- SQL.profileById dbConnection profileId
+updateProfile dbConnection profileUrlFragment profileRequest = do
+  maybeProfile <- SQL.profileByUrlFragment dbConnection profileUrlFragment
   case maybeProfile of
     Nothing      ->
       return $ Left $ err404
@@ -132,9 +131,9 @@ updateProfile dbConnection profileId profileRequest = do
             profileUpdate =
               ProfileConverter.requestToModel
                 existingProfile validatedProfileRequest
-          SQL.updateProfile dbConnection profileId profileUpdate
+          SQL.updateProfile dbConnection profileUrlFragment profileUpdate
           -- TODO Handle Nothing
-          Just updatedProfile <- SQL.profileById dbConnection profileId
+          Just updatedProfile <- SQL.profileByUrlFragment dbConnection profileUrlFragment
           return $
             Right $ ProfileConverter.modelToResponse updatedProfile
 
@@ -142,11 +141,11 @@ updateProfile dbConnection profileId profileRequest = do
 deleteProfile ::
   IConnection connection =>
   DbConnection connection
-  -> UUID
+  -> Text
   -> ExceptT ServantErr IO NoContent
-deleteProfile dbConnection profileId = do
+deleteProfile dbConnection profileUrlFragment = do
   liftIO $ withTransaction dbConnection $ \transactedConnection ->
-    SQL.deleteProfile transactedConnection profileId
+    SQL.deleteProfile transactedConnection profileUrlFragment
   return NoContent
 
 

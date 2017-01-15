@@ -24,10 +24,11 @@ type StatementMap = Map StatementID Statement
 
 
 data StatementID =
-    ProfileFetchById
-  | ProfileFetchByGitHubLogin
+    ProfileDelete
   | ProfileFetchAll
-  | ProfileDelete
+  | ProfileFetchByGitHubLogin
+  | ProfileFetchById
+  | ProfileFetchByUrlFragment
   | ProfileInsert
   | ProfileUpdate
   | ProfileUrlFragmentUnique

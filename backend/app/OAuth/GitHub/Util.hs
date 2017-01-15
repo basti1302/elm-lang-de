@@ -64,7 +64,7 @@ loadOrCreateProfile dbConnection userResponse = do
   let
     gitHubLogin = GitHub.login userResponse
   maybeProfile <-
-    Profile.SQL.profileByGitHubLogin dbConnection (T.unpack gitHubLogin)
+    Profile.SQL.profileByGitHubLogin dbConnection gitHubLogin
   case maybeProfile of
     Just existingProfile -> do
       return $ Right existingProfile

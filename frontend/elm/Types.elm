@@ -10,7 +10,7 @@ import RemoteData exposing (RemoteData, WebData)
 type Page
     = HomePage
     | EventsPage
-    | ProfilesPage
+    | ProfilesPage Profiles.Types.Page
     | NotFound
 
 

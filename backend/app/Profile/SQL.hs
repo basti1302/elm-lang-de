@@ -1,3 +1,5 @@
+{-# LANGUAGE FlexibleContexts      #-}
+{-# LANGUAGE MultiParamTypeClasses #-}
 module Profile.SQL
   ( allProfiles
   , checkUrlFragmentUnique
@@ -6,6 +8,7 @@ module Profile.SQL
   , prepareStatements
   , profileByGitHubLogin
   , profileById
+  , profileByUrlFragment
   , updateProfile
   ) where
 
@@ -14,12 +17,14 @@ import           Database.UUIDConversion ()
 import           Profile.Model           (Profile)
 import qualified Profile.Model           as Profile
 
+import           Data.Convertible.Base   (Convertible)
 import qualified Data.Map.Strict         as Map
 import           Data.Maybe
 import           Data.Text               (Text)
 import           Data.UUID               (UUID)
-import           Database.HDBC           (IConnection, execute, fetchAllRows,
-                                          fetchRow, prepare, toSql)
+import           Database.HDBC           (IConnection, SqlValue, execute,
+                                          fetchAllRows, fetchRow, prepare,
+                                          toSql)
 import           Database.HDBC.Statement (Statement)
 import           Debug.Trace             (traceIO)
 
@@ -33,6 +38,7 @@ prepareStatements dbConnection = do
      cn = conn dbConnection
    fetchAll          <- prepareFetchAllProfiles       cn
    byId              <- prepareFetchById              cn
+   byUrlFragment     <- prepareFetchByUrlFragment     cn
    byGitHubLogin     <- prepareFetchByGitHubLogin     cn
    insert            <- prepareInsert                 cn
    delete            <- prepareDelete                 cn
@@ -40,6 +46,7 @@ prepareStatements dbConnection = do
    fragmentUrlUnique <- prepareCheckUrlFragmentUnique cn
    let
      statements = ( Map.insert ProfileFetchById          byId
+                  $ Map.insert ProfileFetchByUrlFragment byUrlFragment
                   $ Map.insert ProfileFetchByGitHubLogin byGitHubLogin
                   $ Map.insert ProfileFetchAll           fetchAll
                   $ Map.insert ProfileDelete             delete
@@ -112,12 +119,8 @@ newProfile dbConnection profile = do
   return ()
 
 
-prepareFetchById ::
-  IConnection connection =>
-  connection
-  -> IO Statement
-prepareFetchById connection =
-  prepare connection
+selectAll :: String
+selectAll =
     "SELECT               \
     \ id,                 \
     \ name,               \
@@ -137,8 +140,15 @@ prepareFetchById connection =
     \ gravatar_id,        \
     \ twitter_handle,     \
     \ created_at          \
-    \ FROM profiles       \
-    \ WHERE id = ?"
+    \ FROM profiles "
+
+
+prepareFetchById ::
+  IConnection connection =>
+  connection
+  -> IO Statement
+prepareFetchById connection =
+  prepare connection $ selectAll ++ " WHERE id = ?"
 
 
 profileById ::
@@ -147,12 +157,24 @@ profileById ::
   -> IO (Maybe Profile)
 profileById dbConnection profileId = do
   traceIO $ "profileById " ++ (show profileId)
-  let
-    stmt = getStatement ProfileFetchById dbConnection
-    params = [ toSql profileId ]
-  _ <- execute stmt params
-  row <- fetchRow stmt
-  return $ Profile.fromRow row
+  profileByColumn dbConnection ProfileFetchById profileId
+
+
+prepareFetchByUrlFragment ::
+  IConnection connection =>
+  connection
+  -> IO Statement
+prepareFetchByUrlFragment connection =
+  prepare connection $ selectAll ++ " WHERE url_fragment = ?"
+
+
+profileByUrlFragment ::
+  DbConnection connection
+  -> Text
+  -> IO (Maybe Profile)
+profileByUrlFragment dbConnection urlFragment = do
+  traceIO $ "profileByUrlFragment " ++ (show urlFragment)
+  profileByColumn dbConnection ProfileFetchByUrlFragment urlFragment
 
 
 prepareFetchByGitHubLogin ::
@@ -160,39 +182,28 @@ prepareFetchByGitHubLogin ::
   connection
   -> IO Statement
 prepareFetchByGitHubLogin connection =
-  prepare connection
-    "SELECT               \
-    \ id,                 \
-    \ name,               \
-    \ url_fragment,       \
-    \ job,                \
-    \ bio,                \
-    \ available,          \
-    \ zip_code,           \
-    \ city,               \
-    \ country,            \
-    \ email,              \
-    \ homepage,           \
-    \ signup_method,      \
-    \ github_oauth_login, \
-    \ github_username,    \
-    \ github_avatar_url,  \
-    \ gravatar_id,        \
-    \ twitter_handle,     \
-    \ created_at          \
-    \ FROM profiles       \
-    \ WHERE github_oauth_login = ?"
+  prepare connection $ selectAll ++ " WHERE github_oauth_login = ?"
 
 
 profileByGitHubLogin ::
   DbConnection connection
-  -> String
+  -> Text
   -> IO (Maybe Profile)
 profileByGitHubLogin dbConnection gitHubLogin = do
   traceIO $ "profileByGitHubLogin " ++ (show gitHubLogin)
+  profileByColumn dbConnection ProfileFetchByGitHubLogin gitHubLogin
+
+
+profileByColumn ::
+  Convertible sqlValue SqlValue =>
+  DbConnection connection
+  -> StatementID
+  -> sqlValue
+  -> IO (Maybe Profile)
+profileByColumn dbConnection statementId key = do
   let
-    stmt = getStatement ProfileFetchByGitHubLogin dbConnection
-    params = [ toSql gitHubLogin ]
+    stmt = getStatement statementId dbConnection
+    params = [ toSql key ]
   _ <- execute stmt params
   row <- fetchRow stmt
   return $ Profile.fromRow row
@@ -203,27 +214,7 @@ prepareFetchAllProfiles ::
   connection
   -> IO Statement
 prepareFetchAllProfiles connection =
-  prepare connection
-    "SELECT               \
-    \ id,                 \
-    \ name,               \
-    \ url_fragment,       \
-    \ job,                \
-    \ bio,                \
-    \ available,          \
-    \ zip_code,           \
-    \ city,               \
-    \ country,            \
-    \ email,              \
-    \ homepage,           \
-    \ signup_method,      \
-    \ github_oauth_login, \
-    \ github_username,    \
-    \ github_avatar_url,  \
-    \ gravatar_id,        \
-    \ twitter_handle,     \
-    \ created_at          \
-    \ FROM profiles"
+  prepare connection $ selectAll ++ " ORDER BY created_at DESC"
 
 
 allProfiles ::
@@ -267,7 +258,7 @@ prepareUpdate connection =
 -- | Manual profile update from web form.
 updateProfile ::
   DbConnection connection
-  -> UUID
+  -> Text
   -> Profile
   -> IO ()
 updateProfile dbConnection profileId profile = do
@@ -306,7 +297,7 @@ prepareDelete connection =
 
 deleteProfile ::
   DbConnection connection
-  -> UUID
+  -> Text
   -> IO ()
 deleteProfile dbConnection profileId = do
   traceIO $ "deleteProfile " ++ (show profileId)

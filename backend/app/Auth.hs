@@ -15,6 +15,7 @@ import           Database.StatementMap
 import           Profile.Model                    (Profile)
 import qualified Profile.SQL
 
+import qualified Data.Text                        as T
 import           Network.Wai
 import           Servant                          (ServantErr, throwError)
 import           Servant.API.Experimental.Auth    (AuthProtect)
@@ -80,7 +81,7 @@ lookupIOUserByAccessToken dbConnection token = do
   -- 2) Lookup the right profile for this login.
   -- Most of this is already implemented in OAuth/GitHub/..., we just need to
   -- plug it in here.
-  maybeProfile <- Profile.SQL.profileByGitHubLogin dbConnection token
+  maybeProfile <- Profile.SQL.profileByGitHubLogin dbConnection (T.pack token)
   case maybeProfile of
     Just profile -> return $ Right $ profile
     Nothing      -> return $ Left $ err403 { errBody = "Invalid access token" }

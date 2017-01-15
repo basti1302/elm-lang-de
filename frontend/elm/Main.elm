@@ -3,7 +3,7 @@ module Main exposing (..)
 import Types exposing (Model, Msg)
 import State exposing (init, update, subscriptions)
 import View exposing (view)
-import Site exposing (locationToMsg)
+import Routes exposing (locationToMsg)
 import Navigation
 
 

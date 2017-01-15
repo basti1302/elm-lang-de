@@ -3,8 +3,16 @@ module Profiles.Types exposing (..)
 import RemoteData exposing (WebData)
 
 
+type Page
+    = ListPage
+    | DetailsPage {- urlFragment -} String
+
+
 type alias Model =
-    { profiles : WebData (List ProfileHead) }
+    { page : Page
+    , profiles : WebData (List ProfileHead)
+    , currentProfile : Maybe Profile
+    }
 
 
 {-| A reduced view on a developer profile, intended to be used on the page
@@ -43,5 +51,6 @@ type alias Profile =
 
 
 type Msg
-    = NoOp
-    | ProfilesResponse (WebData (List ProfileHead))
+    = ChangePage Page
+    | ProfileDetailsResponse (WebData Profile)
+    | ProfileListResponse (WebData (List ProfileHead))
