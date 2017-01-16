@@ -2,6 +2,7 @@ module Types exposing (..)
 
 import Http
 import Homepage.Types
+import EditProfile.Types
 import Events.Types
 import Profiles.Types exposing (Profile)
 import RemoteData exposing (RemoteData, WebData)
@@ -10,6 +11,7 @@ import RemoteData exposing (RemoteData, WebData)
 type Page
     = HomePage
     | EventsPage
+    | EditProfilePage
     | ProfilesPage Profiles.Types.Page
     | NotFound
 
@@ -17,6 +19,7 @@ type Page
 type Msg
     = AppBootstrapResponse (WebData AppBootstrapResource)
     | ChangePage Page
+    | EditProfileMsg EditProfile.Types.Msg
     | EventsMsg Events.Types.Msg
     | HomepageMsg Homepage.Types.Msg
     | Navigate Page

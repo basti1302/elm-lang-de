@@ -22,6 +22,8 @@ hashToPage hash =
         String.dropLeft (String.length "#developers") hash
             |> Profiles.Routes.hashToPage
             |> ProfilesPage
+    else if String.startsWith "#editprofile" hash then
+        EditProfilePage
     else
         NotFound
 
@@ -34,6 +36,9 @@ pageToHash page =
 
         EventsPage ->
             "#events"
+
+        EditProfilePage ->
+            "#editprofile"
 
         ProfilesPage _ ->
             "#developers"

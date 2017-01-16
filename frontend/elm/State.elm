@@ -1,6 +1,7 @@
 module State exposing (init, update, subscriptions)
 
 import Data exposing (loadAppBootstrap, signOut)
+import EditProfile.State
 import Events.State
 import Homepage.State
 import Navigation exposing (Location, newUrl)
@@ -102,6 +103,25 @@ update msg model =
                 ( { model | events = eventsModel }
                 , Cmd.map EventsMsg cmd
                 )
+
+        EditProfileMsg editProfileMsg ->
+            case model.auth of
+                NotSignedIn ->
+                    -- Ignore bogus profile edits when not signed in
+                    ( model, Cmd.none )
+
+                SignedIn profile ->
+                    let
+                        ( editProfileModel, cmd ) =
+                            EditProfile.State.update editProfileMsg
+                                { profile = profile }
+
+                        updatedAuth =
+                            SignedIn editProfileModel.profile
+                    in
+                        ( { model | auth = updatedAuth }
+                        , Cmd.map EditProfileMsg cmd
+                        )
 
         ProfilesMsg profileMsg ->
             let

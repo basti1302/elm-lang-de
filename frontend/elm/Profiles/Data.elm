@@ -1,13 +1,16 @@
 module Profiles.Data
     exposing
         ( decodeProfile
+        , encodeProfile
         , loadProfileList
         , loadProfileDetails
         )
 
 import Http
-import Json.Decode exposing (..)
-import Json.Decode.Pipeline exposing (..)
+import Json.Decode as Decode
+import Json.Decode exposing (Decoder)
+import Json.Decode.Pipeline as Pipeline
+import Json.Encode as Encode
 import Profiles.Types exposing (..)
 import RemoteData
 
@@ -22,20 +25,20 @@ loadProfileList =
 
 decodeProfiles : Decoder (List ProfileHead)
 decodeProfiles =
-    list decodeProfileHead
+    Decode.list decodeProfileHead
 
 
 decodeProfileHead : Decoder ProfileHead
 decodeProfileHead =
-    decode ProfileHead
-        |> required "id" string
-        |> required "name" string
-        |> optional "urlFragment" string ""
-        |> optional "job" string ""
-        |> optional "city" string ""
-        |> optional "gitHubAvatarUrl" string ""
-        |> optional "gravatarId" string ""
-        |> optional "createdAt" string ""
+    Pipeline.decode ProfileHead
+        |> Pipeline.required "id" Decode.string
+        |> Pipeline.required "name" Decode.string
+        |> Pipeline.optional "urlFragment" Decode.string ""
+        |> Pipeline.optional "job" Decode.string ""
+        |> Pipeline.optional "city" Decode.string ""
+        |> Pipeline.optional "gitHubAvatarUrl" Decode.string ""
+        |> Pipeline.optional "gravatarId" Decode.string ""
+        |> Pipeline.optional "createdAt" Decode.string ""
 
 
 loadProfileDetails : String -> Cmd Msg
@@ -47,20 +50,39 @@ loadProfileDetails urlFragment =
 
 decodeProfile : Decoder Profile
 decodeProfile =
-    decode Profile
-        |> required "id" string
-        |> required "name" string
-        |> optional "urlFragment" string ""
-        |> optional "job" string ""
-        |> optional "bio" string ""
-        |> optional "available" bool False
-        |> optional "zipCode" string ""
-        |> optional "city" string ""
-        |> optional "country" string ""
-        |> optional "email" string ""
-        |> optional "homepage" string ""
-        |> optional "gitHubUsername" string ""
-        |> optional "gitHubAvatarUrl" string ""
-        |> optional "gravatarId" string ""
-        |> optional "twitterHandle" string ""
-        |> optional "createdAt" string ""
+    Pipeline.decode Profile
+        |> Pipeline.required "id" Decode.string
+        |> Pipeline.required "name" Decode.string
+        |> Pipeline.optional "urlFragment" Decode.string ""
+        |> Pipeline.optional "job" Decode.string ""
+        |> Pipeline.optional "bio" Decode.string ""
+        |> Pipeline.optional "available" Decode.bool False
+        |> Pipeline.optional "zipCode" Decode.string ""
+        |> Pipeline.optional "city" Decode.string ""
+        |> Pipeline.optional "country" Decode.string ""
+        |> Pipeline.optional "email" Decode.string ""
+        |> Pipeline.optional "homepage" Decode.string ""
+        |> Pipeline.optional "gitHubUsername" Decode.string ""
+        |> Pipeline.optional "gitHubAvatarUrl" Decode.string ""
+        |> Pipeline.optional "gravatarId" Decode.string ""
+        |> Pipeline.optional "twitterHandle" Decode.string ""
+        |> Pipeline.optional "createdAt" Decode.string ""
+
+
+encodeProfile : Profile -> Encode.Value
+encodeProfile record =
+    Encode.object
+        [ ( "name", Encode.string <| record.name )
+        , ( "urlFragment", Encode.string <| record.urlFragment )
+        , ( "job", Encode.string <| record.job )
+        , ( "bio", Encode.string <| record.bio )
+        , ( "available", Encode.bool <| record.available )
+        , ( "zipCode", Encode.string <| record.zipCode )
+        , ( "city", Encode.string <| record.city )
+        , ( "country", Encode.string <| record.country )
+        , ( "email", Encode.string <| record.email )
+        , ( "homepage", Encode.string <| record.homepage )
+        , ( "gitHubUsername", Encode.string <| record.gitHubUsername )
+        , ( "gravatarId", Encode.string <| record.gravatarId )
+        , ( "twitterHandle", Encode.string <| record.twitterHandle )
+        ]

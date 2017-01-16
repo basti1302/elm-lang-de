@@ -6,6 +6,7 @@ import Json.Decode.Pipeline exposing (..)
 import Profiles.Data exposing (decodeProfile)
 import RemoteData
 import Types exposing (..)
+import Util.HttpHelper as HttpHelper
 
 
 loadAppBootstrap : Cmd Msg
@@ -26,21 +27,5 @@ decodeAppBootstrap =
 
 signOut : Cmd Msg
 signOut =
-    noContentRequest "/api/sign-out" "POST"
+    HttpHelper.noContentRequest "/api/sign-out" "POST"
         |> Http.send SignOutResponse
-
-
-noContentRequest :
-    String
-    -> String
-    -> Http.Request ()
-noContentRequest url verb =
-    Http.request
-        { method = verb
-        , headers = []
-        , url = url
-        , body = Http.emptyBody
-        , expect = Http.expectStringResponse (\_ -> Ok ())
-        , timeout = Nothing
-        , withCredentials = False
-        }

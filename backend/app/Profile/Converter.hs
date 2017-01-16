@@ -43,7 +43,7 @@ requestToModel existingProfile request =
   , Profile.signUpMethod      = Profile.signUpMethod            existingProfile
   , Profile.gitHubOAuthLogin  = Profile.gitHubOAuthLogin        existingProfile
   , Profile.gitHubUsername    = ProfileRequest.gitHubUsername   request
-  , Profile.gitHubAvatarUrl   = ProfileRequest.gitHubAvatarUrl  request
+  , Profile.gitHubAvatarUrl   = Profile.gitHubAvatarUrl         existingProfile
   , Profile.gravatarId        = ProfileRequest.gravatarId       request
   , Profile.twitterHandle     = ProfileRequest.twitterHandle    request
   , Profile.createdAt         = Profile.createdAt               existingProfile
@@ -94,7 +94,7 @@ responseForBadRequest existingProfile messages request =
   , ProfileResponse.homepage        = fm $ ProfileRequest.homepage       request
   , ProfileResponse.gitHubUsername  = fm $ ProfileRequest.gitHubUsername request
   , ProfileResponse.gitHubAvatarUrl =
-      fm $ ProfileRequest.gitHubAvatarUrl request
+      fm $ Profile.gitHubAvatarUrl existingProfile
   , ProfileResponse.gravatarId      = fm $ ProfileRequest.gravatarId     request
   , ProfileResponse.twitterHandle   = fm $ ProfileRequest.twitterHandle  request
   , ProfileResponse.createdAt       = Profile.createdAt existingProfile

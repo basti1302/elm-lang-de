@@ -5,6 +5,7 @@ import Html exposing (..)
 import Html.Events exposing (onClick)
 import Html.Attributes exposing (..)
 import Homepage.View
+import EditProfile.View
 import Events.View
 import Profiles.View
 import Profiles.Types
@@ -24,12 +25,21 @@ view model =
                     Html.map EventsMsg
                         (Events.View.view model.events)
 
+                EditProfilePage ->
+                    case model.auth of
+                        NotSignedIn ->
+                            notFound
+
+                        SignedIn profile ->
+                            Html.map EditProfileMsg
+                                (EditProfile.View.view { profile = profile })
+
                 ProfilesPage _ ->
                     Html.map ProfilesMsg
                         (Profiles.View.view model.profiles)
 
                 NotFound ->
-                    div [] [ text "404" ]
+                    notFound
     in
         div
             [ class "overall" ]
@@ -38,6 +48,11 @@ view model =
                 [ class "main" ]
                 [ pageContent ]
             ]
+
+
+notFound : Html Msg
+notFound =
+    div [] [ text "404" ]
 
 
 
@@ -89,7 +104,7 @@ authentication model =
         signedInStatusComponent =
             case model.auth of
                 SignedIn profile ->
-                    signedInView profile
+                    signedInView model profile
 
                 NotSignedIn ->
                     notSignedInView model
@@ -97,8 +112,8 @@ authentication model =
         div [ class "signed-in-status" ] signedInStatusComponent
 
 
-signedInView : Profiles.Types.Profile -> List (Html Msg)
-signedInView profile =
+signedInView : Model -> Profiles.Types.Profile -> List (Html Msg)
+signedInView model profile =
     let
         nameComponent =
             span [] [ text profile.name ]
@@ -113,8 +128,11 @@ signedInView profile =
 
         signOut =
             button [ onClick SignOutClick ] [ text "Abmelden" ]
+
+        editMyProfile =
+            navItem model.page EditProfilePage "Mein Profil"
     in
-        profileComponents ++ [ signOut ]
+        profileComponents ++ [ signOut, editMyProfile ]
 
 
 notSignedInView : Model -> List (Html Msg)

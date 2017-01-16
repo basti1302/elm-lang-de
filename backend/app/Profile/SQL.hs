@@ -258,7 +258,7 @@ prepareUpdate connection =
 -- | Manual profile update from web form.
 updateProfile ::
   DbConnection connection
-  -> Text
+  -> UUID
   -> Profile
   -> IO ()
 updateProfile dbConnection profileId profile = do
@@ -297,7 +297,7 @@ prepareDelete connection =
 
 deleteProfile ::
   DbConnection connection
-  -> Text
+  -> UUID
   -> IO ()
 deleteProfile dbConnection profileId = do
   traceIO $ "deleteProfile " ++ (show profileId)

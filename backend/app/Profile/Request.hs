@@ -11,20 +11,19 @@ import           GHC.Generics
 
 
 data ProfileRequest = ProfileRequest
-  { name            :: Maybe Text
-  , urlFragment     :: Maybe Text
-  , job             :: Maybe Text
-  , bio             :: Maybe Text
-  , available       :: Maybe Bool
-  , zipCode         :: Maybe Text
-  , city            :: Maybe Text
-  , country         :: Maybe Text
-  , email           :: Maybe Text
-  , homepage        :: Maybe Text
-  , gitHubUsername  :: Maybe Text
-  , gitHubAvatarUrl :: Maybe Text
-  , gravatarId      :: Maybe Text
-  , twitterHandle   :: Maybe Text
+  { name           :: Maybe Text
+  , urlFragment    :: Maybe Text
+  , job            :: Maybe Text
+  , bio            :: Maybe Text
+  , available      :: Maybe Bool
+  , zipCode        :: Maybe Text
+  , city           :: Maybe Text
+  , country        :: Maybe Text
+  , email          :: Maybe Text
+  , homepage       :: Maybe Text
+  , gitHubUsername :: Maybe Text
+  , gravatarId     :: Maybe Text
+  , twitterHandle  :: Maybe Text
   } deriving (Eq, Show, Generic)
 
 
