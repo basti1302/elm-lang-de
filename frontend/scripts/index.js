@@ -1,5 +1,6 @@
 'use strict';
 
+require('!style!css!spectre.css/dist/spectre.min.css');
 require('../styles/main.styl');
 require('../styles/header.styl');
 require('../styles/profiles.styl');

@@ -12,7 +12,7 @@
     color $color-dark-blue
     text-decoration none
     font-size $font-size-head
-    padding 1rem
+    padding $space-normal
     transition all .25s ease-out
     cursor pointer
 
@@ -26,7 +26,7 @@
       padding $space-small $space-small $space-small $space-large
       background-image url('/svgs/elm-logo-mono.svg')
       background-repeat no-repeat
-      background-size 2.25rem
+      background-size 3.6rem
       background-position 0 45%
       font-size $font-size-huge
       color $color-white
@@ -36,25 +36,24 @@
     margin-left $space-small
 
 .signed-in-status
-  margin-left: 10rem
+  margin-left: 16rem
 
   img
-    width: 40px
-    border-radius: 20px
-    border-radius: 20px
+    width: 4rem
+    border-radius: 2rem
+    border-radius: 2rem
     vertical-align: middle
-    margin-right: .3rem
+    margin-right: $space-small
 
   span
-    margin-right: .7rem
+    margin-right: $space-normal
     color: $color-dark-blue
 
   a, button
     text-decoration: none
-    font-size: 1rem
-    padding: .5rem
-    border-radius: .3rem
+    font-size: $font-size-base
+    padding: $space-small
+    border-radius: $space-tiny
     border: none
     background-color: $color-light-grey
     color: $color-dark-blue
-
