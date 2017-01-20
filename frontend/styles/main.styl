@@ -6,8 +6,24 @@ body
   @media $mq-L_and_up
     font-size 1.6rem
 
+.btn.btn-primary
+  background $color-dark-blueish-grey
+  border-color $color-dark-blueish-grey
+
+.btn
+  border-color $color-dark-blueish-grey
+
+.tab .tab-item a.active,
+.tab .tab-item.active a
+    color $color-dark-blueish-grey
+    border-bottom-color $color-dark-blueish-grey
+
+.tab .tab-item a:focus,
+.tab .tab-item a:hover
+    color $color-dark-blueish-grey-2
+
 a
-  color $color-dark-blue
+  color $color-dark-blueish-grey
 
 .wrap
   @extend $wrapped
