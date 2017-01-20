@@ -12,6 +12,7 @@ import Json.Decode exposing (Decoder)
 import Json.Decode.Pipeline as Pipeline
 import Json.Encode as Encode
 import Profiles.Types exposing (..)
+import Regex exposing (HowMany(All))
 import RemoteData
 
 
@@ -66,7 +67,29 @@ decodeProfile =
         |> Pipeline.optional "gitHubAvatarUrl" Decode.string ""
         |> Pipeline.optional "gravatarId" Decode.string ""
         |> Pipeline.optional "twitterHandle" Decode.string ""
-        |> Pipeline.optional "createdAt" Decode.string ""
+        |> Pipeline.optional "createdAt" decodeDate ""
+
+
+decodeDate : Decoder String
+decodeDate =
+    Decode.map convertDate Decode.string
+
+
+convertDate : String -> String
+convertDate =
+    let
+        formatDate { submatches } =
+            case submatches of
+                (Just year) :: ((Just month) :: ((Just day) :: _)) ->
+                    String.join "." [ day, month, year ]
+
+                otherwise ->
+                    ""
+    in
+        Regex.replace
+            All
+            (Regex.regex "(\\d\\d\\d\\d)-(\\d\\d)-(\\d\\d).*")
+            formatDate
 
 
 encodeProfile : Profile -> Encode.Value

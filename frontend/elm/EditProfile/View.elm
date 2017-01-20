@@ -25,7 +25,7 @@ view model =
             [ profilePic
             , textInputWithLabel "Name" profile.name Name
             , textInputWithLabel "Was machst du beruflich?" profile.job Job
-            , textInputWithLabel "Über mich" profile.bio Bio
+            , textAreaWithHeadline "Über mich" profile.bio Bio
             , textInputWithLabel "Stadt" profile.city City
             , textInputWithLabel "Land" profile.country Country
             , textInputWithLabel "E-Mail (nicht öffentlich sichtbar)" profile.email EMail
@@ -42,12 +42,29 @@ view model =
 
 textInputWithLabel : String -> String -> (String -> Msg) -> Html Msg
 textInputWithLabel labelString val msg =
-    div [ class "row" ]
+    div []
         [ label [ for labelString ] [ text labelString ]
         , input
             [ id labelString
             , name labelString
             , type_ "text"
+            , value val
+            , onInput msg
+            ]
+            []
+        ]
+
+
+textAreaWithHeadline : String -> String -> (String -> Msg) -> Html Msg
+textAreaWithHeadline labelString val msg =
+    div []
+        [ label [ for labelString ] [ text labelString ]
+        , br [] []
+        , text "(Markdown kann zur Formatierung verwendet werden.)"
+        , br [] []
+        , textarea
+            [ id labelString
+            , name labelString
             , value val
             , onInput msg
             ]

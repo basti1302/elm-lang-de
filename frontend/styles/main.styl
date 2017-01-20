@@ -1,7 +1,5 @@
 body
-  @media $mq-up_to_S
-    font-size 1.3rem
-  @media $mq-S_to_M
+  @media $mq-up_to_M
     font-size 1.4rem
   @media $mq-M_to_L
     font-size 1.5rem
@@ -18,3 +16,8 @@ a
   @extend $wrapped
   padding-top $space-large
   padding-bottom $space-large
+
+// fix for spectre.css nested grid columns padding bug. Apply to ".column" div
+// if it has ".columns" elements as direct children.
+.column.has-nested-columns
+  padding 0

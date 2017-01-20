@@ -32,37 +32,33 @@
     border-radius $space-small
     margin-bottom 1rem
 
+.profile-pic-and-bio
+    display flex
+    flex-direction column
+    justify-content flex-start
+    align-items center
+    padding-right 2rem
 
 .profile-details
     display flex
     flex-direction column
-    justify-content center
-    align-items center
+    justify-content flex-start
+    align-items flex-start
+
+    a
+      text-decoration none
+
+    .green-icon .fa
+      color $color-green
+
+    @media $mq-S_and_up
+      padding-left 3rem
+      border-left 1px solid $color-light-grey
+
+  .profile-biography
+    margin-top 2rem
 
   img.profil-pic
     width 20rem
     border-radius 1rem
     margin-bottom 2rem
-
-  & > div.row
-    width 20rem
-    margin .5rem
-    position relative
-    left 10rem
-
-  & > div.row > span
-    width 100%
-    display inline-block
-    text-align left
-
-  & > div.row > label+span
-    width calc(100% - 10rem)
-    position relative
-    left -10rem
-
-  label
-    display inline-block
-    width 10rem
-    position relative
-    left -10rem
-    text-align left

@@ -2,6 +2,7 @@ module Profiles.View exposing (view)
 
 import Html exposing (..)
 import Html.Attributes exposing (..)
+import Markdown
 import Profiles.Types exposing (..)
 import RemoteData exposing (RemoteData(..))
 
@@ -58,7 +59,30 @@ renderProfileInList profile =
 
 detailsView : Profile -> Html Msg
 detailsView profile =
-    -- TODO We need way more fancyness here!
+    div
+        [ class "container" ]
+        [ div
+            [ class "columns" ]
+            [ profilePicAndBio
+                (class
+                    ("column col-sm-12 col-md-6 col-lg-7 col-8 "
+                        ++ "profile-pic-and-bio"
+                    )
+                )
+                profile
+            , profileDetails
+                (class
+                    ("column col-sm-12 col-md-6 col-lg-5 col-4 "
+                        ++ "table table-striped table-hover profile-details"
+                    )
+                )
+                profile
+            ]
+        ]
+
+
+profilePicAndBio : Attribute Msg -> Profile -> Html Msg
+profilePicAndBio classes profile =
     let
         profilePicSrc =
             getProfilePicSrc profile 200
@@ -66,49 +90,76 @@ detailsView profile =
         profilePic =
             img [ src profilePicSrc, class "profil-pic" ] []
 
-        -- TODO Use fontawesome for Twitter, GitHub, job, homepage etc.
-        -- TODO Show when user has joined.
+        parts =
+            [ profilePic
+            , h4 [] [ text profile.name ]
+            , biography profile
+            ]
+    in
+        div [ classes ] parts
+
+
+profileDetails : Attribute Msg -> Profile -> Html Msg
+profileDetails classes profile =
+    let
         potentialParts =
-            [ Just profilePic
-            , optionalPartWithoutLabel profile.name
-            , optionalPartWithoutLabel profile.job
-            , optionalPartWithoutLabel profile.bio
+            [ -- "industry" or "suitcase"?
+              profileTextRow "suitcase" profile.job
             , cityAndCountry profile
-              -- profile.email
-            , optionalPartWithLabel "Homepage" profile.homepage
-            , optionalPartWithLabel "GitHub" profile.gitHubUsername
-            , optionalPartWithLabel "Twitter" profile.twitterHandle
-              -- profile.available (Bool)
-              -- profile.createdAt
+            , profileLinkRow "link" profile.homepage profile.homepage
+            , profileLinkRow
+                "github"
+                ("https://github.com/" ++ profile.gitHubUsername)
+                profile.gitHubUsername
+            , profileLinkRow
+                "twitter"
+                ("https://twitter.com/" ++ profile.twitterHandle)
+                profile.twitterHandle
+            , availability profile
+            , joined profile
             ]
 
         actualParts =
             List.filterMap identity potentialParts
     in
-        div [ class "profile-details" ] actualParts
+        table [ classes ] [ tbody [] actualParts ]
 
 
-optionalPartWithoutLabel : String -> Maybe (Html Msg)
-optionalPartWithoutLabel value =
+profileTextRow : String -> String -> Maybe (Html Msg)
+profileTextRow faIconName =
+    profileTextRowExtra faIconName []
+
+
+profileTextRowExtra : String -> List String -> String -> Maybe (Html Msg)
+profileTextRowExtra faIconName extraClasses value =
     if String.isEmpty value then
         Nothing
     else
         Just <|
-            div [ class "row" ]
-                [ span [] [ text value ]
+            tr [ String.join " " extraClasses |> class ]
+                [ td [] [ span [ faClass faIconName ] [] ]
+                , td [] [ text value ]
                 ]
 
 
-optionalPartWithLabel : String -> String -> Maybe (Html Msg)
-optionalPartWithLabel labelString value =
-    if String.isEmpty value then
-        Nothing
-    else
-        Just <|
-            div [ class "row" ]
-                [ label [ for labelString ] [ text labelString ]
-                , span [ id labelString ] [ text value ]
-                ]
+profileLinkRow : String -> String -> String -> Maybe (Html Msg)
+profileLinkRow faIconName url value =
+    let
+        hrefAttr =
+            href url
+    in
+        if String.isEmpty value then
+            Nothing
+        else
+            Just <|
+                tr []
+                    [ td []
+                        [ a
+                            [ faClass faIconName, hrefAttr ]
+                            []
+                        ]
+                    , td [] [ a [ hrefAttr ] [ text value ] ]
+                    ]
 
 
 cityAndCountry : Profile -> Maybe (Html Msg)
@@ -127,7 +178,30 @@ cityAndCountry profile =
                     ++ profile.country
                     ++ ")"
     in
-        optionalPartWithoutLabel string
+        profileTextRow "globe" string
+
+
+availability : Profile -> Maybe (Html Msg)
+availability profile =
+    if profile.available then
+        profileTextRowExtra "check" [ "green-icon" ] "für Projekte verfügbar"
+    else
+        Nothing
+
+
+joined : Profile -> Maybe (Html Msg)
+joined profile =
+    if not (String.isEmpty profile.createdAt) then
+        "Dabei seit "
+            ++ profile.createdAt
+            |> profileTextRow "calendar-check-o"
+    else
+        Nothing
+
+
+faClass : String -> Attribute Msg
+faClass faIconName =
+    class ("fa fa-lg fa-" ++ faIconName)
 
 
 getProfilePicSrc :
@@ -144,3 +218,15 @@ getProfilePicSrc profile gravatarPreferredSize =
         profile.gitHubAvatarUrl
     else
         "/svgs/elm-logo-mono.svg"
+
+
+biography : Profile -> Html Msg
+biography profile =
+    let
+        biography =
+            if (not (String.isEmpty profile.bio)) then
+                profile.bio
+            else
+                "Für dieses Profil wurde leider noch keine Biographie hinzugefügt  :'‑("
+    in
+        p [ class "profile-biography" ] [ Markdown.toHtml [] biography ]

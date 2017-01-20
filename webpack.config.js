@@ -26,6 +26,14 @@ var commonConfig = {
   module: {
     noParse: /\.elm$/,
     loaders: [
+      // This loader is required for font-awesome to properly load font files
+      // referenced in font-awesome's css files. These are referenced like this
+      // font-awesome/fonts/fontawesome-webfont.eot?v=4.7.0
+      // and we need to stript the "?v=4.7.0" from the end.
+      {
+        test: /\.(woff2|woff|ttf|eot|svg)(\?v=[a-z0-9]\.[a-z0-9]\.[a-z0-9])?$/,
+        loader: 'url-loader?limit=100000'
+      },
       {
         test: /\.(woff|woff2|svg)$/,
         loader: 'file-loader',
