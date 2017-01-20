@@ -1,9 +1,16 @@
-module EditProfile.State exposing (update)
+module EditProfile.State exposing (initialModel, update)
 
 import EditProfile.Data exposing (updateProfile)
 import EditProfile.Types exposing (..)
 import Profiles.Types exposing (Profile)
 import RemoteData exposing (RemoteData(..))
+
+
+initialModel : Profile -> Model
+initialModel profile =
+    { profile = profile
+    , showBiographyPreview = False
+    }
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -36,6 +43,15 @@ update msg model =
         TwitterHandle handle ->
             updateInProfile model setTwitterHandle handle
 
+        Available available ->
+            updateBooleanInProfile model setAvailable available
+
+        SwitchToBiographyEdit ->
+            ( { model | showBiographyPreview = False }, Cmd.none )
+
+        SwitchToBiographyPreview ->
+            ( { model | showBiographyPreview = True }, Cmd.none )
+
         UpdateProfile ->
             ( model, updateProfile model.profile )
 
@@ -56,6 +72,18 @@ update msg model =
 
 updateInProfile : Model -> (Profile -> String -> Profile) -> String -> ( Model, Cmd Msg )
 updateInProfile model updateFn newValue =
+    let
+        profile =
+            model.profile
+
+        updatedProfile =
+            updateFn profile newValue
+    in
+        ( { model | profile = updatedProfile }, Cmd.none )
+
+
+updateBooleanInProfile : Model -> (Profile -> Bool -> Profile) -> Bool -> ( Model, Cmd Msg )
+updateBooleanInProfile model updateFn newValue =
     let
         profile =
             model.profile
@@ -109,3 +137,8 @@ setGitHubUsername profile gitHubUsername =
 setTwitterHandle : Profile -> String -> Profile
 setTwitterHandle profile twitterHandle =
     { profile | twitterHandle = twitterHandle }
+
+
+setAvailable : Profile -> Bool -> Profile
+setAvailable profile available =
+    { profile | available = available }

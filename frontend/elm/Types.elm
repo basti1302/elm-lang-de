@@ -44,8 +44,14 @@ type alias Model =
     }
 
 
+type alias SignedInModel =
+    { profile : Profiles.Types.Profile
+    , editProfileModel : EditProfile.Types.Model
+    }
+
+
 type AuthenticationState
-    = SignedIn Profiles.Types.Profile
+    = SignedIn SignedInModel
     | NotSignedIn
 
 

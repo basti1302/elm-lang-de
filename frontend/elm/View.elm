@@ -18,25 +18,26 @@ view model =
         pageContent =
             case model.page of
                 HomePage ->
-                    Html.map HomepageMsg
-                        (Homepage.View.view model.homepage)
+                    Homepage.View.view model.homepage
+                        |> Html.map HomepageMsg
 
                 EventsPage ->
-                    Html.map EventsMsg
-                        (Events.View.view model.events)
+                    Events.View.view model.events
+                        |> Html.map EventsMsg
 
                 EditProfilePage ->
                     case model.auth of
                         NotSignedIn ->
-                            notFound
+                            blankPage
 
-                        SignedIn profile ->
-                            Html.map EditProfileMsg
-                                (EditProfile.View.view { profile = profile })
+                        SignedIn signedInModel ->
+                            EditProfile.View.view
+                                signedInModel.editProfileModel
+                                |> Html.map EditProfileMsg
 
                 ProfilesPage _ ->
-                    Html.map ProfilesMsg
-                        (Profiles.View.view model.profiles)
+                    Profiles.View.view model.profiles
+                        |> Html.map ProfilesMsg
 
                 NotFound ->
                     notFound
@@ -53,6 +54,11 @@ view model =
 notFound : Html Msg
 notFound =
     div [] [ text "404" ]
+
+
+blankPage : Html Msg
+blankPage =
+    div [] []
 
 
 
@@ -103,8 +109,8 @@ authentication model =
     let
         signedInStatusComponent =
             case model.auth of
-                SignedIn profile ->
-                    signedInView model profile
+                SignedIn signedInModel ->
+                    signedInView model signedInModel.profile
 
                 NotSignedIn ->
                     notSignedInView model

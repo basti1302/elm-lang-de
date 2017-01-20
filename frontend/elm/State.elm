@@ -110,14 +110,16 @@ update msg model =
                     -- Ignore bogus profile edits when not signed in
                     ( model, Cmd.none )
 
-                SignedIn profile ->
+                SignedIn signedInModel ->
                     let
-                        ( editProfileModel, cmd ) =
-                            EditProfile.State.update editProfileMsg
-                                { profile = profile }
+                        ( updatedEditProfileModel, cmd ) =
+                            EditProfile.State.update editProfileMsg signedInModel.editProfileModel
 
                         updatedAuth =
-                            SignedIn editProfileModel.profile
+                            SignedIn
+                                { profile = updatedEditProfileModel.profile
+                                , editProfileModel = updatedEditProfileModel
+                                }
                     in
                         ( { model | auth = updatedAuth }
                         , Cmd.map EditProfileMsg cmd
@@ -139,7 +141,10 @@ processAppBootstrap model appBootstrapResource =
         auth =
             case ( appBootstrapResource.signedIn, appBootstrapResource.profile ) of
                 ( True, Just profile ) ->
-                    SignedIn profile
+                    SignedIn
+                        { profile = profile
+                        , editProfileModel = EditProfile.State.initialModel profile
+                        }
 
                 otherwise ->
                     NotSignedIn

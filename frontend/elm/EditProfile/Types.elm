@@ -5,7 +5,9 @@ import Profiles.Types exposing (Profile)
 
 
 type alias Model =
-    { profile : Profile }
+    { profile : Profile
+    , showBiographyPreview : Bool
+    }
 
 
 type Msg
@@ -18,5 +20,8 @@ type Msg
     | HomePage String
     | GitHubUsername String
     | TwitterHandle String
+    | Available Bool
+    | SwitchToBiographyEdit
+    | SwitchToBiographyPreview
     | UpdateProfile
     | UpdateProfileResponse (WebData Profile)
