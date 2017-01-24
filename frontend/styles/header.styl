@@ -1,4 +1,9 @@
+$header-height = 8rem
+$footer-line-height = 2rem
+$footer-height = 2 * $footer-line-height
+
 .header
+  height $header-height
   background $color-light-blue
   color $color-white
   text-align center
@@ -106,3 +111,33 @@ $profile-popup-menu-width = 14rem
 
   .sign-out
     border-top 1px solid $color-light-grey
+
+
+// push footer to bottom of page, if there is not enough content
+.main
+   min-height "calc(100vh - %s - %s - 3px)" % ($header-height $footer-height)
+
+.footer
+  width 100vw
+  height $footer-height
+  background-color $color-very-light-grey
+
+.footer-line
+  line-height $footer-line-height
+  font-size ($footer-line-height / 1.5)
+  text-align center
+  padding-left .5rem
+  padding-right .5rem
+  white-space nowrap
+
+  &:last-child
+    border-top 1px solid $color-light-grey
+
+  a
+    color $color-dark-blueish-grey
+    text-decoration none
+    font-family "Helvetica Narrow","Arial Narrow",Tahoma,Arial,Helvetica,sans-serif
+
+  img
+    height ($footer-line-height / 1.5)
+    margin-right .3rem

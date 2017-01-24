@@ -51,6 +51,7 @@ view model =
             , div
                 [ class "main" ]
                 [ pageContent ]
+            , pageFooter
             ]
 
 
@@ -102,6 +103,30 @@ navItem currentPage page title =
             , onClick (Navigate page)
             ]
             [ text title ]
+
+
+pageFooter : Html Msg
+pageFooter =
+    div [ class "footer" ]
+        [ div
+            [ class "footer-line" ]
+            [ text "Made with ♥, "
+            , a [ href "http://elm-lang.org" ]
+                [ img [ src "/svgs/elm-logo-mono.svg" ] []
+                , text "Elm"
+                ]
+            , text " and "
+            , a [ href "https://haskell-servant.readthedocs.io" ] [ text "Servant" ]
+            , text " by "
+            , a [ href "/#developers/basti1302" ] [ text "Bastian Krol" ]
+            , text " & Dennis Reimann. Sponsored by "
+            , a [ href "https://www.codecentric.de" ] [ text "codecentric." ]
+            ]
+        , div
+            [ class "footer-line" ]
+            [ a [ href "/imprint" ] [ text "Impressum" ]
+            ]
+        ]
 
 
 authentication : Model -> Html Msg
