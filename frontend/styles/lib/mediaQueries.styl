@@ -30,3 +30,21 @@ $mq-S_and_up = mq_from($mq-s-width)
 $mq-M_and_up = mq_from($mq-m-width)
 $mq-L_and_up = mq_from($mq-l-width)
 $mq-XL_and_up = mq_from($mq-xl-width)
+
+// hide an element when screen is wider than x, complementing spectres'
+// hide-xy classes.
+@media $mq-XS_and_up
+  .hide-wd-xs
+    display: none !important;
+@media $mq-S_and_up
+  .hide-wd-sm
+    display: none !important;
+@media $mq-M_and_up
+  .hide-wd-md
+    display: none !important;
+@media $mq-L_and_up
+  .hide-wd-lg
+    display: none !important;
+@media $mq-XL_and_up
+  .hide-wd-xl
+    display: none !important;

@@ -114,7 +114,7 @@ pageFooter : Html Msg
 pageFooter =
     div [ class "footer" ]
         [ div
-            [ class "footer-line" ]
+            [ class "footer-line hide-wd-sm" ]
             [ text "Made with ♥, "
             , a [ href "http://elm-lang.org" ]
                 [ img [ src "/svgs/elm-logo-mono.svg" ] []
@@ -124,12 +124,29 @@ pageFooter =
             , a [ href "https://haskell-servant.readthedocs.io" ] [ text "Servant" ]
             , text " by "
             , a [ href "/#developers/basti1302" ] [ text "Bastian Krol" ]
-            , text " & Dennis Reimann. Sponsored by "
-            , a [ href "https://www.codecentric.de" ] [ text "codecentric." ]
+            , text " & Dennis Reimann"
             ]
         , div
-            [ class "footer-line" ]
+            [ class "footer-line hide-wd-sm" ]
             [ a [ href "#imprint" ] [ text "Impressum" ]
+            , text " | Sponsored by "
+            , a [ href "https://www.codecentric.de" ] [ text "codecentric" ]
+            ]
+        , div
+            [ class "footer-line hide-sm" ]
+            [ text "Made with ♥, "
+            , a [ href "http://elm-lang.org" ]
+                [ img [ src "/svgs/elm-logo-mono.svg" ] []
+                , text "Elm"
+                ]
+            , text " and "
+            , a [ href "https://haskell-servant.readthedocs.io" ] [ text "Servant" ]
+            , text " by "
+            , a [ href "/#developers/basti1302" ] [ text "Bastian Krol" ]
+            , text " & Dennis Reimann | "
+            , a [ href "#imprint" ] [ text "Impressum" ]
+            , text " | Sponsored by "
+            , a [ href "https://www.codecentric.de" ] [ text "codecentric" ]
             ]
         ]
 
