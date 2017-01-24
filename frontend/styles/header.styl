@@ -35,25 +35,70 @@
   &__item + &__item
     margin-left $space-small
 
+
+$profile-img-width = 4rem
+
 .signed-in-status
-  margin-left: 16rem
+  color $color-dark-blueish-grey
+  margin-left: 8rem
 
   img
-    width: 4rem
+    width: $profile-img-width
     border-radius: 2rem
     border-radius: 2rem
     vertical-align: middle
     margin-right: $space-small
 
-  span
-    margin-right: $space-normal
-    color: $color-dark-blueish-grey
+  .login-button
+    background-color $color-light-grey
+    color $color-dark-blueish-grey
+    border none
 
-  button
-    text-decoration: none
-    font-size: $font-size-base
-    padding: $space-small
-    border-radius: $space-tiny
-    border: none
-    background-color: $color-light-grey
-    color: $color-dark-blueish-grey
+    span
+      margin-right .3rem
+
+$profile-popup-menu-height = 7rem
+$profile-popup-menu-width = 14rem
+.profile-popup-menu
+  border 1px solid $color-light-grey
+  z-index 1
+  background $color-very-light-grey
+  position relative
+  top 2.5rem
+  left ($profile-popup-menu-width / 2 + $profile-img-width / 2)
+  height $profile-popup-menu-height
+  margin-bottom ((-1) * $profile-popup-menu-height)
+  width $profile-popup-menu-width
+  margin-left ((-1) * $profile-popup-menu-width)
+  display flex
+  flex-direction column
+  justify-content center
+  align-items center
+
+  // individual items in profile popup menu
+  & > *
+    display block
+    height 3.5rem
+    line-height 3.5rem
+    width 100%
+
+  & > :not(:last-child)
+    margin-bottom 0
+
+  & a
+    text-decoration none
+    cursor pointer
+
+  & a > span
+    display inline-block
+
+  & a > span:first-child
+    width 25%
+    text-align center
+
+  & a > span:last-child
+    width 75%
+    text-align left
+
+  .sign-out
+    border-top 1px solid $color-light-grey

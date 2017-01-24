@@ -2,11 +2,12 @@ module View exposing (view)
 
 import Types exposing (..)
 import Html exposing (..)
-import Html.Events exposing (onClick)
+import Html.Events exposing (defaultOptions, onClick)
 import Html.Attributes exposing (..)
 import Homepage.View
 import EditProfile.View
 import Events.View
+import Json.Decode as Json
 import Profiles.View
 import Profiles.Types
 import RemoteData exposing (RemoteData(..))
@@ -43,7 +44,9 @@ view model =
                     notFound
     in
         div
-            [ class "overall" ]
+            [ class "overall"
+            , onClick CloseAllPopups
+            ]
             [ pageHeader model
             , div
                 [ class "main" ]
@@ -103,66 +106,117 @@ navItem currentPage page title =
 
 authentication : Model -> Html Msg
 authentication model =
-    -- TODO This compontent could use some more fancyness. Something like the
-    -- log in pop up on angularjs.de would be nice. For now, it will serve,
-    -- though.
     let
         signedInStatusComponent =
             case model.auth of
                 SignedIn signedInModel ->
-                    signedInView model signedInModel.profile
+                    signedInComponent model signedInModel
 
                 NotSignedIn ->
-                    notSignedInView model
+                    notSignedInComponent model
     in
-        div [ class "signed-in-status" ] signedInStatusComponent
+        signedInStatusComponent
 
 
-signedInView : Model -> Profiles.Types.Profile -> List (Html Msg)
-signedInView model profile =
+signedInComponent : Model -> SignedInModel -> Html Msg
+signedInComponent model signedInModel =
     let
-        nameComponent =
-            span [] [ text profile.name ]
+        profile =
+            signedInModel.profile
 
-        profileComponents =
-            if String.isEmpty profile.gitHubAvatarUrl then
-                [ nameComponent ]
-            else
-                [ img [ src profile.gitHubAvatarUrl ] []
-                , nameComponent
-                ]
-
-        signOut =
-            button [ onClick SignOutClick ] [ text "Abmelden" ]
-
-        editMyProfile =
-            navItem model.page EditProfilePage "Mein Profil"
-    in
-        profileComponents ++ [ signOut, editMyProfile ]
-
-
-notSignedInView : Model -> List (Html Msg)
-notSignedInView model =
-    case model.gitHubOAuthConfig of
-        Success gitHubOAuthConfig ->
-            let
-                redirectUrl =
-                    gitHubOAuthConfig.redirectUrl
-
-                clientId =
-                    gitHubOAuthConfig.clientId
-
-                gitHubUrl =
-                    "https://github.com/login/oauth/authorize?client_id="
-                        ++ clientId
-                        ++ "&redirect_uri="
-                        ++ redirectUrl
-            in
-                [ a
-                    [ href gitHubUrl
+        mainProfileComponent =
+            if (String.isEmpty profile.gitHubAvatarUrl) then
+                span []
+                    [ text profile.name
+                    , span [ class "fa fa-chevron-down" ] []
                     ]
-                    [ text "Mit GitHub anmelden" ]
-                ]
+            else
+                -- TODO Also show gravatar image if no githubavatarurl is set!
+                --      See Profiles.View#getProfilePicSrc
+                span []
+                    [ img [ src profile.gitHubAvatarUrl ] []
+                    , span [ class "fa fa-chevron-down" ] []
+                    ]
 
-        otherwise ->
-            [ span [] [ text "..." ] ]
+        profilePopupMenu =
+            profilePopupMenuComponent model signedInModel
+
+        profileComponentList =
+            case profilePopupMenu of
+                Just menu ->
+                    [ mainProfileComponent, menu ]
+
+                Nothing ->
+                    [ mainProfileComponent ]
+
+        -- stopPropagation is required so the popup is not closed immediately
+        -- because the click propagates to the main div which always triggers a
+        -- CloseAllPopups event.
+        onClickToggleProfilePopupMenu =
+            Html.Events.onWithOptions
+                "click"
+                ({ defaultOptions | stopPropagation = True })
+                (Json.succeed ToggleProfilePopupMenu)
+    in
+        div
+            [ class "signed-in-status"
+            , onClickToggleProfilePopupMenu
+            ]
+            profileComponentList
+
+
+profilePopupMenuComponent : Model -> SignedInModel -> Maybe (Html Msg)
+profilePopupMenuComponent model signedInModel =
+    if signedInModel.showProfilePopupMenu then
+        let
+            editMyProfile =
+                a [ href "#editprofile" ]
+                    [ span [ class "fa fa-user" ] []
+                    , span [] [ text "Mein Profil" ]
+                    ]
+
+            signOut =
+                a [ onClick SignOutClick, class "sign-out" ]
+                    [ span [ class "fa fa-sign-out" ] []
+                    , span [] [ text "Abmelden" ]
+                    ]
+        in
+            div [ class "profile-popup-menu" ] [ editMyProfile, signOut ]
+                |> Just
+    else
+        Nothing
+
+
+notSignedInComponent : Model -> Html Msg
+notSignedInComponent model =
+    let
+        comp =
+            case model.gitHubOAuthConfig of
+                Success gitHubOAuthConfig ->
+                    let
+                        redirectUrl =
+                            gitHubOAuthConfig.redirectUrl
+
+                        clientId =
+                            gitHubOAuthConfig.clientId
+
+                        gitHubUrl =
+                            "https://github.com/login/oauth/authorize?client_id="
+                                ++ clientId
+                                ++ "&redirect_uri="
+                                ++ redirectUrl
+                    in
+                        a
+                            [ href gitHubUrl
+                            , class "btn login-button"
+                            ]
+                            [ span [ class "fa fa-github" ] []
+                            , text "Anmelden"
+                            ]
+
+                otherwise ->
+                    span [] [ text "..." ]
+    in
+        div
+            [ class "signed-in-status" ]
+            [ comp ]

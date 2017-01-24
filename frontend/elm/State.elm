@@ -2,11 +2,12 @@ module State exposing (init, update, subscriptions)
 
 import Data exposing (loadAppBootstrap, signOut)
 import EditProfile.State
+import EditProfile.Types
 import Events.State
 import Homepage.State
 import Navigation exposing (Location, newUrl)
 import Profiles.State
-import Profiles.Types
+import Profiles.Types exposing (Profile)
 import RemoteData exposing (RemoteData(..))
 import Routes exposing (pageToHash, hashToPage)
 import Types exposing (..)
@@ -39,6 +40,15 @@ init location =
             update changePageMsg initialModel
     in
         model ! (loadAppBootstrap :: [ initialPageCmd ])
+
+
+initSignedInModel : Profile -> AuthenticationState
+initSignedInModel profile =
+    SignedIn
+        { profile = profile
+        , editProfileModel = EditProfile.State.initialModel profile
+        , showProfilePopupMenu = False
+        }
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -80,6 +90,14 @@ update msg model =
             in
                 ( model, Cmd.none )
 
+        CloseAllPopups ->
+            update CloseProfilePopupMenu model
+
+        CloseProfilePopupMenu ->
+            -- TODO Refactor with other updates that require the user to be
+            -- signed in.
+            updateSignedIn msg closeProfilePopupMenu model
+
         SignOutClick ->
             ( model, signOut )
 
@@ -105,25 +123,10 @@ update msg model =
                 )
 
         EditProfileMsg editProfileMsg ->
-            case model.auth of
-                NotSignedIn ->
-                    -- Ignore bogus profile edits when not signed in
-                    ( model, Cmd.none )
+            updateSignedIn msg (processEditProfileMsg editProfileMsg) model
 
-                SignedIn signedInModel ->
-                    let
-                        ( updatedEditProfileModel, cmd ) =
-                            EditProfile.State.update editProfileMsg signedInModel.editProfileModel
-
-                        updatedAuth =
-                            SignedIn
-                                { profile = updatedEditProfileModel.profile
-                                , editProfileModel = updatedEditProfileModel
-                                }
-                    in
-                        ( { model | auth = updatedAuth }
-                        , Cmd.map EditProfileMsg cmd
-                        )
+        ToggleProfilePopupMenu ->
+            updateSignedIn msg toggleProfilePopupMenu model
 
         ProfilesMsg profileMsg ->
             let
@@ -135,16 +138,70 @@ update msg model =
                 )
 
 
+updateSignedIn :
+    Msg
+    -> (SignedInModel -> ( AuthenticationState, Cmd Msg ))
+    -> Model
+    -> ( Model, Cmd Msg )
+updateSignedIn msg updateFn model =
+    case model.auth of
+        NotSignedIn ->
+            -- Ignore messages that require a signed in user when not signed in
+            let
+                _ =
+                    Debug.log "Ignoring message while not signed in" msg
+            in
+                ( model, Cmd.none )
+
+        SignedIn signedInModel ->
+            let
+                ( updatedAuth, cmd ) =
+                    updateFn signedInModel
+            in
+                ( { model | auth = updatedAuth }, cmd )
+
+
+closeProfilePopupMenu : SignedInModel -> ( AuthenticationState, Cmd Msg )
+closeProfilePopupMenu signedInModel =
+    SignedIn
+        { profile = signedInModel.profile
+        , editProfileModel = signedInModel.editProfileModel
+        , showProfilePopupMenu = False
+        }
+        ! []
+
+
+toggleProfilePopupMenu : SignedInModel -> ( AuthenticationState, Cmd Msg )
+toggleProfilePopupMenu signedInModel =
+    SignedIn
+        { profile = signedInModel.profile
+        , editProfileModel = signedInModel.editProfileModel
+        , showProfilePopupMenu = not signedInModel.showProfilePopupMenu
+        }
+        ! []
+
+
+processEditProfileMsg : EditProfile.Types.Msg -> SignedInModel -> ( AuthenticationState, Cmd Msg )
+processEditProfileMsg editProfileMsg signedInModel =
+    let
+        ( updatedEditProfileModel, cmd ) =
+            EditProfile.State.update editProfileMsg signedInModel.editProfileModel
+    in
+        SignedIn
+            { profile = updatedEditProfileModel.profile
+            , editProfileModel = updatedEditProfileModel
+            , showProfilePopupMenu = signedInModel.showProfilePopupMenu
+            }
+            ! [ Cmd.map EditProfileMsg cmd ]
+
+
 processAppBootstrap : Model -> AppBootstrapResource -> ( Model, Cmd Msg )
 processAppBootstrap model appBootstrapResource =
     let
         auth =
             case ( appBootstrapResource.signedIn, appBootstrapResource.profile ) of
                 ( True, Just profile ) ->
-                    SignedIn
-                        { profile = profile
-                        , editProfileModel = EditProfile.State.initialModel profile
-                        }
+                    initSignedInModel profile
 
                 otherwise ->
                     NotSignedIn
