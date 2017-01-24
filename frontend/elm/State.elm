@@ -54,10 +54,16 @@ initSignedInModel profile =
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
-        Navigate page ->
-            -- leave the model untouched and issue a command to
-            -- change the url, which then triggers ChangePage
-            ( model, newUrl <| pageToHash page )
+        AppBootstrapResponse (Success appBootstrapResource) ->
+            processAppBootstrap model appBootstrapResource
+
+        AppBootstrapResponse err ->
+            -- Ignore all other app bootstrap responses for now
+            let
+                _ =
+                    Debug.log "AppBootstrap request failed" err
+            in
+                ( model, Cmd.none )
 
         ChangePage page ->
             let
@@ -79,39 +85,14 @@ update msg model =
             in
                 ( { updatedModel | page = page }, cmd )
 
-        AppBootstrapResponse (Success appBootstrapResource) ->
-            processAppBootstrap model appBootstrapResource
-
-        AppBootstrapResponse err ->
-            -- Ignore all other app bootstrap responses for now
-            let
-                _ =
-                    Debug.log "AppBootstrap request failed" err
-            in
-                ( model, Cmd.none )
-
         CloseAllPopups ->
             update CloseProfilePopupMenu model
 
         CloseProfilePopupMenu ->
-            -- TODO Refactor with other updates that require the user to be
-            -- signed in.
             updateSignedIn msg closeProfilePopupMenu model
 
-        SignOutClick ->
-            ( model, signOut )
-
-        SignOutResponse _ ->
-            ( { model | auth = NotSignedIn }, Cmd.none )
-
-        HomepageMsg homeMsg ->
-            let
-                ( homepageModel, cmd ) =
-                    Homepage.State.update homeMsg model.homepage
-            in
-                ( { model | homepage = homepageModel }
-                , Cmd.map HomepageMsg cmd
-                )
+        EditProfileMsg editProfileMsg ->
+            updateSignedIn msg (processEditProfileMsg editProfileMsg) model
 
         EventsMsg eventMsg ->
             let
@@ -122,11 +103,23 @@ update msg model =
                 , Cmd.map EventsMsg cmd
                 )
 
-        EditProfileMsg editProfileMsg ->
-            updateSignedIn msg (processEditProfileMsg editProfileMsg) model
+        HomepageMsg homeMsg ->
+            let
+                ( homepageModel, cmd ) =
+                    Homepage.State.update homeMsg model.homepage
+            in
+                ( { model | homepage = homepageModel }
+                , Cmd.map HomepageMsg cmd
+                )
 
-        ToggleProfilePopupMenu ->
-            updateSignedIn msg toggleProfilePopupMenu model
+        ImprintMsg imprintMsg ->
+            -- ImprintPage does not send messages
+            ( model, Cmd.none )
+
+        Navigate page ->
+            -- leave the model untouched and issue a command to
+            -- change the url, which then triggers ChangePage
+            ( model, newUrl <| pageToHash page )
 
         ProfilesMsg profileMsg ->
             let
@@ -136,6 +129,15 @@ update msg model =
                 ( { model | profiles = profilesModel }
                 , Cmd.map ProfilesMsg cmd
                 )
+
+        SignOutClick ->
+            ( model, signOut )
+
+        SignOutResponse _ ->
+            ( { model | auth = NotSignedIn }, Cmd.none )
+
+        ToggleProfilePopupMenu ->
+            updateSignedIn msg toggleProfilePopupMenu model
 
 
 updateSignedIn :

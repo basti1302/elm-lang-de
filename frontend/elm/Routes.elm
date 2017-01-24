@@ -18,6 +18,8 @@ hashToPage hash =
         HomePage
     else if String.startsWith "#events" hash then
         EventsPage
+    else if String.startsWith "#imprint" hash then
+        ImprintPage
     else if String.startsWith "#developers" hash then
         String.dropLeft (String.length "#developers") hash
             |> Profiles.Routes.hashToPage
@@ -25,7 +27,7 @@ hashToPage hash =
     else if String.startsWith "#editprofile" hash then
         EditProfilePage
     else
-        NotFound
+        NotFoundPage
 
 
 pageToHash : Page -> String
@@ -40,8 +42,11 @@ pageToHash page =
         EditProfilePage ->
             "#editprofile"
 
+        ImprintPage ->
+            "#imprint"
+
         ProfilesPage _ ->
             "#developers"
 
-        NotFound ->
+        NotFoundPage ->
             "#notfound"

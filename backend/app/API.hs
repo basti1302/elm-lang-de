@@ -18,11 +18,6 @@ import           OAuth.API (OAuthAPI)
 import           Servant
 
 
--- TODO /api/ root document (with links)
--- TODO Provide JSON and HTML at the same URL, where appropriate
--- TODO Write automated tests for HTTP API
-
-
 type StaticFiles = Raw
 
 

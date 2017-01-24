@@ -7,6 +7,7 @@ import Html.Attributes exposing (..)
 import Homepage.View
 import EditProfile.View
 import Events.View
+import Imprint.View
 import Json.Decode as Json
 import Profiles.View
 import Profiles.Types
@@ -36,11 +37,15 @@ view model =
                                 signedInModel.editProfileModel
                                 |> Html.map EditProfileMsg
 
+                ImprintPage ->
+                    Imprint.View.view
+                        |> Html.map ImprintMsg
+
                 ProfilesPage _ ->
                     Profiles.View.view model.profiles
                         |> Html.map ProfilesMsg
 
-                NotFound ->
+                NotFoundPage ->
                     notFound
     in
         div
@@ -124,7 +129,7 @@ pageFooter =
             ]
         , div
             [ class "footer-line" ]
-            [ a [ href "/imprint" ] [ text "Impressum" ]
+            [ a [ href "#imprint" ] [ text "Impressum" ]
             ]
         ]
 

@@ -4,6 +4,7 @@ import Http
 import Homepage.Types
 import EditProfile.Types
 import Events.Types
+import Imprint.Types
 import Profiles.Types exposing (Profile)
 import RemoteData exposing (RemoteData, WebData)
 
@@ -42,6 +43,7 @@ type Msg
     | EditProfileMsg EditProfile.Types.Msg
     | EventsMsg Events.Types.Msg
     | HomepageMsg Homepage.Types.Msg
+    | ImprintMsg Imprint.Types.Msg
     | Navigate Page
     | CloseAllPopups
     | ProfilesMsg Profiles.Types.Msg
@@ -55,8 +57,9 @@ type Page
     = HomePage
     | EventsPage
     | EditProfilePage
+    | ImprintPage
     | ProfilesPage Profiles.Types.Page
-    | NotFound
+    | NotFoundPage
 
 
 type alias AppBootstrapResource =
