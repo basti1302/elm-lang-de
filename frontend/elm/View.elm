@@ -124,19 +124,22 @@ signedInComponent model signedInModel =
         profile =
             signedInModel.profile
 
+        maybeProfilePicSrc =
+            Profiles.View.getProfilePicSrc profile 40
+
         mainProfileComponent =
-            if (String.isEmpty profile.gitHubAvatarUrl) then
-                span []
-                    [ text profile.name
-                    , span [ class "fa fa-chevron-down" ] []
-                    ]
-            else
-                -- TODO Also show gravatar image if no githubavatarurl is set!
-                --      See Profiles.View#getProfilePicSrc
-                span []
-                    [ img [ src profile.gitHubAvatarUrl ] []
-                    , span [ class "fa fa-chevron-down" ] []
-                    ]
+            case maybeProfilePicSrc of
+                Just profilePicSrc ->
+                    span []
+                        [ img [ src profilePicSrc ] []
+                        , span [ class "fa fa-chevron-down" ] []
+                        ]
+
+                Nothing ->
+                    span []
+                        [ text profile.name
+                        , span [ class "fa fa-chevron-down" ] []
+                        ]
 
         profilePopupMenu =
             profilePopupMenuComponent model signedInModel
@@ -215,7 +218,7 @@ notSignedInComponent model =
                             ]
 
                 otherwise ->
-                    span [] [ text "..." ]
+                    img [ src "img/loading.gif", class "auth-waiting" ] []
     in
         div
             [ class "signed-in-status" ]

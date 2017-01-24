@@ -43,11 +43,15 @@ $profile-img-width = 4rem
   margin-left: 8rem
 
   img
-    width: $profile-img-width
-    border-radius: 2rem
-    border-radius: 2rem
-    vertical-align: middle
-    margin-right: $space-small
+    width $profile-img-width
+    border-radius 2rem
+    vertical-align middle
+    margin-right $space-small
+
+  img.auth-waiting
+    width 2rem
+    border-radius 0
+    opacity .5
 
   .login-button
     background-color $color-light-grey

@@ -1,4 +1,4 @@
-module Profiles.View exposing (view)
+module Profiles.View exposing (getProfilePicSrc, view)
 
 import Html exposing (..)
 import Html.Attributes exposing (..)
@@ -41,7 +41,7 @@ renderProfileInList : ProfileHead -> Html Msg
 renderProfileInList profile =
     let
         profilePicSrc =
-            getProfilePicSrc profile 80
+            getProfilePicSrcOrDummy profile 80
 
         profilePic =
             [ img [ src profilePicSrc, class "profil-pic" ] [] ]
@@ -85,7 +85,7 @@ profilePicAndBio : Attribute Msg -> Profile -> Html Msg
 profilePicAndBio classes profile =
     let
         profilePicSrc =
-            getProfilePicSrc profile 200
+            getProfilePicSrcOrDummy profile 200
 
         profilePic =
             img [ src profilePicSrc, class "profil-pic" ] []
@@ -204,20 +204,38 @@ faClass faIconName =
     class ("fa fa-lg fa-" ++ faIconName)
 
 
-getProfilePicSrc :
+getProfilePicSrcOrDummy :
     { profileOrHead | gravatarId : String, gitHubAvatarUrl : String }
     -> Int
     -> String
+getProfilePicSrcOrDummy profile gravatarPreferredSize =
+    let
+        maybePicSrc =
+            getProfilePicSrc profile gravatarPreferredSize
+    in
+        case maybePicSrc of
+            Just picSrc ->
+                picSrc
+
+            Nothing ->
+                "/svgs/elm-logo-mono.svg"
+
+
+getProfilePicSrc :
+    { profileOrHead | gravatarId : String, gitHubAvatarUrl : String }
+    -> Int
+    -> Maybe String
 getProfilePicSrc profile gravatarPreferredSize =
     if not (String.isEmpty profile.gravatarId) then
-        "http://www.gravatar.com/avatar/"
-            ++ profile.gravatarId
-            ++ "?s="
-            ++ (toString gravatarPreferredSize)
+        Just <|
+            "http://www.gravatar.com/avatar/"
+                ++ profile.gravatarId
+                ++ "?s="
+                ++ (toString gravatarPreferredSize)
     else if not (String.isEmpty profile.gitHubAvatarUrl) then
-        profile.gitHubAvatarUrl
+        Just profile.gitHubAvatarUrl
     else
-        "/svgs/elm-logo-mono.svg"
+        Nothing
 
 
 biography : Profile -> Html Msg
