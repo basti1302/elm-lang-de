@@ -11,6 +11,7 @@ import Imprint.View
 import Json.Decode as Json
 import Profiles.View
 import Profiles.Types
+import Routes
 import RemoteData exposing (RemoteData(..))
 
 
@@ -39,7 +40,6 @@ view model =
 
                 ImprintPage ->
                     Imprint.View.view
-                        |> Html.map ImprintMsg
 
                 ProfilesPage _ ->
                     Profiles.View.view model.profiles
@@ -78,22 +78,60 @@ pageHeader : Model -> Html Msg
 pageHeader model =
     let
         navLink =
-            navItem model.page
+            navItemAllScreens model.page
+
+        navLinkWideScreen =
+            navItemWideScreen model.page
+
+        navLinksSmallScreen =
+            authenticationComponentSmallScreen model
     in
         header
             [ class "header" ]
-            [ nav
-                [ class "nav" ]
-                [ navLink HomePage "Elm"
-                , navLink EventsPage "Termine"
-                , navLink (ProfilesPage Profiles.Types.ListPage) "Entwickler"
-                , authentication model
+            [ span
+                [ class "nav-small-screen-hamburger fa fa-lg fa-bars"
+                , onWithStopPropagation ToggleSmallScreenNav
                 ]
+                []
+            , nav
+                [ classList
+                    [ ( "nav", True )
+                    , ( "collapsed", not model.showSmallScreenNav )
+                    ]
+                ]
+                ([ navLinkWideScreen HomePage "Elm"
+                 , navLinkSmallScreen model HomePage "Startseite"
+                 , navLink EventsPage "Termine"
+                 , navLink (ProfilesPage Profiles.Types.ListPage) "Entwickler"
+                 ]
+                    ++ navLinksSmallScreen
+                    ++ [ authenticationComponentWideScreen model ]
+                )
             ]
 
 
-navItem : Page -> Page -> String -> Html Msg
-navItem currentPage page title =
+navItemAllScreens : Page -> Page -> String -> Html Msg
+navItemAllScreens =
+    navItem []
+
+
+navItemSmallScreen : Page -> Page -> String -> Html Msg
+navItemSmallScreen =
+    navItem [ ( "nav-item-small-screen-only", True ) ]
+
+
+navItemWideScreen : Page -> Page -> String -> Html Msg
+navItemWideScreen =
+    navItem [ ( "nav-item-wide-screen-only", True ) ]
+
+
+navLinkSmallScreen : Model -> Page -> String -> Html Msg
+navLinkSmallScreen model =
+    navItemSmallScreen model.page
+
+
+navItem : List ( String, Bool ) -> Page -> Page -> String -> Html Msg
+navItem extraClasses currentPage page title =
     -- TODO Shouldn't navItem produce simple links with the proper #anchor as
     -- href? We might be able to drop the Navigate messages and Routes#pageToHash
     -- completely.
@@ -102,12 +140,20 @@ navItem currentPage page title =
             [ ( "nav__item", True )
             , ( "nav__item--current", currentPage == page )
             ]
+                ++ extraClasses
     in
         a
-            [ classList classes
+            [ (classList classes)
             , onClick (Navigate page)
             ]
             [ text title ]
+
+
+navLinkSignOutSmallScreen : Html Msg
+navLinkSignOutSmallScreen =
+    a
+        [ class "nav__item nav-item-small-screen-only", onClick SignOutClick ]
+        [ text "Abmelden" ]
 
 
 pageFooter : Html Msg
@@ -151,8 +197,8 @@ pageFooter =
         ]
 
 
-authentication : Model -> Html Msg
-authentication model =
+authenticationComponentWideScreen : Model -> Html Msg
+authenticationComponentWideScreen model =
     let
         signedInStatusComponent =
             case model.auth of
@@ -178,7 +224,7 @@ signedInComponent model signedInModel =
             case maybeProfilePicSrc of
                 Just profilePicSrc ->
                     span []
-                        [ img [ src profilePicSrc ] []
+                        [ img [ src profilePicSrc, class "header-profile-pic" ] []
                         , span [ class "fa fa-chevron-down" ] []
                         ]
 
@@ -198,19 +244,13 @@ signedInComponent model signedInModel =
 
                 Nothing ->
                     [ mainProfileComponent ]
-
+    in
         -- stopPropagation is required so the popup is not closed immediately
         -- because the click propagates to the main div which always triggers a
         -- CloseAllPopups event.
-        onClickToggleProfilePopupMenu =
-            Html.Events.onWithOptions
-                "click"
-                ({ defaultOptions | stopPropagation = True })
-                (Json.succeed ToggleProfilePopupMenu)
-    in
         div
             [ class "signed-in-status"
-            , onClickToggleProfilePopupMenu
+            , onWithStopPropagation ToggleProfilePopupMenu
             ]
             profileComponentList
 
@@ -240,33 +280,81 @@ profilePopupMenuComponent model signedInModel =
 notSignedInComponent : Model -> Html Msg
 notSignedInComponent model =
     let
+        maybeUrl =
+            gitHubOAuthUrl model
+
         comp =
-            case model.gitHubOAuthConfig of
-                Success gitHubOAuthConfig ->
-                    let
-                        redirectUrl =
-                            gitHubOAuthConfig.redirectUrl
+            case maybeUrl of
+                Just ghUrl ->
+                    a
+                        [ href ghUrl
+                        , class "btn login-button"
+                        ]
+                        [ span [ class "fa fa-github" ] []
+                        , text "Anmelden"
+                        ]
 
-                        clientId =
-                            gitHubOAuthConfig.clientId
-
-                        gitHubUrl =
-                            "https://github.com/login/oauth/authorize?client_id="
-                                ++ clientId
-                                ++ "&redirect_uri="
-                                ++ redirectUrl
-                    in
-                        a
-                            [ href gitHubUrl
-                            , class "btn login-button"
-                            ]
-                            [ span [ class "fa fa-github" ] []
-                            , text "Anmelden"
-                            ]
-
-                otherwise ->
+                Nothing ->
                     img [ src "img/loading.gif", class "auth-waiting" ] []
     in
         div
             [ class "signed-in-status" ]
             [ comp ]
+
+
+authenticationComponentSmallScreen : Model -> List (Html Msg)
+authenticationComponentSmallScreen model =
+    case model.auth of
+        SignedIn _ ->
+            [ navLinkSmallScreen model EditProfilePage "Mein Profil"
+            , navLinkSignOutSmallScreen
+            ]
+
+        NotSignedIn ->
+            signInWithGitHubSmallScreen model
+
+
+signInWithGitHubSmallScreen : Model -> List (Html Msg)
+signInWithGitHubSmallScreen model =
+    let
+        maybeUrl =
+            gitHubOAuthUrl model
+    in
+        case maybeUrl of
+            Just ghUrl ->
+                [ a [ href ghUrl, class "nav__item nav-item-small-screen-only" ]
+                    [ text "Anmelden" ]
+                ]
+
+            Nothing ->
+                []
+
+
+gitHubOAuthUrl : Model -> Maybe String
+gitHubOAuthUrl model =
+    case model.gitHubOAuthConfig of
+        Success gitHubOAuthConfig ->
+            let
+                redirectUrl =
+                    gitHubOAuthConfig.redirectUrl
+                        ++ Routes.pageToHash model.page
+
+                clientId =
+                    gitHubOAuthConfig.clientId
+            in
+                "https://github.com/login/oauth/authorize?client_id="
+                    ++ clientId
+                    ++ "&redirect_uri="
+                    ++ redirectUrl
+                    |> Just
+
+        otherwise ->
+            Nothing
+
+
+onWithStopPropagation : msg -> Attribute msg
+onWithStopPropagation msg =
+    Html.Events.onWithOptions
+        "click"
+        ({ defaultOptions | stopPropagation = True })
+        (Json.succeed msg)

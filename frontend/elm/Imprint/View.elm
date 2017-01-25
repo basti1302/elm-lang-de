@@ -1,7 +1,7 @@
 module Imprint.View exposing (view)
 
 import Html exposing (..)
-import Imprint.Types exposing (..)
+import Types exposing (Msg)
 
 
 -- Actually, this could be just a servant-ede template. Or even just static

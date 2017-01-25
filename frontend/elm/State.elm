@@ -21,6 +21,7 @@ initialModel =
     , events = Events.State.initialModel
     , profiles = Profiles.State.initialModel
     , gitHubOAuthConfig = Loading
+    , showSmallScreenNav = False
     }
 
 
@@ -86,7 +87,11 @@ update msg model =
                 ( { updatedModel | page = page }, cmd )
 
         CloseAllPopups ->
-            update CloseProfilePopupMenu model
+            let
+                smallScreenNavClose =
+                    { model | showSmallScreenNav = False }
+            in
+                update CloseProfilePopupMenu smallScreenNavClose
 
         CloseProfilePopupMenu ->
             updateSignedIn msg closeProfilePopupMenu model
@@ -112,10 +117,6 @@ update msg model =
                 , Cmd.map HomepageMsg cmd
                 )
 
-        ImprintMsg imprintMsg ->
-            -- ImprintPage does not send messages
-            ( model, Cmd.none )
-
         Navigate page ->
             -- leave the model untouched and issue a command to
             -- change the url, which then triggers ChangePage
@@ -134,7 +135,21 @@ update msg model =
             ( model, signOut )
 
         SignOutResponse _ ->
-            ( { model | auth = NotSignedIn }, Cmd.none )
+            let
+                -- If necessary, redirect user to a page that does not require
+                -- xyr to be signed in.
+                newPage =
+                    if model.page == EditProfilePage then
+                        ProfilesPage Profiles.Types.ListPage
+                    else
+                        model.page
+            in
+                ( { model | auth = NotSignedIn, page = newPage }, Cmd.none )
+
+        ToggleSmallScreenNav ->
+            ( { model | showSmallScreenNav = not model.showSmallScreenNav }
+            , Cmd.none
+            )
 
         ToggleProfilePopupMenu ->
             updateSignedIn msg toggleProfilePopupMenu model

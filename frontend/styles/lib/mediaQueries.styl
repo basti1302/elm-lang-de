@@ -1,11 +1,11 @@
 mq_to($to)
-  s("screen and (max-width: %s)", $to - 1)
+  s("screen and (max-width: %s)", $to)
 mq_from($from)
-  s("screen and (min-width: (%s + 1))", $from)
+  s("screen and (min-width: %s))", $from + 1)
 mq_from_to($from, $to)
-  s("screen and (min-width: (%s + 1)) and (max-width: %s)", $from, $to - 1)
+  s("screen and (min-width: %s) and (max-width: %s)", $from + 1, $to)
 mq_from_and_print($from)
-  s("screen and (min-width: (%s + 1)), print", $from)
+  s("screen and (min-width: %s), print", $from + 1)
 
 // values are aligned with spectre.css responsive grid
 $mq-xs-width = 480px

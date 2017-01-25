@@ -1,4 +1,5 @@
 $header-height = 8rem
+$header-height-small-screen = 3rem
 $footer-line-height = 2rem
 $footer-height = 2 * $footer-line-height
 
@@ -6,48 +7,98 @@ $footer-height = 2 * $footer-line-height
   height $header-height
   background $color-light-blue
   color $color-white
-  text-align center
 
+/* common/shared styles for menu on small and wide screens */
 .nav
-  @extend $wrapped
-  display flex
-  align-items center
-
   &__item
     color $color-dark-blueish-grey
     text-decoration none
     font-size $font-size-head
-    padding $space-normal
-    transition all .25s ease-out
     cursor pointer
 
     &:hover
     &--current
       color $color-white
 
-    // logo
-    &:first-child
-      margin-right $space-normal
-      padding $space-small $space-small $space-small $space-large
-      background-image url('/svgs/elm-logo-mono.svg')
-      background-repeat no-repeat
-      background-size 3.6rem
-      background-position 0 45%
-      font-size $font-size-huge
-      color $color-white
-      text-decoration none
+/* nav menu on small screens */
+@media $mq-up_to_S
+  .header
+    height $header-height-small-screen
 
-  &__item + &__item
-    margin-left $space-small
+  .nav-small-screen-hamburger
+    color $color-dark-blueish-grey
+    line-height $header-height-small-screen
+    padding-left 1rem
+
+    &:hover
+      color $color-white
+
+  .nav.collapsed
+    display none
+
+  .nav
+    position relative
+    padding 0
+
+    &__item
+      display block
+      height $header-height-small-screen
+      width 20rem
+      background $color-light-blue
+      border-top 1px solid $color-very-light-blue
+      padding-left 2rem
+      font-size $font-size-base
+      line-height $header-height-small-screen
+
+      &.nav-item-wide-screen-only
+        display none
+
+/* nav menu on wider screens */
+@media $mq-S_and_up
+  .header
+    text-align center
+
+  .nav-small-screen-hamburger
+  .nav-item-small-screen-only
+    display none
+
+  .nav
+    @extend $wrapped
+    display flex
+    align-items center
+
+    &__item
+      padding $space-normal
+      transition all .25s ease-out
+
+      // logo
+      &:first-child
+        margin-right $space-normal
+        padding $space-small $space-small $space-small $space-large
+        background-image url('/svgs/elm-logo-mono.svg')
+        background-repeat no-repeat
+        background-size 3.6rem
+        background-position 0 45%
+        font-size $font-size-huge
+        color $color-white
+        text-decoration none
+
+    &__item + &__item
+      margin-left $space-small
 
 
 $profile-img-width = 4rem
+
+// hide wide screen auth component on small screens
+@media $mq-up_to_S
+  .signed-in-status
+    display none
 
 .signed-in-status
   color $color-dark-blueish-grey
   margin-left: 8rem
 
-  img
+  img.header-profile-pic
     width $profile-img-width
     border-radius 2rem
     vertical-align middle
@@ -115,10 +166,9 @@ $profile-popup-menu-width = 14rem
 
 // push footer to bottom of page, if there is not enough content
 .main
-  min-height "calc(100vh - %s - %s - 3px)" % ($header-height $footer-height)
+  min-height "calc(100vh - %s - %s - 3px)" % ($header-height-small-screen $footer-height)
   @media $mq-S_and_up
     min-height "calc(100vh - %s - %s - 3px)" % ($header-height $footer-line-height)
-
 
 .footer
   width 100vw

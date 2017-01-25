@@ -4,7 +4,6 @@ import Http
 import Homepage.Types
 import EditProfile.Types
 import Events.Types
-import Imprint.Types
 import Profiles.Types exposing (Profile)
 import RemoteData exposing (RemoteData, WebData)
 
@@ -16,6 +15,7 @@ type alias Model =
     , events : Events.Types.Model
     , profiles : Profiles.Types.Model
     , gitHubOAuthConfig : RemoteData String GitHubOAuthConfig
+    , showSmallScreenNav : Bool
     }
 
 
@@ -43,13 +43,13 @@ type Msg
     | EditProfileMsg EditProfile.Types.Msg
     | EventsMsg Events.Types.Msg
     | HomepageMsg Homepage.Types.Msg
-    | ImprintMsg Imprint.Types.Msg
     | Navigate Page
     | CloseAllPopups
     | ProfilesMsg Profiles.Types.Msg
     | SignOutClick
     | SignOutResponse (Result Http.Error ())
     | CloseProfilePopupMenu
+    | ToggleSmallScreenNav
     | ToggleProfilePopupMenu
 
 
