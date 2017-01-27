@@ -19,7 +19,9 @@ fi
 HOST=127.0.0.1 \
   SECURE_COOKIES_DISABLED=true \
   GITHUB_REDIRECT_URL=http://localhost:7000/oauth/github \
+  DEVELOPMENT_MODE=true \
   stack exec elm-lang-de
+
 
 popd > /dev/null
 
