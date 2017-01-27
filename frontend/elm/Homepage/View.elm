@@ -64,7 +64,7 @@ Herzlich willkommen auf elm-lang.de, dem Hub für die deutschsprachige Elm-Commu
 
 ### Entwicklerverzeichnis
 
-Du interessierst dich für Elm, hast vielleicht schon erste Projekte damit umgesetzt oder setzt essogar produktiv ein? Trag dich auf jeden Fall ins Entwicklerverzeichnis ein! Um ein Profil anzulegen, musst du dich nur mit """
+Du interessierst dich für Elm, hast vielleicht schon erste Projekte damit umgesetzt oder setzt es sogar produktiv ein? Trag dich auf jeden Fall ins Entwicklerverzeichnis ein! Um ein Profil anzulegen, musst du dich nur mit """
                 ++ signInWithGitHub
                 ++ """, dann wird automatisch ein Entwickler-Profil für dich angelegt.
 
