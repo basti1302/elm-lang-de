@@ -19,7 +19,6 @@ $profile-img-width = 4rem
 
   .signed-in-status
     color $color-dark-blueish-grey
-    margin-left: 8rem
 
     a
       color $color-dark-blueish-grey
@@ -91,6 +90,9 @@ $profile-img-width = 4rem
       display flex
       align-items center
 
+      .signed-in-status
+        margin-left auto // like float right, but in a flexbox container
+
       &__item
         padding $space-normal
         transition all .25s ease-out
@@ -123,7 +125,7 @@ $profile-popup-menu-width = 14rem
   background $color-very-light-grey
   position relative
   top 2.5rem
-  left ($profile-popup-menu-width / 2 + $profile-img-width / 2)
+  left ($profile-popup-menu-width / 2)
   height $profile-popup-menu-height
   margin-bottom ((-1) * $profile-popup-menu-height)
   width $profile-popup-menu-width
