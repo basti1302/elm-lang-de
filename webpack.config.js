@@ -129,7 +129,9 @@ if (TARGET_ENV === 'production') {
     },
 
     plugins: [
-      new CopyWebpackPlugin([]),
+      new CopyWebpackPlugin([
+        { from: 'frontend/img', to: 'img' }
+      ]),
 
       new webpack.optimize.OccurenceOrderPlugin(),
 

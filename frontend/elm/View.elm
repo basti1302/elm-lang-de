@@ -163,7 +163,7 @@ pageFooter =
             [ class "footer-line hide-wd-sm" ]
             [ text "Made with ♥, "
             , a [ href "http://elm-lang.org" ]
-                [ img [ src "/svgs/elm-logo-mono.svg" ] []
+                [ img [ src "/img/elm-logo-mono.svg" ] []
                 , text "Elm"
                 ]
             , text " and "
@@ -182,7 +182,7 @@ pageFooter =
             [ class "footer-line hide-sm" ]
             [ text "Made with ♥, "
             , a [ href "http://elm-lang.org" ]
-                [ img [ src "/svgs/elm-logo-mono.svg" ] []
+                [ img [ src "/img/elm-logo-mono.svg" ] []
                 , text "Elm"
                 ]
             , text " and "

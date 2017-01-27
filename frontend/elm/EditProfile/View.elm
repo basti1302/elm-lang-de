@@ -238,4 +238,4 @@ getProfilePicSrc profile gravatarPreferredSize =
     else if not (String.isEmpty profile.gitHubAvatarUrl) then
         profile.gitHubAvatarUrl
     else
-        "/svgs/elm-logo-mono.svg"
+        "/img/elm-logo-mono.svg"

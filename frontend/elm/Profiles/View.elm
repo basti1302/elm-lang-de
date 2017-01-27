@@ -218,7 +218,7 @@ getProfilePicSrcOrDummy profile gravatarPreferredSize =
                 picSrc
 
             Nothing ->
-                "/svgs/elm-logo-mono.svg"
+                "/img/elm-logo-mono.svg"
 
 
 getProfilePicSrc :
