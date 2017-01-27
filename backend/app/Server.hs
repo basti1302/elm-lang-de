@@ -31,8 +31,10 @@ mainServer appConfig dbConnection =
     jsonAPIHandler = jsonServer appConfig dbConnection
     oAuthAPIHandler :: Server OAuthAPI
     oAuthAPIHandler = oAuthServer webConfig dbConnection
+    frontendAssetsBaseDirectory =
+      if Config.developmentMode webConfig then "frontend" else "dist"
     staticHandler :: Server StaticFiles
-    staticHandler = serveDirectory "frontend"
+    staticHandler = serveDirectory frontendAssetsBaseDirectory
   in
        jsonAPIHandler
   :<|> oAuthAPIHandler

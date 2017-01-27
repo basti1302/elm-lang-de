@@ -38,6 +38,7 @@ data WebConfig = WebConfig
   , gitHubClientSecret     :: Maybe String
   , gitHubOAuthRedirectUrl :: String
   , secureCookiesDisabled  :: Bool
+  , developmentMode        :: Bool
   } deriving (Eq, Show, Generic)
 
 
@@ -85,6 +86,7 @@ readWebConfig = do
   ghRedirectUrl             <- lookupEnvWithDefault    "GITHUB_REDIRECT_URL"
                                "https://elm-lang.de/oauth/github"
   secureCookiesDisabledFlag <- lookupFlag              "SECURE_COOKIES_DISABLED"
+  devMode                   <- lookupFlag              "DEVELOPMENT_MODE"
   let
     hostPreference :: Warp.HostPreference
     hostPreference = fromString hostString
@@ -95,12 +97,20 @@ readWebConfig = do
              , gitHubClientSecret     = ghClientSecret
              , gitHubOAuthRedirectUrl = ghRedirectUrl
              , secureCookiesDisabled  = secureCookiesDisabledFlag
+             , developmentMode        = devMode
              }
   unless (hasGitHubOAuthConfig webCfg)
     ( putStrLn
       "WARNING: GitHub OAuth cliend ID and/or client secret are not \
       \configured, sign in via GitHub will not work."
     )
+  if (developmentMode webCfg)
+    then do
+      putStrLn "WARNING: elm-lang.de is running in development mode."
+      putStrLn "Static assets will be served from the /frontend folder."
+    else do
+      putStrLn "elm-lang.de is running in production mode."
+      putStrLn "Static assets will be served from the /dist folder."
   return webCfg
 
 
