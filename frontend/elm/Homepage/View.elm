@@ -62,9 +62,15 @@ homepageContent model =
             ("""
 Herzlich willkommen auf elm-lang.de, dem Hub für die deutschsprachige Elm-Community. Hier kannst du dich mit anderen Elm-Entwicklern vernetzen, und sehen, was rund um Elm in deiner Umgebung passiert.
 
-Du interessierst dich für Elm, hast vielleicht schon erste kleinere Projekte damit umgesetzt oder setzt es sogar schon produktiv ein? Trag dich auf jeden Fall ins Entwicklerverzeichnis ein! Um ein Profil anzulegen, musst du dich nur mit """
+### Entwicklerverzeichnis
+
+Du interessierst dich für Elm, hast vielleicht schon erste Projekte damit umgesetzt oder setzt essogar produktiv ein? Trag dich auf jeden Fall ins Entwicklerverzeichnis ein! Um ein Profil anzulegen, musst du dich nur mit """
                 ++ signInWithGitHub
                 ++ """, dann wird automatisch ein Entwickler-Profil für dich angelegt.
+
+Um zu sehen, wer sonst noch so was mit Elm macht, wirf einen Blick ins [Entwicklerverzeichnis](#developers).
+
+### Events
 
 Alle Meetups, Talks und Konferenzen mit Bezug zu Elm findest du unter [Termine](#events).
         """
