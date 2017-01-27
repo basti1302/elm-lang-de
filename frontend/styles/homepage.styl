@@ -1,0 +1,70 @@
+$hero-height-wide-screen = 40rem
+$hero-height-small-screen = 20rem
+
+.hero
+  padding 0
+  margin 0
+  position absolute
+  left 0
+  top $header-height
+  // small screen: $header-height-small-screen = 3rem
+  width 100vw
+  height $hero-height-wide-screen
+  background $color-light-grey
+
+.homepage-header
+  width 100vw
+  text-align center
+  height 8rem
+  line-height 8rem
+  margin-top 10rem
+  color $color-dark-blueish-grey
+
+  h1
+    display inline
+    padding-bottom 4rem
+    border-bottom 1px solid $color-dark-blueish-grey
+
+  img
+    vertical-align middle
+    width 6rem
+    margin-right 2rem
+
+  .homepage-subheader
+    line-height initial
+    margin-top 7rem
+
+  .homepage-subheader-large
+    font-size 2.25rem
+
+.homepage-content
+  margin-top 40rem
+
+// hero section and homepage header for small screens
+@media $mq-up_to_S
+  .hero
+    top $header-height-small-screen
+    height $hero-height-small-screen
+
+  .homepage-header
+    height 4rem
+    line-height 4rem
+    margin-top 5rem
+
+    h1
+      font-size 3.5rem
+      padding-bottom 1rem
+
+    img
+      width 3rem
+      margin-right 1rem
+
+    .homepage-subheader
+      margin-top 3rem
+
+    .homepage-subheader-large
+      font-size 2rem
+
+  .homepage-content
+    margin-top $hero-height-small-screen
+

@@ -1,18 +1,18 @@
 module View exposing (view)
 
-import Types exposing (..)
 import Html exposing (..)
 import Html.Events exposing (defaultOptions, onClick)
 import Html.Attributes exposing (..)
 import Homepage.View
 import EditProfile.View
 import Events.View
+import GitHubOAuthConfig
 import Imprint.View
 import Json.Decode as Json
 import Profiles.View
 import Profiles.Types
 import Routes
-import RemoteData exposing (RemoteData(..))
+import Types exposing (..)
 
 
 view : Model -> Html Msg
@@ -158,7 +158,7 @@ navLinkSignOutSmallScreen =
 
 pageFooter : Html Msg
 pageFooter =
-    div [ class "footer" ]
+    footer []
         [ div
             [ class "footer-line hide-wd-sm" ]
             [ text "Made with ♥, "
@@ -281,7 +281,7 @@ notSignedInComponent : Model -> Html Msg
 notSignedInComponent model =
     let
         maybeUrl =
-            gitHubOAuthUrl model
+            GitHubOAuthConfig.gitHubOAuthUrl model Nothing
 
         comp =
             case maybeUrl of
@@ -318,7 +318,9 @@ signInWithGitHubSmallScreen : Model -> List (Html Msg)
 signInWithGitHubSmallScreen model =
     let
         maybeUrl =
-            gitHubOAuthUrl model
+            Routes.pageToHash model.page
+                |> Just
+                |> GitHubOAuthConfig.gitHubOAuthUrl model
     in
         case maybeUrl of
             Just ghUrl ->
@@ -328,28 +330,6 @@ signInWithGitHubSmallScreen model =
 
             Nothing ->
                 []
-
-
-gitHubOAuthUrl : Model -> Maybe String
-gitHubOAuthUrl model =
-    case model.gitHubOAuthConfig of
-        Success gitHubOAuthConfig ->
-            let
-                redirectUrl =
-                    gitHubOAuthConfig.redirectUrl
-                        ++ Routes.pageToHash model.page
-
-                clientId =
-                    gitHubOAuthConfig.clientId
-            in
-                "https://github.com/login/oauth/authorize?client_id="
-                    ++ clientId
-                    ++ "&redirect_uri="
-                    ++ redirectUrl
-                    |> Just
-
-        otherwise ->
-            Nothing
 
 
 onWithStopPropagation : msg -> Attribute msg

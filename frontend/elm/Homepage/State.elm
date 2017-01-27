@@ -1,11 +1,18 @@
-module Homepage.State exposing (init, initialModel, update, subscriptions)
+module Homepage.State
+    exposing
+        ( init
+        , initialModel
+        , update
+        , subscriptions
+        )
 
 import Homepage.Types exposing (..)
+import RemoteData exposing (RemoteData(NotAsked))
 
 
 initialModel : Model
 initialModel =
-    {}
+    { gitHubOAuthConfig = NotAsked }
 
 
 init : ( Model, Cmd Msg )

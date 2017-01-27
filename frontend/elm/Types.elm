@@ -4,6 +4,7 @@ import Http
 import Homepage.Types
 import EditProfile.Types
 import Events.Types
+import GitHubOAuthConfig exposing (GitHubOAuthConfig)
 import Profiles.Types exposing (Profile)
 import RemoteData exposing (RemoteData, WebData)
 
@@ -28,12 +29,6 @@ type alias SignedInModel =
     { profile : Profiles.Types.Profile
     , editProfileModel : EditProfile.Types.Model
     , showProfilePopupMenu : Bool
-    }
-
-
-type alias GitHubOAuthConfig =
-    { clientId : String
-    , redirectUrl : String
     }
 
 

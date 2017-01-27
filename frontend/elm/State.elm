@@ -56,7 +56,7 @@ update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         AppBootstrapResponse (Success appBootstrapResource) ->
-            processAppBootstrap model appBootstrapResource
+            processAppBootstrapResponse model appBootstrapResource
 
         AppBootstrapResponse err ->
             -- Ignore all other app bootstrap responses for now
@@ -212,8 +212,8 @@ processEditProfileMsg editProfileMsg signedInModel =
             ! [ Cmd.map EditProfileMsg cmd ]
 
 
-processAppBootstrap : Model -> AppBootstrapResource -> ( Model, Cmd Msg )
-processAppBootstrap model appBootstrapResource =
+processAppBootstrapResponse : Model -> AppBootstrapResource -> ( Model, Cmd Msg )
+processAppBootstrapResponse model appBootstrapResource =
     let
         auth =
             case ( appBootstrapResource.signedIn, appBootstrapResource.profile ) of
@@ -233,10 +233,17 @@ processAppBootstrap model appBootstrapResource =
 
                 otherwise ->
                     Failure "No client ID"
+
+        oldHomepageModel =
+            model.homepage
+
+        newHomepageModel =
+            { oldHomepageModel | gitHubOAuthConfig = gitHubOAuthConfig }
     in
         ( { model
             | auth = auth
             , gitHubOAuthConfig = gitHubOAuthConfig
+            , homepage = newHomepageModel
           }
         , Cmd.none
         )
