@@ -1,21 +1,28 @@
 {
   "name": "elm-lang-de",
-  "description": "Website elm-lang.de",
-  "version": "0.1.0",
-  "license": "UNLICENSED",
+  "description": "The website elm-lang.de, a community hub for Elm developers in Germany",
+  "version": "1.0.0",
+  "license": "MIT",
   "homepage": "http://elm-lang.de",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/dennisreimann/elm-lang-de.git"
+    "url": "git+https://github.com/basti1302/elm-lang-de.git"
   },
   "bugs": {
-    "url": "https://github.com/dennisreimann/elm-lang-de/issues"
+    "url": "https://github.com/basti1302/elm-lang-de/issues"
   },
   "author": {
-    "name": "Dennis Reimann",
-    "email": "mail@dennisreimann.de",
-    "url": "https://dennisreimann.de/"
+    "name": "Bastian Krol",
+    "email": "bastian.krol@codecentric.de",
+    "url": "https://www.codecentric.de/team/profil/?profil=bastian-krol"
   },
+  "contributors": [
+    {
+      "name": "Dennis Reimann",
+      "email": "mail@dennisreimann.de",
+      "url": "https://dennisreimann.de/"
+    }
+  ],
   "devDependencies": {
     "autoprefixer": "^6.3.6",
     "copy-webpack-plugin": "^4.0.1",
@@ -27,6 +34,7 @@
     "file-loader": "^0.9.0",
     "font-awesome": "^4.7.0",
     "html-webpack-plugin": "^2.17.0",
+    "npm-run-all": "^4.0.1",
     "postcss-loader": "^1.1.1",
     "rimraf": "^2.5.4",
     "spectre.css": "0.1.31",
@@ -39,9 +47,13 @@
     "webpack-merge": "^0.17.0"
   },
   "scripts": {
-    "postinstall": "elm-package install",
     "env": "env",
-    "build": "rimraf dist/* && webpack",
+    "postinstall": "run-s make",
+    "elm-install": "elm-package install",
+    "clean": "rimraf dist && mkdirp dist",
+    "clean-make": "run-s clean make",
+    "make": "run-s elm-install webpack",
+    "webpack": "webpack",
     "start": "webpack-dev-server --hot --inline --content-base frontend/"
   }
 }

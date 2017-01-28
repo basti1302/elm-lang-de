@@ -1,0 +1,45 @@
+version: '2'
+services:
+
+  elmlangde-postgres:
+    image: basti1302/elmlangde-postgres
+    build:
+      context: ..
+      dockerfile: docker/postgres/Dockerfile
+    container_name: elmlangde-postgres
+    env_file: ./postgres/postgres-secrets.env
+    environment:
+      - POSTGRES_USER=postgres
+
+  # Needs to be build with "stack image container" before
+  elmlangde-app:
+    image: basti1302/elmlangde-app
+    container_name: elmlangde-app
+    working_dir: /elmlangde
+    links:
+      - elmlangde-postgres:postgres
+    depends_on:
+      - elmlangde-postgres
+    entrypoint: /bin/bash -c 'cd /elmlangde && elmlangde'
+    env_file:
+      - ../moo.cfg
+      - ./postgres/postgres-secrets.env
+    environment:
+      - PGHOST=postgres
+      - PGDB=elmlangde
+      - PGUSER=elmlangde
+      - DBM_MIGRATION_STORE=/elmlangde/backend/migrations
+      - MAIL_DISABLED=1
+
+  elmlangde-nginx:
+    image: basti1302/elmlangde-nginx
+    build:
+      context: ..
+      dockerfile: docker/nginx/Dockerfile
+    container_name: elmlangde-nginx
+    links:
+        - elmlangde-app:app
+    ports:
+        - "80:80"
+        - "443:443"
+

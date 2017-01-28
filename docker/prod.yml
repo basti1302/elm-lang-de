@@ -1,0 +1,40 @@
+version: '2'
+services:
+
+  elmlangde-postgres:
+    image: basti1302/elmlangde-postgres
+    container_name: elmlangde-postgres
+    env_file: ./postgres/postgres-secrets.env
+    environment:
+      - POSTGRES_USER=postgres
+
+  elmlangde-app:
+    image: basti1302/elmlangde-app
+    container_name: elmlangde-app
+    working_dir: /elmlangde
+    links:
+      - elmlangde-postgres:postgres
+    depends_on:
+      - elmlangde-postgres
+    entrypoint: /bin/bash -c 'cd /elmlangde && elmlangde'
+    env_file:
+      - ./postgres/postgres-secrets.env
+    environment:
+      - PGHOST=postgres
+      - PGDB=elmlangde
+      - PGUSER=elmlangde
+      - DBM_MIGRATION_STORE=/elmlangde/backend/migrations
+      - DBM_DATABASE_TYPE="will be ignored"
+      - DBM_DATABASE="will be constructed from PGHOST, PGDB, PGUSER and PGPASS"
+      - DBM_LINEAR_MIGRATIONS=on
+      - DBM_TIMESTAMP_FILENAMES=on
+
+  elmlangde-nginx:
+    image: basti1302/elmlangde-nginx
+    container_name: elmlangde-nginx
+    links:
+        - elmlangde-app:app
+    ports:
+        - "80:80"
+        - "443:443"
+

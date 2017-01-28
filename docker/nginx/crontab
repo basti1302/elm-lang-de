@@ -1,0 +1,14 @@
+# Renew certs twice a day. certbot will only take action if renewal is required.
+# This crontab will be installed at /etc/cron.d/certbot-renew-cron (see
+# Dockerfile).
+#
+# Remark: certbot installs its own cronjob at /etc/cron.d/certbot but this won't work on
+# the nginx container (it assumes /run/systemd to be present but this does not
+# exist in the nginx container). The Dockerfile will remove /etc/cron.d/certbot.
+
+SHELL=/bin/sh
+PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
+
+0 */12 * * * root perl -e 'sleep int(rand(3600))' && certbot -q renew >> /var/log/cron.log 2>&1
+
+# an empty line at the end of the file is required for a valid crontab file

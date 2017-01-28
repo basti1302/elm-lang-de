@@ -1,10 +1,8 @@
 # elm-lang.de
 
-## What Is This?
-
 This is the code that runs [elm-lang.de](https://elm-lang.de). The site elm-lang.de is a community hub for Elm developers in Germany and German speaking countries. It publishes news, events and articles related to the programming language [Elm](http://elm-lang.org/). Also, there is a developer directory where developers can create a profile for themselves and check who else works with Elm in their area. You can use the directory to connect with the community.
 
-## Contributing
+# Contributing
 
 Contributions to elm-lang.de are most welcome. There's still a lot of work to do and features to build. So if you want to get your hands dirty, this section is for you.
 
@@ -12,13 +10,14 @@ Contributions can come in many forms. You can create issues if you notice any bu
 
 The remainder of this section explains how to work with the code base.
 
-### Setup
+# Development Setup
 
 The following prerequisites need to be installed:
 
 * [PostgreSQL](https://www.postgresql.org/download/) (Database)
 * [Stack](https://docs.haskellstack.org/en/stable/README/#how-to-install) (Haskell build tool)
 * [Yarn](https://yarnpkg.com/en/docs/install) (front end package manager).
+* [Docker](https://www.docker.com/) (not required for development, but to deploy new versions on production)
 * [entr](http://entrproject.org) (a file watcher, this tool is optional but recommended for development)
 
 
@@ -39,18 +38,18 @@ need to follow the instructions given in .github-secret.template.
 If you would like to have some test data you can run
 
 ```
-psql -d elmlangde < backend/sql/profiles.sql
+psql -d elmlangde < backend/sql/test_data_profiles.sql
 ```
 
 so the list of developer profiles is not empty.
 
-### Development Setup
+# Development Workflow
 
 During development you will probably want to have `bin/watch-all.sh` running all the time. It builds the back end and the front end and watches all relevant files for changes. If a back end source file changes, the back end is rebuild and restarted automatically. If a front end source file changes, the front end is rebuild and a browser reload is triggered.
 
 The webpack dev server runs on [`localhost:7000`](http://localhost:7000). Back end requests are proxied from localhost:7000/api to the back end by the webpack dev server. If for some reason you want to access the back end separately without relying on the webpack dev server proxy you can do so at [`localhost:8000`](http://localhost:8000).
 
-### Other useful shell scripts and commands
+## Other Useful Shell Scripts and Commands
 
 * `bin/backend-build-run.sh`: Builds and starts the back end without watching for file changes.
 * `bin/watch-backend.sh`: Build and run the back end, watch for back end source file changes and rebuild and restart the back end when a file changes. Does not build or start the front end.
@@ -62,11 +61,11 @@ The webpack dev server runs on [`localhost:7000`](http://localhost:7000). Back e
 
 The webpack dev server runs on [`localhost:7000`](http://localhost:7000)
 
-### Configuration
+## Configuration
 
 Some operational aspects can be configured. All configuration is done solely through environment variables.
 
-#### Database Related Environment Variables
+### Database Related Environment Variables
 
 Variable | Required  |  Default Value | Comment
 ---------|-----------|----------------|--------
@@ -77,7 +76,7 @@ Variable | Required  |  Default Value | Comment
 
 The provided default values are okay for development on your local machine. They must not be used in production (see below).
 
-#### Web App Related Environment Variables
+### Web App Related Environment Variables
 
 Variable                | Required  |  Default Value | Comment
 ------------------------|-----------|----------------|--------
@@ -90,10 +89,42 @@ SECURE_COOKIES_DISABLED |        no | False | If the cookies set by the app have
 DEVELOPMENT_MODE        |        no | False | If this flag is set, static front end assets (like HTML, JS, CSS and images) will be served from `/frontend` instead of `/dist`.
 
 
-### Production
+# Operation
 
-TODO This section needs more detailed instructions.
+elm-lang.de's production setup uses three Docker containers, elmlangde-postgres (the database), elmlangde-nginx (Nginx, for SSL-Termination) and last but not least elmlangde-app, the Haskell/Servant app which also includes the static front end assets including the compiled Elm code.
 
-* Run `npm run build` to make webpack build the productin front end assets in `/dist`.
-* ...
+The containers have Dockerfiles in their respective directory under `docker/`. There is also a docker-compose.yml that describes the connections between the containers.
+
+## Working with the Docker Containers
+
+* Run `bin/container-rebuild-all.sh` to create (or recreate) all three containers.
+* If you only want to recreate the app container and leave the Nginx and the PostgreSQL containers untouched, use `bin/container-rebuild-app.sh`.
+* If you only need to recreate the nginx container, use `bin/container-rebuild-nginx.sh`.
+
+This will create the Docker containers locally on your system. When the containers have been build (and tested) and you want to deploy them, they need to be pushed to the registry. Once a new version of a container is in the registry, it can be pulled on the target system and started there, see below.
+
+For the nginx container there is one caveat: The initial deploy requires a rather ugly workaround on the very first deployment to production, to get the letsencrypt certs workflow right. It is documented in `docker/nginx/Dockerfile` in the comment beginning with "Install letsencrypt cert".
+
+When one or more of the containers have been created (or recreated) its time to push them to the Docker registry. Right now, they live in Bastian's account at:
+
+* https://cloud.docker.com/app/basti1302/repository/docker/basti1302/elmlangde-postgres
+* https://cloud.docker.com/app/basti1302/repository/docker/basti1302/elmlangde-nginx
+* https://cloud.docker.com/app/basti1302/repository/docker/basti1302/elmlangde-app
+
+To be able to push the containers to the registry for the first time, a repository has to be created using the Dockerhub web UI. To actually push the containers, use these commands:
+
+* `docker push basti1302/elmlangde-postgres`
+* `docker push basti1302/elmlangde-nginx`
+* `docker push basti1302/elmlangde-app`
+
+To deploy the containers on a target system, you need to
+
+* install Docker and docker-compose there,
+* `git pull` this repository there (prefered location: `/opt/elm-lang-de`),
+* pull the Docker containers and
+* start them via
+    * `cd /opt/elm-lang-de/docker`
+    * `docker-compose --file prod.yml up -d`
+
+The script `bin/remote/deploy.sh` is a convenience script that is intended to be executed on production, it will pull the latest app container and deploy it. It will not touch the postgres or nginx containers. `bin/deploy-app-prod.sh` is a convenience script intended to run locally that rebuilds the app container, pushes it to the registry and immediately deploys it.
 

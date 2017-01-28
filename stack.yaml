@@ -11,10 +11,10 @@ flags: {}
 image:
   container:
     base: fpco/stack-run
-    name: basti1302/elm-lang-de-app
+    name: basti1302/elmlangde-app
     add:
-      backend: /elm-lang-de/backend
-      frontend: /elm-lang-de/frontend
+      backend: /elmlangde/backend
+      frontend: /elmlangde/frontend
 
 extra-package-dbs: []
 
