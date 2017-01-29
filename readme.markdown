@@ -112,7 +112,7 @@ When one or more of the containers have been created (or recreated) its time to 
 * https://cloud.docker.com/app/basti1302/repository/docker/basti1302/elmlangde-nginx
 * https://cloud.docker.com/app/basti1302/repository/docker/basti1302/elmlangde-app
 
-To be able to push the containers to the registry for the first time, a repository has to be created using the Dockerhub web UI. To actually push the containers, use these commands:
+To be able to push the containers to the registry for the first time, a repository has to be created using the Dockerhub web UI. To actually push the containers, use the script `bin/container-push-all.sh` or these commands:
 
 * `docker push basti1302/elmlangde-postgres`
 * `docker push basti1302/elmlangde-nginx`
@@ -135,3 +135,7 @@ To prepare a target system for the first deployment, you need to:
 
 The script `bin/remote/deploy.sh` is a convenience script that is intended to be executed on production, it will pull the latest app container and deploy it. It will not touch the postgres or nginx containers. `bin/deploy-app-prod.sh` is a convenience script intended to run locally that rebuilds the app container, pushes it to the registry and immediately deploys it.
 
+Note: `/opt/elm-lang-de/bin/remote/start.sh` just starts the containers with the `docker-compose` executable. It will pull the containers that do not exist on the system but it will not update them if they are there. For updates, you'll need to pull the latest container versions explicitly. You can pull all Docker containers with `/opt/elm-lang-de/bin/container-pull-all.sh` or pull individual containers with one of the following commands:
+* `docker pull basti1302/elmlangde-postgres`
+* `docker pull basti1302/elmlangde-nginx`
+* `docker pull basti1302/elmlangde-app`

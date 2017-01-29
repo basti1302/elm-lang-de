@@ -8,8 +8,10 @@ docker:
   enable: true
   auto-pull: true
   stack-exe: /Users/bastian/projekte/elm-lang-de/docker/stack-binary/stack-1.3.2-linux-x86_64-static/stack
-
 system-ghc: true
+
+# For development:
+# system-ghc: false
 
 packages:
 - '.'

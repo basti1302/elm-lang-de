@@ -76,10 +76,10 @@ readDbConfig = do
 
 readWebConfig :: IO WebConfig
 readWebConfig = do
-  -- Default value for bind host is HostIPv4, which means
+  -- Default value for bind host is *4, which means
   -- "any IPv4 or IPv6 hostname, IPv4 preferred", see
   -- https://hackage.haskell.org/package/warp-3.2.9/docs/Network-Wai-Handler-Warp.html#t:HostPreference
-  hostString                <- lookupEnvWithDefault    "HOST" "HostIPv4"
+  hostString                <- lookupEnvWithDefault    "HOST" "*4"
   port                      <- lookupEnvIntWithDefault "PORT" 8000
   ghClientId                <- lookupEnvOptional       "GITHUB_CLIENT_ID"
   ghClientSecret            <- lookupEnvOptional       "GITHUB_CLIENT_SECRET"

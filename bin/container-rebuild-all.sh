@@ -5,7 +5,7 @@ pushd `dirname $0`/../docker > /dev/null
 
 source ../bin/create-secrets
 sed                                                               \
-  s/$\{screenpalDatabasePassword\}/$POSTGRES_ELMLANGDE_PASSWORD/g \
+  s/$\{elmLangDeDatabasePassword\}/$POSTGRES_ELMLANGDE_PASSWORD/g \
   ../backend/sql/init_db.sql.template                 \
   > ../backend/sql/init_db.sql
 docker-compose stop
