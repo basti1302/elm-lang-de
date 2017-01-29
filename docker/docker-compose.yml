@@ -20,7 +20,7 @@ services:
       - elmlangde-postgres:postgres
     depends_on:
       - elmlangde-postgres
-    entrypoint: /bin/bash -c 'cd /elmlangde && elmlangde'
+    entrypoint: /bin/bash -c 'cd /elmlangde && elm-lang-de'
     env_file:
       - ../moo.cfg
       - ./postgres/postgres-secrets.env

@@ -17,7 +17,8 @@ The following prerequisites need to be installed:
 * [PostgreSQL](https://www.postgresql.org/download/) (Database)
 * [Stack](https://docs.haskellstack.org/en/stable/README/#how-to-install) (Haskell build tool)
 * [Yarn](https://yarnpkg.com/en/docs/install) (front end package manager).
-* [Docker](https://www.docker.com/) (not required for development, but to deploy new versions on production)
+* [Docker](https://www.docker.com/) (not required for development, but to build new versions for production)
+* [Docker Compose](https://docs.docker.com/compose/install/) (not required for development, but to build new versions for production)
 * [entr](http://entrproject.org) (a file watcher, this tool is optional but recommended for development)
 
 
@@ -117,14 +118,20 @@ To be able to push the containers to the registry for the first time, a reposito
 * `docker push basti1302/elmlangde-nginx`
 * `docker push basti1302/elmlangde-app`
 
-To deploy the containers on a target system, you need to
+To prepare a target system for the first deployment, you need to:
 
-* install Docker and docker-compose there,
-* `git pull` this repository there (prefered location: `/opt/elm-lang-de`),
-* pull the Docker containers and
-* start them via
-    * `cd /opt/elm-lang-de/docker`
-    * `docker-compose --file prod.yml up -d`
+* Create a user `elmlangde` and grant it sudo privileges (see https://www.digitalocean.com/community/tutorials/initial-server-setup-with-ubuntu-16-04).
+* `git clone` this repository there (prefered location: `/opt/elm-lang-de`).
+* You might want to `chown -R` the repo to user `elmlangde`
+* Run the script `/opt/elm-lang-de/docker/prepare-target-system.sh` *on the target machine*. This will install Docker and Docker Compose.
+* Add the following line to `/etc/rc.local`: `/opt/elm-lang-de/bin/remote/start.sh`
+* Copy the file `docker/postgres/postgres.secrets.env` from your *local* machine (where `elmlangde-postgres` has been build) to `/opt/elm-lang-de/docker/postgres/` on the target machine.
+* Start the Docker containers via `/opt/elm-lang-de/bin/remote/start.sh`. This will pull the Docker containers and start them. If you get an error message that you could not connect to the Docker daemon
+    * Make sure Docker is running via `systemctl status docker`,
+    * Make sure you have added your username to the docker group by executing `groups`, the output should list `docker` among other groups. If not, add your username now with
+        * `usermod -aG docker $(whoami)` or
+        * `usermod -aG docker elmlangde`
+    * Log out and log in again (this might be necessary for the group change to take effect).
 
 The script `bin/remote/deploy.sh` is a convenience script that is intended to be executed on production, it will pull the latest app container and deploy it. It will not touch the postgres or nginx containers. `bin/deploy-app-prod.sh` is a convenience script intended to run locally that rebuilds the app container, pushes it to the registry and immediately deploys it.
 

@@ -1,8 +1,8 @@
 {
-    "version": "0.1.0",
+    "version": "1.0.0",
     "summary": "Website elm-lang.de",
-    "repository": "https://github.com/dennisreimann/elm-lang-de.git",
-    "license": "UNLICENSED",
+    "repository": "https://github.com/basti1302/elm-lang-de.git",
+    "license": "MIT",
     "source-directories": [
         "frontend/elm"
     ],

@@ -1,6 +1,15 @@
 resolver: lts-7.13
 
-system-ghc: false
+# For production we need to build the executable in an ephemeral Docker image,
+# otherwise it will have the executable file format of the local architecture,
+# that is, if you build on a Mac, the executable will have Mach-O format which
+# can not be used in the production Docker container (which is Linux based).
+docker:
+  enable: true
+  auto-pull: true
+  stack-exe: /Users/bastian/projekte/elm-lang-de/docker/stack-binary/stack-1.3.2-linux-x86_64-static/stack
+
+system-ghc: true
 
 packages:
 - '.'
@@ -14,7 +23,7 @@ image:
     name: basti1302/elmlangde-app
     add:
       backend: /elmlangde/backend
-      frontend: /elmlangde/frontend
+      dist: /elmlangde/dist
 
 extra-package-dbs: []
 
