@@ -9,7 +9,12 @@ var ExtractTextPlugin = require('extract-text-webpack-plugin');
 var CopyWebpackPlugin = require('copy-webpack-plugin');
 
 // detemine build env
-var TARGET_ENV = process.env.npm_lifecycle_event === 'build' ? 'production' : 'development';
+var TARGET_ENV =
+  process.env.npm_lifecycle_event === 'webpack-production' ?
+    'production' :
+    'development';
+
+console.log('TARGET_ENV:', TARGET_ENV);
 
 // common webpack config
 var commonConfig = {

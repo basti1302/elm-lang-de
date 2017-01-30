@@ -52,8 +52,8 @@
     "elm-install": "elm-package install",
     "clean": "rimraf dist && mkdirp dist",
     "clean-make": "run-s clean make",
-    "make": "run-s elm-install webpack",
-    "webpack": "webpack",
+    "make": "run-s elm-install webpack-production",
+    "webpack-production": "webpack",
     "start": "webpack-dev-server --hot --inline --content-base frontend/"
   }
 }
