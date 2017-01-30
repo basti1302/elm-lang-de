@@ -135,7 +135,8 @@ if (TARGET_ENV === 'production') {
 
     plugins: [
       new CopyWebpackPlugin([
-        { from: 'frontend/img', to: 'img' }
+        { from: 'frontend/img', to: 'img' },
+        { from: 'frontend/favicon.ico' }
       ]),
 
       new webpack.optimize.OccurenceOrderPlugin(),
