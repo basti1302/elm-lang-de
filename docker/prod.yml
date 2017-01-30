@@ -19,6 +19,7 @@ services:
     entrypoint: /bin/bash -c 'cd /elmlangde && elm-lang-de'
     env_file:
       - ./postgres/postgres-secrets.env
+      - ./app/app-secrets.env
     environment:
       - PGHOST=postgres
       - PGDB=elmlangde
