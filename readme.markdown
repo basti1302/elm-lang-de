@@ -21,12 +21,13 @@ The following prerequisites need to be installed:
 * [Docker Compose](https://docs.docker.com/compose/install/) (not required for development, but to build new versions for production)
 * [entr](http://entrproject.org) (a file watcher, this tool is optional but recommended for development)
 
-
 ```bash
-$ # Create the database schema
-$ bin/db-recreate.sh
 $ # Download the proper GHC for the project and install it into an isolated location
 $ stack setup
+$ # Install the dbmigrations executable for PostgreSQL (to manage the db schema)
+$ stack install dbmigrations-postgresql
+$ # Create the database schema
+$ bin/db-recreate.sh
 $ # Build the Haskell back end
 $ stack build
 $ # Download front end dependencies and build the Elm sources

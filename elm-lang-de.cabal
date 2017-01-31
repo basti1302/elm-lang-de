@@ -92,4 +92,4 @@ executable elm-lang-de
 
 source-repository head
   type:     git
-  location: git@github.com:dennisreimann/elm-lang-de.git
+  location: git@github.com:basti13023/elm-lang-de.git
