@@ -99,10 +99,10 @@ pageHeader model =
                     , ( "collapsed", not model.showSmallScreenNav )
                     ]
                 ]
-                ([ navLinkWideScreen HomePage "Elm"
-                 , navLinkSmallScreen model HomePage "Startseite"
-                 , navLink EventsPage "Termine"
-                 , navLink (ProfilesPage Profiles.Types.ListPage) "Entwickler"
+                ([ navLinkWideScreen HomePage "Elm" "home"
+                 , navLinkSmallScreen model HomePage "Startseite" "home"
+                 , navLink EventsPage "Termine" "calendar"
+                 , navLink (ProfilesPage Profiles.Types.ListPage) "Entwickler" "group"
                  ]
                     ++ navLinksSmallScreen
                     ++ [ authenticationComponentWideScreen model ]
@@ -110,28 +110,34 @@ pageHeader model =
             ]
 
 
-navItemAllScreens : Page -> Page -> String -> Html Msg
+navItemAllScreens : Page -> Page -> String -> String -> Html Msg
 navItemAllScreens =
     navItem []
 
 
-navItemSmallScreen : Page -> Page -> String -> Html Msg
+navItemSmallScreen : Page -> Page -> String -> String -> Html Msg
 navItemSmallScreen =
     navItem [ ( "nav-item-small-screen-only", True ) ]
 
 
-navItemWideScreen : Page -> Page -> String -> Html Msg
+navItemWideScreen : Page -> Page -> String -> String -> Html Msg
 navItemWideScreen =
     navItem [ ( "nav-item-wide-screen-only", True ) ]
 
 
-navLinkSmallScreen : Model -> Page -> String -> Html Msg
+navLinkSmallScreen : Model -> Page -> String -> String -> Html Msg
 navLinkSmallScreen model =
     navItemSmallScreen model.page
 
 
-navItem : List ( String, Bool ) -> Page -> Page -> String -> Html Msg
-navItem extraClasses currentPage page title =
+navItem :
+    List ( String, Bool )
+    -> Page
+    -> Page
+    -> String
+    -> String
+    -> Html Msg
+navItem extraClasses currentPage page title icon =
     -- TODO Shouldn't navItem produce simple links with the proper #anchor as
     -- href? We might be able to drop the Navigate messages and Routes#pageToHash
     -- completely.
@@ -146,55 +152,77 @@ navItem extraClasses currentPage page title =
             [ (classList classes)
             , onClick (Navigate page)
             ]
-            [ text title ]
+            [ span [ class ("fa fa-" ++ icon) ] []
+            , text title
+            ]
 
 
 navLinkSignOutSmallScreen : Html Msg
 navLinkSignOutSmallScreen =
     a
         [ class "nav__item nav-item-small-screen-only", onClick SignOutClick ]
-        [ text "Abmelden" ]
+        [ span [ class "fa fa-sign-out" ] []
+        , text "Abmelden"
+        ]
 
 
 pageFooter : Html Msg
 pageFooter =
     footer []
+        -- small screens: split footer content across two lines
         [ div
             [ class "footer-line hide-wd-sm" ]
-            [ text "Made with ♥, "
-            , a [ href "http://elm-lang.org" ]
-                [ img [ src "/img/elm-logo-mono.svg" ] []
-                , text "Elm"
-                ]
-            , text " and "
-            , a [ href "https://haskell-servant.readthedocs.io" ] [ text "Servant" ]
-            , text " by "
-            , a [ href "/#developers/basti1302" ] [ text "Bastian Krol" ]
-            , text " & Dennis Reimann"
-            ]
+            footerContent1
         , div
             [ class "footer-line hide-wd-sm" ]
-            [ a [ href "#imprint" ] [ text "Impressum" ]
-            , text " | Sponsored by "
-            , a [ href "https://www.codecentric.de" ] [ text "codecentric" ]
-            ]
+            footerContent2
+          -- wide screens: all footer content in one line
         , div
             [ class "footer-line hide-sm" ]
-            [ text "Made with ♥, "
-            , a [ href "http://elm-lang.org" ]
-                [ img [ src "/img/elm-logo-mono.svg" ] []
-                , text "Elm"
-                ]
-            , text " and "
-            , a [ href "https://haskell-servant.readthedocs.io" ] [ text "Servant" ]
-            , text " by "
-            , a [ href "/#developers/basti1302" ] [ text "Bastian Krol" ]
-            , text " & Dennis Reimann | "
-            , a [ href "#imprint" ] [ text "Impressum" ]
-            , text " | Sponsored by "
-            , a [ href "https://www.codecentric.de" ] [ text "codecentric" ]
-            ]
+            (footerContent1 ++ footerContent2)
         ]
+
+
+footerContent1 : List (Html Msg)
+footerContent1 =
+    [ text "Made with ♥, "
+    , elmLink
+    , text " and "
+    , servantLink
+    , text " by "
+    , a [ href "/#developers/basti1302" ] [ text "Bastian Krol" ]
+    , text " & Dennis Reimann"
+    ]
+
+
+footerContent2 : List (Html Msg)
+footerContent2 =
+    [ a [ href "#imprint" ] [ text "Impressum" ]
+    , text " | Sponsored by "
+    , ccLink
+    ]
+
+
+elmLink : Html Msg
+elmLink =
+    a [ href "http://elm-lang.org" ]
+        [ img [ src "/img/elm-logo-mono.svg" ] []
+        , text "Elm"
+        ]
+
+
+servantLink : Html Msg
+servantLink =
+    a [ href "https://haskell-servant.readthedocs.io" ] [ text "Servant" ]
+
+
+ccLink : Html Msg
+ccLink =
+    a
+        [ style [ ( "position", "relative" ), ( "top", "3px" ) ]
+        , href "https://www.codecentric.de"
+        ]
+        [ img [ src "/img/cc-logo-black.png" ] [] ]
 
 
 authenticationComponentWideScreen : Model -> Html Msg
@@ -306,7 +334,7 @@ authenticationComponentSmallScreen : Model -> List (Html Msg)
 authenticationComponentSmallScreen model =
     case model.auth of
         SignedIn _ ->
-            [ navLinkSmallScreen model EditProfilePage "Mein Profil"
+            [ navLinkSmallScreen model EditProfilePage "Mein Profil" "user"
             , navLinkSignOutSmallScreen
             ]
 
@@ -325,7 +353,9 @@ signInWithGitHubSmallScreen model =
         case maybeUrl of
             Just ghUrl ->
                 [ a [ href ghUrl, class "nav__item nav-item-small-screen-only" ]
-                    [ text "Anmelden" ]
+                    [ span [ class "fa fa-sign-out" ] []
+                    , text "Anmelden"
+                    ]
                 ]
 
             Nothing ->

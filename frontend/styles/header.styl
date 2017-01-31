@@ -17,6 +17,9 @@ $profile-img-width = 4rem
       &--current
         color $color-white
 
+      span.fa
+        margin-right 1rem
+
   .signed-in-status
     color $color-dark-blueish-grey
 
@@ -89,6 +92,12 @@ $profile-img-width = 4rem
       @extend $wrapped
       display flex
       align-items center
+
+      // hide home font awesome icon on wide screen
+      // (there is already the Elm Icon as a visual "home" cue)
+      .nav-item-wide-screen-only
+        span.fa-home
+          display none
 
       .signed-in-status
         margin-left auto // like float right, but in a flexbox container
