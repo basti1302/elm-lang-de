@@ -1,7 +1,9 @@
 #!/usr/bin/env bash
 set -e
 
-# This file is intended to be used during development, not for production.
+# Starts the the app just like bin/backend-build-run.sh, just without
+# DEVELOPMENT_MODE=true, so front end assets are served from dist. The intention
+# is to test the production webpack build.
 
 pushd `dirname $0`/.. > /dev/null
 
@@ -19,7 +21,6 @@ fi
 HOST=127.0.0.1 \
   SECURE_COOKIES_DISABLED=true \
   GITHUB_REDIRECT_URL=http://localhost:7000/oauth/github \
-  DEVELOPMENT_MODE=true \
   stack exec elm-lang-de
 
 popd > /dev/null

@@ -54,6 +54,8 @@ The webpack dev server runs on [`localhost:7000`](http://localhost:7000). Back e
 ## Other Useful Shell Scripts and Commands
 
 * `bin/backend-build-run.sh`: Builds and starts the back end without watching for file changes.
+* `bin/backend-run-web-prod.sh`: Start the backend in a configuration where it will serve the front end assets from `dist` (that is, the production webpack build) instead of serving from `frontend`. This makes it easier to test the webpack production build locally.
+* `bin/watch-backend.sh`: Build and run the back end, watch for back end source file changes and rebuild and restart the back end when a file changes. Does not build or start the front end.
 * `bin/watch-backend.sh`: Build and run the back end, watch for back end source file changes and rebuild and restart the back end when a file changes. Does not build or start the front end.
 * `npm run build`: Production build for the front end sources.
 * `npm start`: Start the webpack-dev server, that is, build the front end and watch for file changes. Does not build or start the back end.
