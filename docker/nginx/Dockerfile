@@ -27,7 +27,7 @@ ADD docker/nginx/letsencrypt /etc/letsencrypt
 
 # Install letsencrypt cert. For now, this is a manual step to be executed once
 # on the running container when it is run in production to obtain cert files
-# from letsencrypt, then download the cert files and recreate the container
+# from letsencrypt, then download the cert files and recreate the Docker image
 # again with these certs installed. This is really ugly, but at least it's only
 # a one time thing that only needs to be done once per domain. In detail:
 #  1) Edit docker/nginx/nginx.conf and comment out the whole server block for
@@ -66,7 +66,7 @@ ADD docker/nginx/letsencrypt /etc/letsencrypt
 #     <project-root>/docker/nginx/letsencrypt/keys and so on...
 # 13) Delete the tar locally and on the Docker host.
 # 14) Revert your local changes to docker/nginx/nginx.conf from step (1).
-# 15) Recreate the nginx container, push it and deploy it to production.
+# 15) Recreate the nginx Docker image, push it and deploy it to production.
 # 16) You now should have https on production with a valid cert and automatic
 #     cert renewal.
 

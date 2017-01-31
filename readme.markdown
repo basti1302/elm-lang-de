@@ -125,7 +125,8 @@ To prepare a target system for the first deployment, you need to:
 * You might want to `chown -R` the repo to user `elmlangde`
 * Run the script `/opt/elm-lang-de/docker/prepare-target-system.sh` *on the target machine*. This will install Docker and Docker Compose.
 * Add the following line to `/etc/rc.local`: `/opt/elm-lang-de/bin/remote/start.sh`
-* Copy the file `docker/postgres/postgres.secrets.env` from your *local* machine (where `elmlangde-postgres` has been build) to `/opt/elm-lang-de/docker/postgres/` on the target machine.
+* Copy the file `docker/postgres/postgres-secrets.env` from your *local* machine (where `elmlangde-postgres` has been build) to `/opt/elm-lang-de/docker/postgres/` on the target machine.
+* Create a file `docker/app/app-secrets.env` in `/opt/elm-lang-de/docker/app/` on the target machine. You can use <project-root>/docker/app/app-secrets.env.template as a template. Enter the client ID and client secret for GitHub OAuth there. See [GitHub's authentication guide](https://developer.github.com/guides/basics-of-authentication/#registering-your-app) and [GitHub's OAuth apps settings page](https://github.com/settings/developers) for more information. Never add the client secret to version control or make it public by other means!
 * Start the Docker containers via `/opt/elm-lang-de/bin/remote/start.sh`. This will pull the Docker containers and start them. If you get an error message that you could not connect to the Docker daemon
     * Make sure Docker is running via `systemctl status docker`,
     * Make sure you have added your username to the docker group by executing `groups`, the output should list `docker` among other groups. If not, add your username now with
