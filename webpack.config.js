@@ -5,12 +5,11 @@ var webpack           = require('webpack');
 var merge             = require('webpack-merge');
 var HtmlWebpackPlugin = require('html-webpack-plugin');
 var autoprefixer      = require('autoprefixer');
-var ExtractTextPlugin = require('extract-text-webpack-plugin');
 var CopyWebpackPlugin = require('copy-webpack-plugin');
 
 // detemine build env
 var TARGET_ENV =
-  process.env.npm_lifecycle_event === 'webpack-production' ?
+  process.env.npm_lifecycle_event.indexOf('production') >= 0 ?
     'production' :
     'development';
 
@@ -124,11 +123,12 @@ if (TARGET_ENV === 'production') {
         },
         {
           test: /\.(css|styl)$/,
-          loader: ExtractTextPlugin.extract('style-loader', [
+          loaders: [
+            'style-loader',
             'css-loader',
             'postcss-loader',
             'stylus-loader',
-          ]),
+          ],
         },
       ],
     },
@@ -140,8 +140,6 @@ if (TARGET_ENV === 'production') {
       ]),
 
       new webpack.optimize.OccurenceOrderPlugin(),
-
-      new ExtractTextPlugin('styles/[hash].css', { allChunks: true } ),
 
       new webpack.optimize.UglifyJsPlugin({
         minimize: true,

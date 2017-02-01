@@ -65,6 +65,10 @@ The webpack dev server runs on [`localhost:7000`](http://localhost:7000). Back e
 
 The webpack dev server runs on [`localhost:7000`](http://localhost:7000)
 
+## Testing the Webpack Production Build
+
+Execute `npm run webpack-production` once and start `bin/backend-run-web-prod.sh`, then go to http://localhost:8000 to check how the front end assets work when having been built in webpack production mode. Or, run `bin/backend-run-web-prod.sh` and `npm run watch-webpack-production` in parallel - then the production webpack build will run on every front end asset file change (no automatical browser refresh, though, you'll have to refresh manually).
+
 ## Configuration
 
 Some operational aspects can be configured. All configuration is done solely through environment variables.
