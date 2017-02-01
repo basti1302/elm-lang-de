@@ -190,8 +190,16 @@ footerContent1 =
     , text " and "
     , servantLink
     , text " by "
-    , a [ href "/#developers/basti1302" ] [ text "Bastian Krol" ]
-    , text " & Dennis Reimann"
+    , a [ href "/#developers/basti1302" ]
+        [ span [ class "hide-wd-xs" ] [ text "Bastian" ]
+        , span [ class "hide-xs" ] [ text "Bastian Krol" ]
+        ]
+    , text " & "
+    , a [ href "/#developers/dennisreimann" ]
+        [ span [ class "hide-wd-xs" ] [ text "Dennis" ]
+        , span [ class "hide-xs" ] [ text "Dennis Reimann" ]
+        ]
+    , span [ class "hide-sm" ] [ text " | " ]
     ]
 
 
