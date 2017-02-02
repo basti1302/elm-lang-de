@@ -59,6 +59,8 @@ renderProfileInList profile =
 
 detailsView : Profile -> Html Msg
 detailsView profile =
+    -- TODO Render an edit button if user is signed in and is currently viewing
+    -- xyr own profile.
     div
         [ class "container" ]
         [ div

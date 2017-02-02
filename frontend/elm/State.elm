@@ -5,12 +5,14 @@ import EditProfile.State
 import EditProfile.Types
 import Events.State
 import Homepage.State
-import Navigation exposing (Location, newUrl)
+import Navigation exposing (Location)
+import Notification
 import Profiles.State
 import Profiles.Types exposing (Profile)
 import RemoteData exposing (RemoteData(..))
-import Routes exposing (pageToHash, hashToPage)
+import Routes
 import Types exposing (..)
+import Util.CmdHelper as CmdHelper
 
 
 initialModel : Model
@@ -21,6 +23,7 @@ initialModel =
     , events = Events.State.initialModel
     , profiles = Profiles.State.initialModel
     , gitHubOAuthConfig = Loading
+    , notification = Nothing
     , showSmallScreenNav = False
     }
 
@@ -29,7 +32,7 @@ init : Location -> ( Model, Cmd Msg )
 init location =
     let
         page =
-            hashToPage location.hash
+            Routes.hashToPage location.hash
 
         changePageMsg =
             ChangePage page
@@ -93,6 +96,9 @@ update msg model =
             in
                 update CloseProfilePopupMenu smallScreenNavClose
 
+        CloseNotification ->
+            ( { model | notification = Nothing }, Cmd.none )
+
         CloseProfilePopupMenu ->
             updateSignedIn msg closeProfilePopupMenu model
 
@@ -120,7 +126,7 @@ update msg model =
         Navigate page ->
             -- leave the model untouched and issue a command to
             -- change the url, which then triggers ChangePage
-            ( model, newUrl <| pageToHash page )
+            ( model, Navigation.newUrl <| Routes.pageToHash page )
 
         ProfilesMsg profileMsg ->
             let
@@ -145,6 +151,18 @@ update msg model =
                         model.page
             in
                 ( { model | auth = NotSignedIn, page = newPage }, Cmd.none )
+
+        ShowNotification notification ->
+            let
+                timeoutCmd =
+                    case Notification.getTimeout notification of
+                        Just timeout ->
+                            CmdHelper.delay timeout CloseNotification
+
+                        Nothing ->
+                            Cmd.none
+            in
+                ( { model | notification = Just notification }, timeoutCmd )
 
         ToggleSmallScreenNav ->
             ( { model | showSmallScreenNav = not model.showSmallScreenNav }
@@ -198,7 +216,10 @@ toggleProfilePopupMenu signedInModel =
         ! []
 
 
-processEditProfileMsg : EditProfile.Types.Msg -> SignedInModel -> ( AuthenticationState, Cmd Msg )
+processEditProfileMsg :
+    EditProfile.Types.InternalMsg
+    -> SignedInModel
+    -> ( AuthenticationState, Cmd Msg )
 processEditProfileMsg editProfileMsg signedInModel =
     let
         ( updatedEditProfileModel, cmd ) =
@@ -209,7 +230,7 @@ processEditProfileMsg editProfileMsg signedInModel =
             , editProfileModel = updatedEditProfileModel
             , showProfilePopupMenu = signedInModel.showProfilePopupMenu
             }
-            ! [ Cmd.map EditProfileMsg cmd ]
+            ! [ Cmd.map editProfileTranslator cmd ]
 
 
 processAppBootstrapResponse : Model -> AppBootstrapResource -> ( Model, Cmd Msg )

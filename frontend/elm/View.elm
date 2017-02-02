@@ -1,16 +1,17 @@
 module View exposing (view)
 
-import Html exposing (..)
-import Html.Events exposing (defaultOptions, onClick)
-import Html.Attributes exposing (..)
-import Homepage.View
 import EditProfile.View
 import Events.View
 import GitHubOAuthConfig
+import Homepage.View
+import Html exposing (..)
+import Html.Attributes exposing (..)
+import Html.Events exposing (defaultOptions, onClick)
 import Imprint.View
 import Json.Decode as Json
-import Profiles.View
+import Notification exposing (Notification, Severity(..))
 import Profiles.Types
+import Profiles.View
 import Routes
 import Types exposing (..)
 
@@ -36,7 +37,7 @@ view model =
                         SignedIn signedInModel ->
                             EditProfile.View.view
                                 signedInModel.editProfileModel
-                                |> Html.map EditProfileMsg
+                                |> Html.map editProfileTranslator
 
                 ImprintPage ->
                     Imprint.View.view
@@ -52,12 +53,14 @@ view model =
             [ class "overall"
             , onClick CloseAllPopups
             ]
-            [ pageHeader model
-            , div
-                [ class "main" ]
-                [ pageContent ]
-            , pageFooter
-            ]
+            ([ pageHeader model ]
+                ++ notification model
+                ++ [ div
+                        [ class "main" ]
+                        [ pageContent ]
+                   , pageFooter
+                   ]
+            )
 
 
 notFound : Html Msg
@@ -164,6 +167,28 @@ navLinkSignOutSmallScreen =
         [ span [ class "fa fa-sign-out" ] []
         , text "Abmelden"
         ]
+
+
+notification : Model -> List (Html Msg)
+notification model =
+    case model.notification of
+        Just notification ->
+            let
+                notificationClass =
+                    case Notification.getSeverity notification of
+                        Info ->
+                            "notification notification-info"
+
+                        Error ->
+                            "notification notification-error"
+            in
+                [ div
+                    [ onClick CloseNotification, class notificationClass ]
+                    [ span [] [ text <| Notification.getText notification ] ]
+                ]
+
+        Nothing ->
+            []
 
 
 pageFooter : Html Msg

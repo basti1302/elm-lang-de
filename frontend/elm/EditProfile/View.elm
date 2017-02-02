@@ -34,13 +34,7 @@ view model =
             , twitter profile
             , available profile
             , joined profile
-            , div [ class "form-group" ]
-                [ button
-                    [ class "btn btn-primary btn-lg btn-block"
-                    , onClick UpdateProfile
-                    ]
-                    [ text "Speichern" ]
-                ]
+            , submit
             ]
     in
         div [ class "edit-profile-form" ] parts
@@ -58,9 +52,6 @@ biographyComponent model =
         labelText =
             "Über mich (Markdown)"
 
-        msg =
-            Bio
-
         val =
             profile.bio
 
@@ -69,7 +60,7 @@ biographyComponent model =
                 [ id fieldId
                 , class "form-input"
                 , name fieldId
-                , onInput msg
+                , onInputForSelf Bio
                 , placeholder labelText
                 , rows 10
                 , value val
@@ -89,9 +80,9 @@ biographyComponent model =
             let
                 event =
                     if isPreview then
-                        SwitchToBiographyPreview
+                        ForSelf SwitchToBiographyPreview
                     else
-                        SwitchToBiographyEdit
+                        ForSelf SwitchToBiographyEdit
 
                 attribs =
                     [ onClick event ]
@@ -159,7 +150,7 @@ available profile =
                 [ id "available"
                 , checked profile.available
                 , name "available"
-                , onCheck Available
+                , onCheckForSelf Available
                 , type_ "checkbox"
                 ]
                 []
@@ -186,7 +177,23 @@ joined profile =
         ]
 
 
-textInputWithLabel : String -> String -> String -> (String -> Msg) -> Html Msg
+submit : Html Msg
+submit =
+    div [ class "form-group" ]
+        [ button
+            [ class "btn btn-primary btn-lg btn-block"
+            , onClick (ForSelf UpdateProfile)
+            ]
+            [ text "Speichern" ]
+        ]
+
+
+textInputWithLabel :
+    String
+    -> String
+    -> String
+    -> (String -> InternalMsg)
+    -> Html Msg
 textInputWithLabel fieldId labelText val msg =
     div [ class "form-group" ]
         [ label [ class "form-label", for fieldId ] [ text labelText ]
@@ -194,7 +201,7 @@ textInputWithLabel fieldId labelText val msg =
             [ id fieldId
             , class "form-input"
             , name fieldId
-            , onInput msg
+            , onInputForSelf msg
             , placeholder labelText
             , type_ "text"
             , value val
@@ -203,7 +210,13 @@ textInputWithLabel fieldId labelText val msg =
         ]
 
 
-textInputGroup : String -> String -> String -> String -> (String -> Msg) -> Html Msg
+textInputGroup :
+    String
+    -> String
+    -> String
+    -> String
+    -> (String -> InternalMsg)
+    -> Html Msg
 textInputGroup fieldId labelText addonText val msg =
     div [ class "form-group" ]
         [ label [ class "form-label", for fieldId ] [ text labelText ]
@@ -215,7 +228,7 @@ textInputGroup fieldId labelText addonText val msg =
                 [ id fieldId
                 , class "form-input"
                 , name fieldId
-                , onInput msg
+                , onInputForSelf msg
                 , placeholder labelText
                 , type_ "text"
                 , value val
@@ -239,3 +252,26 @@ getProfilePicSrc profile gravatarPreferredSize =
         profile.gitHubAvatarUrl
     else
         "/img/elm-logo-mono.svg"
+
+
+onInputForSelf : (String -> InternalMsg) -> Attribute Msg
+onInputForSelf =
+    handlerForSelf onInput
+
+
+onCheckForSelf : (Bool -> InternalMsg) -> Attribute Msg
+onCheckForSelf =
+    handlerForSelf onCheck
+
+
+handlerForSelf :
+    ((a -> Msg) -> Attribute Msg)
+    -> (a -> InternalMsg)
+    -> Attribute Msg
+handlerForSelf handler msg =
+    handler
+        (\value ->
+            value
+                |> msg
+                |> ForSelf
+        )

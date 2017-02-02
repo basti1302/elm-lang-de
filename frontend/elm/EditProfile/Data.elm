@@ -21,3 +21,4 @@ updateProfile profile =
         HttpHelper.put ("/api/profiles/" ++ profile.id) body decodeProfile
             |> RemoteData.sendRequest
             |> Cmd.map UpdateProfileResponse
+            |> Cmd.map ForSelf

@@ -1,10 +1,21 @@
-module Types exposing (..)
+module Types
+    exposing
+        ( AppBootstrapResource
+        , AuthenticationState(..)
+        , Model
+        , Msg(..)
+        , Page(..)
+        , SignedInModel
+        , editProfileTranslator
+        )
 
-import Http
-import Homepage.Types
+import EditProfile.Translator
 import EditProfile.Types
 import Events.Types
 import GitHubOAuthConfig exposing (GitHubOAuthConfig)
+import Homepage.Types
+import Http
+import Notification exposing (..)
 import Profiles.Types exposing (Profile)
 import RemoteData exposing (RemoteData, WebData)
 
@@ -16,6 +27,7 @@ type alias Model =
     , events : Events.Types.Model
     , profiles : Profiles.Types.Model
     , gitHubOAuthConfig : RemoteData String GitHubOAuthConfig
+    , notification : Maybe Notification
     , showSmallScreenNav : Bool
     }
 
@@ -35,15 +47,17 @@ type alias SignedInModel =
 type Msg
     = AppBootstrapResponse (WebData AppBootstrapResource)
     | ChangePage Page
-    | EditProfileMsg EditProfile.Types.Msg
+    | CloseAllPopups
+    | CloseNotification
+    | CloseProfilePopupMenu
+    | EditProfileMsg EditProfile.Types.InternalMsg
     | EventsMsg Events.Types.Msg
     | HomepageMsg Homepage.Types.Msg
     | Navigate Page
-    | CloseAllPopups
     | ProfilesMsg Profiles.Types.Msg
     | SignOutClick
     | SignOutResponse (Result Http.Error ())
-    | CloseProfilePopupMenu
+    | ShowNotification Notification
     | ToggleSmallScreenNav
     | ToggleProfilePopupMenu
 
@@ -63,3 +77,14 @@ type alias AppBootstrapResource =
     , gitHubClientId : Maybe String
     , gitHubOAuthRedirectUrl : String
     }
+
+
+editProfileTranslator : EditProfile.Translator.Translator Msg
+editProfileTranslator =
+    let
+        editProfileTranslationDictionary =
+            { onInternalMessage = EditProfileMsg
+            , onShowNotification = ShowNotification
+            }
+    in
+        EditProfile.Translator.translator editProfileTranslationDictionary

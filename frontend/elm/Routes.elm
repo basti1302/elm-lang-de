@@ -45,8 +45,8 @@ pageToHash page =
         ImprintPage ->
             "#imprint"
 
-        ProfilesPage _ ->
-            "#developers"
+        ProfilesPage supPage ->
+            "#developers" ++ (Profiles.Routes.pageToHash supPage)
 
         NotFoundPage ->
             "#notfound"

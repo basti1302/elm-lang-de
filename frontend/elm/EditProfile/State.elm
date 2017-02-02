@@ -2,8 +2,14 @@ module EditProfile.State exposing (initialModel, update)
 
 import EditProfile.Data exposing (updateProfile)
 import EditProfile.Types exposing (..)
+import Navigation
+import Notification
 import Profiles.Types exposing (Profile)
 import RemoteData exposing (RemoteData(..))
+import Routes
+import Time
+import Types as MainTypes
+import Util.CmdHelper as CmdHelper
 
 
 initialModel : Profile -> Model
@@ -13,7 +19,7 @@ initialModel profile =
     }
 
 
-update : Msg -> Model -> ( Model, Cmd Msg )
+update : InternalMsg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         Name name ->
@@ -56,11 +62,27 @@ update msg model =
             ( model, updateProfile model.profile )
 
         UpdateProfileResponse (Success profile) ->
-            ( { model
-                | profile = profile
-              }
-            , Cmd.none
-            )
+            let
+                showPopupMsg =
+                    "Dein Profil wurde gespeichert"
+                        |> Notification.infoWithTimeout (4 * Time.second)
+                        |> ShowNotification
+                        |> ForParent
+
+                showPopupCmd =
+                    CmdHelper.msgToCmd showPopupMsg
+
+                goToProfileCmd =
+                    profile.urlFragment
+                        |> Profiles.Types.DetailsPage
+                        |> MainTypes.ProfilesPage
+                        |> Routes.pageToHash
+                        |> Navigation.newUrl
+            in
+                { model
+                    | profile = profile
+                }
+                    ! [ showPopupCmd, goToProfileCmd ]
 
         UpdateProfileResponse noSuccess ->
             let
