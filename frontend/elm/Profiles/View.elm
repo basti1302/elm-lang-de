@@ -46,12 +46,12 @@ renderProfileInList profile =
         profilePic =
             [ img [ src profilePicSrc, class "profil-pic" ] [] ]
     in
-        li []
+        li [ class "profile" ]
             [ a [ href ("#developers/" ++ profile.urlFragment) ]
                 (profilePic
-                    ++ [ span [] [ text profile.name ]
-                       , span [] [ text profile.job ]
-                       , span [] [ text profile.city ]
+                    ++ [ span [ class "profile-name" ] [ text profile.name ]
+                       , span [ class "profile-job" ] [ text profile.job ]
+                       , span [ class "profile-city" ] [ text profile.city ]
                        ]
                 )
             ]

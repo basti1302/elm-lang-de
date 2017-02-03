@@ -1,5 +1,4 @@
 .profile-list
-
   ul
     display flex
     flex-direction row
@@ -14,23 +13,31 @@
   li > a
     color $dark-grey
     text-decoration none
+    text-align center
     width 24rem
     height 24rem
     display flex
     flex-direction column
     justify-content center
     align-items center
+    margin $space-normal
     border 1px solid $color-light-grey
     border-radius $space-small
-    margin $space-normal
+    padding $space-normal
     background-color $color-very-light-grey
     &:hover
-      background-color: $color-white
+      background-color $color-white
 
   img.profil-pic
     width 8rem
     border-radius $space-small
     margin-bottom 1rem
+
+.profile-job,
+.profile-city
+  color $color-grey
+  font-size $font-size-small
+  margin-top $space-small
 
 .profile-pic-and-bio
     display flex
