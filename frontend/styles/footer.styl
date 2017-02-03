@@ -1,0 +1,49 @@
+footer
+  width 100vw
+  overflow-x hidden
+  background-color $color-very-light-grey
+  border-top 1px solid $color-light-grey
+  padding-top 1px
+
+.footer-line
+  @extend $wrapped
+  padding-top $space-large
+  padding-bottom $space-large
+  line-height $footer-line-height
+  font-size ($footer-line-height / 1.5)
+  text-align center
+  padding-left .5rem
+  padding-right .5rem
+  white-space nowrap
+
+  @media $mq-up_to_S
+    span
+      display block
+
+  @media $mq-S_to_M
+    span:nth-child(3)
+    span:nth-child(4)
+      display block
+
+  @media $mq-M_to_L
+    span:nth-child(3)
+      display block
+
+  @media $mq-L_and_up
+    span:nth-child(3)
+    span:nth-child(4)
+      &:before
+        content "|"
+        margin-left .5ch
+        margin-right .5ch
+
+  a
+    color $color-dark-blueish-grey
+    text-decoration none
+
+  img
+    height ($footer-line-height / 1.5)
+    margin-left .25rem
+    margin-right .5rem
+    position relative
+    top .05rem

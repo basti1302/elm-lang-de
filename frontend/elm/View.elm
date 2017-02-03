@@ -194,17 +194,13 @@ notification model =
 pageFooter : Html Msg
 pageFooter =
     footer []
-        -- small screens: split footer content across two lines
         [ div
-            [ class "footer-line hide-wd-sm" ]
-            footerContent1
-        , div
-            [ class "footer-line hide-wd-sm" ]
-            footerContent2
-          -- wide screens: all footer content in one line
-        , div
-            [ class "footer-line hide-sm" ]
-            (footerContent1 ++ footerContent2)
+            [ class "footer-line" ]
+            [ span [] footerContent1
+            , span [] footerContent2
+            , span [] footerContent3
+            , span [] footerContent4
+            ]
         ]
 
 
@@ -214,25 +210,33 @@ footerContent1 =
     , elmLink
     , text " and "
     , servantLink
-    , text " by "
-    , a [ href "/#developers/basti1302" ]
-        [ span [ class "hide-wd-xs" ] [ text "Bastian" ]
-        , span [ class "hide-xs" ] [ text "Bastian Krol" ]
-        ]
-    , text " & "
-    , a [ href "/#developers/dennisreimann" ]
-        [ span [ class "hide-wd-xs" ] [ text "Dennis" ]
-        , span [ class "hide-xs" ] [ text "Dennis Reimann" ]
-        ]
-    , span [ class "hide-sm" ] [ text " | " ]
     ]
 
 
 footerContent2 : List (Html Msg)
 footerContent2 =
+    [ text " by "
+    , a [ href "/#developers/basti1302" ]
+        [ text "Bastian Krol" ]
+    , text " & "
+    , a [ href "/#developers/dennisreimann" ]
+        [ text "Dennis Reimann" ]
+    ]
+
+
+footerContent3 : List (Html Msg)
+footerContent3 =
     [ a [ href "#imprint" ] [ text "Impressum" ]
     , text " | Sponsored by "
     , ccLink
+    ]
+
+
+footerContent4 : List (Html Msg)
+footerContent4 =
+    [ a
+        [ href "https://github.com/basti1302/elm-lang-de/" ]
+        [ text "Source code on GitHub" ]
     ]
 
 
