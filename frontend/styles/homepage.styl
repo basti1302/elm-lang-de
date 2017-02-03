@@ -10,7 +10,11 @@ $hero-height-small-screen = 20rem
   // small screen: $header-height-small-screen = 3rem
   width 100vw
   height $hero-height-wide-screen
-  background $color-light-grey
+  background-color $color-light-grey
+  background-image url('/img/hero.jpg')
+  background-size cover
+  background-position center
+  background-repeat no-repeat
 
 .homepage-header
   width 100vw
@@ -18,16 +22,20 @@ $hero-height-small-screen = 20rem
   height 8rem
   line-height 8rem
   margin-top 10rem
-  color $color-dark-blueish-grey
+  color $color-white
+  text-shadow 1px 1px 1px $color-dark-blueish-grey,
+              1px -1px 1px $color-dark-blueish-grey,
+              -1px 1px 1px $color-dark-blueish-grey,
+              -1px -1px 1px $color-dark-blueish-grey
 
   h1
     display inline
     padding-bottom 4rem
-    border-bottom 1px solid $color-dark-blueish-grey
+    border-bottom 1px solid $color-white
 
   img
     vertical-align middle
-    width 6rem
+    width 5rem
     margin-right 2rem
 
   .homepage-subheader
@@ -67,4 +75,3 @@ $hero-height-small-screen = 20rem
 
   .homepage-content
     margin-top $hero-height-small-screen
-

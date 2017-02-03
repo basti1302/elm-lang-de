@@ -20,7 +20,7 @@ hero =
     div [ class "hero" ]
         [ div [ class "homepage-header" ]
             [ h1 []
-                [ img [ src "/img/elm-logo-mono.svg", alt "Das Elm-Logo" ] []
+                [ img [ src "/img/elm-logo-mono-white.svg", alt "Das Elm-Logo" ] []
                 , span [] [ text "elm-lang.de" ]
                 ]
             , div [ class "homepage-subheader" ]
