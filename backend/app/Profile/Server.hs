@@ -22,6 +22,7 @@ import           Control.Monad               (mapM)
 import           Control.Monad.IO.Class      (liftIO)
 import           Control.Monad.Trans.Except
 import qualified Data.Aeson                  as JSON (encode)
+import qualified Data.List                   as List
 import           Data.Maybe                  (catMaybes, listToMaybe)
 import           Data.Text                   (Text)
 import qualified Data.Text                   as T
@@ -57,7 +58,31 @@ fetchAllProfiles ::
   -> IO [ProfileHeadResponse]
 fetchAllProfiles dbConnection = do
   profiles <- SQL.allProfiles dbConnection
-  return $ map ProfileConverter.modelToHead profiles
+  let
+    profilesSorted = sortTeamMembersFirst profiles
+  return $ map ProfileConverter.modelToHead profilesSorted
+
+
+sortTeamMembersFirst :: [Profile] -> [Profile]
+sortTeamMembersFirst profiles =
+  let
+    teamMembers = ["basti1302", "dennisreimann"]
+    sortFn p1 p2 =
+      let
+        gh1 =  Profile.gitHubOAuthLogin p1
+        gh2 =  Profile.gitHubOAuthLogin p2
+      in
+        if (elem gh1 teamMembers) && (elem gh2 teamMembers)
+          then compare gh1 gh2
+        else if (elem gh1 teamMembers) && (notElem gh2 teamMembers)
+          then LT
+        else if (notElem gh1 teamMembers) && (elem gh2 teamMembers)
+          then GT
+        -- keep current ordering for non-team-members, this works
+        -- because sort algo is stable
+        else EQ
+  in
+    List.sortBy sortFn profiles
 
 
 getProfile ::
