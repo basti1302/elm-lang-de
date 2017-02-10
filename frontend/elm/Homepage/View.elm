@@ -33,14 +33,7 @@ hero =
 
 homepageContent : Model -> Html Msg
 homepageContent model =
-    {-
-       TODO
-          Hier müsste jetzt jede Menge Content kommen...
-
-          * Fetter Link auf das Entwicklerverzeichnis
-          * Call to Action, um sich einzutragen
-          * Die neusten drei Entwickler
-    -}
+    -- TODO Die neusten drei Entwickler anzeigen
     let
         gitHubOAuthUrl =
             GitHubOAuthConfig.gitHubOAuthUrl model Nothing

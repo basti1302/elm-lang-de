@@ -3,9 +3,9 @@ module EditProfile.View exposing (view)
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)
-import Markdown
 import EditProfile.Types exposing (..)
 import Profiles.Types exposing (Profile)
+import Util.MarkdownHelper exposing (markdownToHtmlSafe)
 
 
 view : Model -> Html Msg
@@ -68,7 +68,7 @@ biographyComponent model =
                 []
 
         preview =
-            Markdown.toHtml [ class "biography-preview" ] val
+            markdownToHtmlSafe [ class "biography-preview" ] val
 
         editOrPreview =
             if model.showBiographyPreview then

@@ -2,9 +2,9 @@ module Profiles.View exposing (getProfilePicSrc, view)
 
 import Html exposing (..)
 import Html.Attributes exposing (..)
-import Markdown
 import Profiles.Types exposing (..)
 import RemoteData exposing (RemoteData(..))
+import Util.MarkdownHelper exposing (markdownToHtmlSafe)
 
 
 view : Model -> Html Msg
@@ -249,4 +249,4 @@ biography profile =
             else
                 "Für dieses Profil wurde leider noch keine Biographie hinzugefügt  :'‑("
     in
-        p [ class "profile-biography" ] [ Markdown.toHtml [] biography ]
+        p [ class "profile-biography" ] [ markdownToHtmlSafe [] biography ]
