@@ -18,6 +18,13 @@ Termine
 * <span class="fa fa-globe"></span> Arthur van Schendelstraat 500, Utrecht
 * <span class="fa fa-meetup"></span> https://www.meetup.com/Elm-Netherlands/events/236871202
 
+### [Workshop: Elm für Einsteiger](https://react-days.de/session/elm-fuer-einsteiger/)
+
+* Workshop im Rahmen der React Days 2017
+* <span class="fa fa-calendar"></span> 22.03.2017, 13:30 - 17:00
+* <span class="fa fa-globe"></span> React Days 2017, Holiday Inn München – Unterhaching, Inselkammerstraße 7-9, München
+* <span class="fa fa-link"></span> https://react-days.de/session/elm-fuer-einsteiger/
+
 ### [Elm Europe](https://elmeurope.org)
 
 * <span class="fa fa-calendar"></span> 08. - 09.06.2017
