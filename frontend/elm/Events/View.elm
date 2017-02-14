@@ -25,11 +25,18 @@ Termine
 * <span class="fa fa-globe"></span> React Days 2017, Holiday Inn München – Unterhaching, Inselkammerstraße 7-9, München
 * <span class="fa fa-link"></span> https://react-days.de/session/elm-fuer-einsteiger/
 
+### [Zero Defect Front Ends (XP2017)](http://sched.co/9hlf)
+
+* Vortrag im Rahmen der XP2017 in Köln
+* <span class="fa fa-calendar"></span> 25.05.2017 15:15 - 16:15
+* <span class="fa fa-globe"></span> Pullman Hotel Köln, Ballroom C, 1st Floor
+* <span class="fa fa-link"></span> http://sched.co/9hlf
+
 ### [Elm Europe](https://elmeurope.org)
 
 * <span class="fa fa-calendar"></span> 08. - 09.06.2017
-* <span class="fa fa-link"></span> https://elmeurope.org
 * <span class="fa fa-globe"></span> Paris/Villejuif, Frankreich
+* <span class="fa fa-link"></span> https://elmeurope.org
 
 ## Regelmäßige Meetups mit Bezug zu Elm
 
