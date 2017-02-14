@@ -44,6 +44,14 @@ Termine
 
 * <span class="fa fa-meetup"></span> https://www.meetup.com/Functional-Programming-Berlin
 
+### [Elm Berlin](https://www.meetup.com/https://www.meetup.com/Elm-Berlin/)
+
+* <span class="fa fa-meetup"></span> https://www.meetup.com/Elm-Berlin/
+
+### [Berlin Elm Hackathon](https://www.meetup.com/berlin-elm-hackathon/)
+
+* <span class="fa fa-meetup"></span> https://www.meetup.com/berlin-elm-hackathon/
+
 ### [Berlin Elixir Elm Developers](https://www.meetup.com/Berlin-Elixir-Elm-Developers)
 
 * <span class="fa fa-meetup"></span> https://www.meetup.com/Berlin-Elixir-Elm-Developers
