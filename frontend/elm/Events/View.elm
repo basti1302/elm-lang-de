@@ -12,6 +12,12 @@ view model =
 Termine
 =======
 
+### [Elm User Group Cologne - First Get-Together](https://www.meetup.com/Elm-user-group-Cologne/events/237850771)
+
+* <span class="fa fa-calendar"></span> 08.03.2017, 19:00 Uhr
+* <span class="fa fa-globe"></span> Office digital-ember/Walter IT, Gleueler Str. 179, Köln
+* <span class="fa fa-meetup"></span> https://www.meetup.com/Elm-user-group-Cologne/events/237850771
+
 ### [Elm Netherlands - 3rd Edition - Tooling](https://www.meetup.com/Elm-Netherlands/events/236871202)
 
 * <span class="fa fa-calendar"></span> 08.03.2017, 18:00 Uhr
@@ -46,6 +52,10 @@ Termine
 
 * <span class="fa fa-meetup"></span> https://www.meetup.com/Elmoin
 * <span class="fa fa-twitter"></span> https://twitter.com/elmoinmoin
+
+### [Elm User Group Cologne](https://www.meetup.com/Elm-user-group-Cologne)
+
+* <span class="fa fa-meetup"></span> https://www.meetup.com/Elm-user-group-Cologne
 
 ### [Functional Programming Berlin](https://www.meetup.com/Functional-Programming-Berlin)
 
