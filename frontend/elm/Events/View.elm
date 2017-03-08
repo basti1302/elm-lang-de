@@ -12,10 +12,10 @@ view model =
 Termine
 =======
 
-### [Elm User Group Cologne - First Get-Together](https://www.meetup.com/Elm-user-group-Cologne/events/237850771)
+### [Elm User Group Cologne - First Get-Together/Hack Night](https://www.meetup.com/Elm-user-group-Cologne/events/237850771)
 
 * <span class="fa fa-calendar"></span> 08.03.2017, 19:00 Uhr
-* <span class="fa fa-globe"></span> Office digital-ember/Walter IT, Gleueler Str. 179, Köln
+* <span class="fa fa-globe"></span> REWE Digital GmbH, Schanzenstrasse 6-20 (Gebäude Kupferwerk 2.15, 1. Etage), Köln
 * <span class="fa fa-meetup"></span> https://www.meetup.com/Elm-user-group-Cologne/events/237850771
 
 ### [Elm Netherlands - 3rd Edition - Tooling](https://www.meetup.com/Elm-Netherlands/events/236871202)
