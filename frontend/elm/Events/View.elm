@@ -12,18 +12,6 @@ view model =
 Termine
 =======
 
-### [Elm User Group Cologne - First Get-Together/Hack Night](https://www.meetup.com/Elm-user-group-Cologne/events/237850771)
-
-* <span class="fa fa-calendar"></span> 08.03.2017, 19:00 Uhr
-* <span class="fa fa-globe"></span> REWE Digital GmbH, Schanzenstrasse 6-20 (Gebäude Kupferwerk 2.15, 1. Etage), Köln
-* <span class="fa fa-meetup"></span> https://www.meetup.com/Elm-user-group-Cologne/events/237850771
-
-### [Elm Netherlands - 3rd Edition - Tooling](https://www.meetup.com/Elm-Netherlands/events/236871202)
-
-* <span class="fa fa-calendar"></span> 08.03.2017, 18:00 Uhr
-* <span class="fa fa-globe"></span> Arthur van Schendelstraat 500, Utrecht
-* <span class="fa fa-meetup"></span> https://www.meetup.com/Elm-Netherlands/events/236871202
-
 ### [Workshop: Elm für Einsteiger](https://react-days.de/session/elm-fuer-einsteiger/)
 
 * Workshop im Rahmen der React Days 2017
@@ -92,5 +80,20 @@ Termine
 ### [Elm Meetup Brussels](https://www.meetup.com/Meetup-Elm-Brussels)
 
 * <span class="fa fa-meetup"></span> https://www.meetup.com/Meetup-Elm-Brussels
+
+
+## Vergangene Termine
+
+### [Elm User Group Cologne - First Get-Together/Hack Night](https://www.meetup.com/Elm-user-group-Cologne/events/237850771)
+
+* <span class="fa fa-calendar"></span> 08.03.2017, 19:00 Uhr
+* <span class="fa fa-globe"></span> REWE Digital GmbH, Schanzenstrasse 6-20 (Gebäude Kupferwerk 2.15, 1. Etage), Köln
+* <span class="fa fa-meetup"></span> https://www.meetup.com/Elm-user-group-Cologne/events/237850771
+
+### [Elm Netherlands - 3rd Edition - Tooling](https://www.meetup.com/Elm-Netherlands/events/236871202)
+
+* <span class="fa fa-calendar"></span> 08.03.2017, 18:00 Uhr
+* <span class="fa fa-globe"></span> Arthur van Schendelstraat 500, Utrecht
+* <span class="fa fa-meetup"></span> https://www.meetup.com/Elm-Netherlands/events/236871202
 
 """
