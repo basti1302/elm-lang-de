@@ -115,10 +115,27 @@ validateURLEmptyOrWellformed _ hasURL =
         if T.null url
         then
           return (Nothing, (setURL Nothing hasURL))
-        else if (Maybe.isNothing $ URI.parseURI $ T.unpack url)
-        then
-          return $
-            ( Just "Das ist keine valide URL.", hasURL)
         else
-          return (Nothing, hasURL)
+          let
+            (message, normalizedUrlText) = validateURLWellformed url
+          in
+            return $ (message, (setURL (Just normalizedUrlText) hasURL))
+
+
+validateURLWellformed :: Text -> (Maybe Text, Text)
+validateURLWellformed url =
+  let
+    possibleHttp = T.toLower $ T.take 7 url
+    possibleHttps = T.toLower $ T.take 8 url
+    normalizedUrl =
+      if (possibleHttp /= "http://") && (possibleHttps /= "https://")
+      then "http://" ++ (T.unpack url)
+      else T.unpack url
+    valid = Maybe.isJust $ URI.parseURI normalizedUrl
+  in
+    if valid
+    then
+      (Nothing, T.pack normalizedUrl)
+    else
+      (Just "Das ist keine valide URL.", T.pack normalizedUrl)
 
