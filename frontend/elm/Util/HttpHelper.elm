@@ -1,12 +1,16 @@
 module Util.HttpHelper
     exposing
-        ( noContentRequest
+        ( decodeMessages
+        , HasMessages
+        , noContentRequest
         , put
         )
 
 import Http
 import Json.Decode as Decode
+import Json.Decode exposing (Decoder)
 import Json.Encode as Encode
+import Json.Decode.Pipeline as Pipeline
 
 
 put :
@@ -40,3 +44,17 @@ noContentRequest url verb =
         , timeout = Nothing
         , withCredentials = False
         }
+
+
+{-| A generic type alias for JSON responses that have a messages field for
+validation messages.
+-}
+type alias HasMessages =
+    { messages : List String
+    }
+
+
+decodeMessages : Decoder HasMessages
+decodeMessages =
+    Pipeline.decode HasMessages
+        |> Pipeline.required "messages" (Decode.list Decode.string)

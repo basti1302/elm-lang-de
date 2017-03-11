@@ -2,6 +2,8 @@ module EditProfile.State exposing (initialModel, update)
 
 import EditProfile.Data exposing (updateProfile)
 import EditProfile.Types exposing (..)
+import Http
+import Json.Decode as Decode
 import Navigation
 import Notification
 import Profiles.Types exposing (Profile)
@@ -10,6 +12,7 @@ import Routes
 import Time
 import Types as MainTypes
 import Util.CmdHelper as CmdHelper
+import Util.HttpHelper as HttpHelper
 
 
 initialModel : Profile -> Model
@@ -63,14 +66,12 @@ update msg model =
 
         UpdateProfileResponse (Success profile) ->
             let
-                showPopupMsg =
+                showPopupCmd =
                     "Dein Profil wurde gespeichert"
                         |> Notification.infoWithTimeout (4 * Time.second)
                         |> ShowNotification
                         |> ForParent
-
-                showPopupCmd =
-                    CmdHelper.msgToCmd showPopupMsg
+                        |> CmdHelper.msgToCmd
 
                 goToProfileCmd =
                     profile.urlFragment
@@ -84,10 +85,34 @@ update msg model =
                 }
                     ! [ showPopupCmd, goToProfileCmd ]
 
-        UpdateProfileResponse noSuccess ->
+        UpdateProfileResponse (Failure httpError) ->
+            -- TODO Converting a bad request response with validation messages
+            -- into user visible error notifications should be a reusable
+            -- helper function in Util.HttpHelper, this code should not be here.
+            case httpError of
+                Http.BadStatus { body } ->
+                    let
+                        decodeResult =
+                            Decode.decodeString HttpHelper.decodeMessages body
+                    in
+                        case decodeResult of
+                            Ok { messages } ->
+                                let
+                                    cmds =
+                                        messagesToPopupCommands messages
+                                in
+                                    model ! cmds
+
+                            Err err ->
+                                ( model, genericErrorNotificationCmd )
+
+                otherwise ->
+                    ( model, genericErrorNotificationCmd )
+
+        UpdateProfileResponse neitherSuccessNorFailure ->
             let
                 _ =
-                    Debug.log "Could not update profile." noSuccess
+                    Debug.log "Ignoring message" neitherSuccessNorFailure
             in
                 ( model, Cmd.none )
 
@@ -114,6 +139,33 @@ updateBooleanInProfile model updateFn newValue =
             updateFn profile newValue
     in
         ( { model | profile = updatedProfile }, Cmd.none )
+
+
+messagesToPopupCommands : List String -> List (Cmd Msg)
+messagesToPopupCommands messages =
+    -- TODO Multiple notification Cmds can be created here, but only the last one
+    -- will be visible :-(
+    if List.isEmpty messages then
+        [ genericErrorNotificationCmd ]
+    else
+        let
+            messageToCmd message =
+                message
+                    |> Notification.errorWithTimeout (4 * Time.second)
+                    |> ShowNotification
+                    |> ForParent
+                    |> CmdHelper.msgToCmd
+        in
+            List.map messageToCmd messages
+
+
+genericErrorNotificationCmd : Cmd Msg
+genericErrorNotificationCmd =
+    "Das hat leider nicht geklappt :-("
+        |> Notification.errorWithTimeout (4 * Time.second)
+        |> ShowNotification
+        |> ForParent
+        |> CmdHelper.msgToCmd
 
 
 setName : Profile -> String -> Profile
