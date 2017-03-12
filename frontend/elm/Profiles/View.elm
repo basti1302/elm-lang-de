@@ -3,6 +3,7 @@ module Profiles.View exposing (getProfilePicSrc, view)
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Profiles.Types exposing (..)
+import Regex
 import RemoteData exposing (RemoteData(..))
 import Util.MarkdownHelper exposing (markdownToHtmlSafe)
 
@@ -104,11 +105,13 @@ profilePicAndBio classes profile =
 profileDetails : Attribute Msg -> Profile -> Html Msg
 profileDetails classes profile =
     let
+        homepage =
+            (normalizeUrl profile.homepage)
+
         potentialParts =
-            [ -- "industry" or "suitcase"?
-              profileTextRow "suitcase" profile.job
+            [ profileTextRow "suitcase" profile.job
             , cityAndCountry profile
-            , profileLinkRow "link" profile.homepage profile.homepage
+            , profileLinkRow "link" homepage profile.homepage
             , profileLinkRow
                 "github"
                 ("https://github.com/" ++ profile.gitHubUsername)
@@ -199,6 +202,32 @@ joined profile =
             |> profileTextRow "calendar-check-o"
     else
         Nothing
+
+
+normalizeUrl : String -> String
+normalizeUrl url =
+    if url == "" then
+        url
+    else
+        let
+            regex =
+                "http(?:s)://" |> Regex.regex |> Regex.caseInsensitive
+
+            matches =
+                Regex.find (Regex.AtMost 1) regex url
+
+            match =
+                List.head matches
+
+            index =
+                Maybe.map .index match
+        in
+            case index of
+                Just 0 ->
+                    url
+
+                otherwise ->
+                    "http://" ++ url
 
 
 faClass : String -> Attribute Msg
