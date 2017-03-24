@@ -40,7 +40,7 @@ ADD docker/nginx/letsencrypt /etc/letsencrypt
 #     Docker registry.
 #  4) Start the elmlangde-nginx container on the production host.
 #     Access http://elm-lang.de/.well-known and
-#     http://www.elm-lang.de.well-known in a browser and make sure they yield a
+#     http://www.elm-lang.de/.well-known in a browser and make sure they yield a
 #     response (404, but that's okay) from your nginx.
 #     We now have an nginx that serves http and in particular, serves all URLs
 #     beginning with /.well-known from the file system. This is what the certbot
@@ -67,7 +67,12 @@ ADD docker/nginx/letsencrypt /etc/letsencrypt
 # 13) Delete the tar locally and on the Docker host.
 # 14) Revert your local changes to docker/nginx/nginx.conf from step (1).
 # 15) Recreate the nginx Docker image, push it and deploy it to production.
-# 16) You now should have https on production with a valid cert and automatic
+# 16) Verify that cron is actually running by
+#     - ssh-ing to the host, docker
+#     - docker exec -it elmlangde-nginx bash
+#     - service cron status
+#     - service cron start (if required)
+# 17) You now should have https on production with a valid cert and automatic
 #     cert renewal.
 
 ADD docker/nginx/nginx.conf /etc/nginx/nginx.conf
