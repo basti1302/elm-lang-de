@@ -211,7 +211,7 @@ normalizeUrl url =
     else
         let
             regex =
-                "http(?:s)://" |> Regex.regex |> Regex.caseInsensitive
+                "http(?:s)?://" |> Regex.regex |> Regex.caseInsensitive
 
             matches =
                 Regex.find (Regex.AtMost 1) regex url
