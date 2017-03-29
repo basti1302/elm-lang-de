@@ -12,13 +12,6 @@ view model =
 Termine
 =======
 
-### [Workshop: Elm für Einsteiger](https://react-days.de/session/elm-fuer-einsteiger/)
-
-* Workshop im Rahmen der React Days 2017
-* <span class="fa fa-calendar"></span> 22.03.2017, 13:30 - 17:00
-* <span class="fa fa-globe"></span> React Days 2017, Holiday Inn München – Unterhaching, Inselkammerstraße 7-9, München
-* <span class="fa fa-link"></span> https://react-days.de/session/elm-fuer-einsteiger/
-
 ### [Zero Defect Front Ends (XP2017)](http://sched.co/9hlf)
 
 * Vortrag im Rahmen der XP2017 in Köln
@@ -31,6 +24,12 @@ Termine
 * <span class="fa fa-calendar"></span> 08. - 09.06.2017
 * <span class="fa fa-globe"></span> Paris/Villejuif, Frankreich
 * <span class="fa fa-link"></span> https://elmeurope.org
+
+### [Elm User Group Cologne - Get-Together/Hackathon](https://www.meetup.com/Elm-user-group-Cologne/events/238793825/)
+
+* <span class="fa fa-calendar"></span> 12.06.2017, 19:00 Uhr
+* <span class="fa fa-globe"></span> REWE Digital GmbH, Schanzenstrasse 6-20 (Gebäude Kupferwerk 2.15, 1. Etage), Köln
+* <span class="fa fa-meetup"></span> https://www.meetup.com/Elm-user-group-Cologne/events/238793825/
 
 ## Regelmäßige Meetups mit Bezug zu Elm
 
@@ -83,6 +82,13 @@ Termine
 
 
 ## Vergangene Termine
+
+### [Workshop: Elm für Einsteiger](https://react-days.de/session/elm-fuer-einsteiger/)
+
+* Workshop im Rahmen der React Days 2017
+* <span class="fa fa-calendar"></span> 22.03.2017, 13:30 - 17:00
+* <span class="fa fa-globe"></span> React Days 2017, Holiday Inn München – Unterhaching, Inselkammerstraße 7-9, München
+* <span class="fa fa-link"></span> https://react-days.de/session/elm-fuer-einsteiger/
 
 ### [Elm User Group Cologne - First Get-Together/Hack Night](https://www.meetup.com/Elm-user-group-Cologne/events/237850771)
 
