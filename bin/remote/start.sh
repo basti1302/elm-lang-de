@@ -6,5 +6,6 @@
 set -e
 pushd `dirname $0`/../../docker > /dev/null
 docker-compose --file prod.yml up -d
+docker exec elmlangde-nginx cron || true
 popd > /dev/null
 

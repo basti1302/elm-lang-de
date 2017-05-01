@@ -67,19 +67,37 @@ ADD docker/nginx/letsencrypt /etc/letsencrypt
 # 13) Delete the tar locally and on the Docker host.
 # 14) Revert your local changes to docker/nginx/nginx.conf from step (1).
 # 15) Recreate the nginx Docker image, push it and deploy it to production.
-# 16) Verify that cron is actually running by
+# 16) Verify that cron is actually running. By itself, the nginx container will
+#     only start the nginx process. The scripts bin/remote/deploy.sh and
+#     bin/remote/start.sh take care of that by executing
+#     `docker exec elmlangde-nginx cron` after starting all containers.
+#     Anyway, make sure cron is running by:
 #     - ssh-ing to the host, docker
 #     - docker exec -it elmlangde-nginx bash
 #     - service cron status
-#     - service cron start (if required)
+#     - service cron start (or simply run cron) (if required)
 # 17) You now should have https on production with a valid cert and automatic
 #     cert renewal.
+#
+# In case you need to recreate the image later, the certificates on your local
+# system (which will be baked into the image) might already be old and outdated.
+# You could repeat some of the steps above (tar-ing and downloading the
+# /etc/letsencrypt before recreating the image) but it is not necessary. Just
+# create the container with the outdated certificates and run
+# certbot renew --renew-hook /opt/after-renewal.sh
+# *inside the container* once it has been started.
 
 ADD docker/nginx/nginx.conf /etc/nginx/nginx.conf
 
 # Install cronjob for automatic renewal, remove non-functioning cronjob from
 # certbot package (see docker/nginx/crontab for details).
 ADD docker/nginx/crontab /etc/cron.d/certbot-renew-cron
+
+# certbot hook scripts
+ADD docker/nginx/after-renewal.sh /opt/after-renewal.sh
+RUN chmod 0755 /opt/after-renewal.sh
+
+# install certbot cron job
 RUN chmod 0644 /etc/cron.d/certbot-renew-cron \
  && touch /var/log/cron.log \
  && rm -f /etc/cron.d/certbot

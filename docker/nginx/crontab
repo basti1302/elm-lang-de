@@ -9,6 +9,8 @@
 SHELL=/bin/sh
 PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
 
-0 */12 * * * root perl -e 'sleep int(rand(3600))' && certbot -q renew >> /var/log/cron.log 2>&1
+# * * * * * root echo "$(date) cron is running" >> /var/log/cron.log
+0 */12 * * * root perl -e 'sleep int(rand(3600))' && certbot -q renew --renew-hook /opt/after-renewal.sh >> /var/log/cron.log 2>&1
 
 # an empty line at the end of the file is required for a valid crontab file
+
