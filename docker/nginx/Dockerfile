@@ -40,7 +40,8 @@ ADD docker/nginx/letsencrypt /etc/letsencrypt
 #     Docker registry.
 #  4) Start the elmlangde-nginx container on the production host.
 #     Access http://elm-lang.de/.well-known and
-#     http://www.elm-lang.de/.well-known in a browser and make sure they yield a
+#     http://www.elm-lang.de/.well-known
+#     in a browser and make sure they yield a
 #     response (404, but that's okay) from your nginx.
 #     We now have an nginx that serves http and in particular, serves all URLs
 #     beginning with /.well-known from the file system. This is what the certbot
