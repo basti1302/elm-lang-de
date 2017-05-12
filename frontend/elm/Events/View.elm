@@ -31,6 +31,13 @@ Termine
 * <span class="fa fa-globe"></span> REWE Digital GmbH, Schanzenstrasse 6-20 (Gebäude Kupferwerk 2.15, 1. Etage), Köln
 * <span class="fa fa-meetup"></span> https://www.meetup.com/Elm-user-group-Cologne/events/238793825/
 
+### [Elm Netherlands - 4rd Edition - Elm Europe Roundup](https://www.meetup.com/Elm-Netherlands/events/239817171/)
+
+* <span class="fa fa-calendar"></span> 14.06.2017, 18:00 Uhr
+* <span class="fa fa-globe"></span> Arthur van Schendelstraat 500, Utrecht
+* <span class="fa fa-meetup"></span> https://www.meetup.com/Elm-Netherlands/events/239817171/
+
+
 ## Regelmäßige Meetups mit Bezug zu Elm
 
 * <span class="fa fa-meetup"></span> Übersicht: https://www.meetup.com/topics/elm/all
