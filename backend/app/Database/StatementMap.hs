@@ -24,7 +24,12 @@ type StatementMap = Map StatementID Statement
 
 
 data StatementID =
-    ProfileDelete
+    EventDelete
+  | EventFetchById
+  | EventFetchAll
+  | EventInsert
+  | EventUpdate
+  | ProfileDelete
   | ProfileFetchAll
   | ProfileFetchByGitHubLogin
   | ProfileFetchById

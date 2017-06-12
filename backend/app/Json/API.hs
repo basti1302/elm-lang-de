@@ -4,6 +4,7 @@
 module Json.API (JsonAPI) where
 
 import           AppBootstrap.API (AppBootstrapAPI)
+import           Event.API        (EventAPI)
 import           Profile.API      (ProfileAPI)
 import           SignOut.API      (SignOutAPI)
 
@@ -15,6 +16,8 @@ type JsonAPI =
        :> AppBootstrapAPI
   :<|> "profiles"
        :> ProfileAPI
+  :<|> "events"
+       :> EventAPI
   :<|> "sign-out"
        :> SignOutAPI
 

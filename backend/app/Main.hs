@@ -19,6 +19,7 @@ import qualified API
 import qualified Auth                     (accessTokenAuthContext)
 import qualified Database.Migration       as Migration
 import           Database.StatementMap
+import qualified Event.SQL                (prepareStatements)
 import qualified Profile.SQL              (prepareStatements)
 import qualified Server
 import qualified Util.Config              as Config
@@ -126,9 +127,7 @@ prepareStatements cn = do
                    , stmts = Map.empty
                    }
   Profile.SQL.prepareStatements dbConnection
-  -- add more prepareStatements here as required:
-  -- >>= Foo.SQL.prepareStatements
-  -- >>= Bar.SQL.prepareStatements
+  >>= Event.SQL.prepareStatements
   >>= return
 
 

@@ -65,6 +65,14 @@ executable elm-lang-de
                      , Database.Migration
                      , Database.StatementMap
                      , Database.UUIDConversion
+                     , Event.API
+                     , Event.Converter
+                     , Event.Model
+                     , Event.EventHeadResponse
+                     , Event.Request
+                     , Event.Response
+                     , Event.SQL
+                     , Event.Server
                      , Json.API
                      , Json.Server
                      , OAuth.API

@@ -112,6 +112,7 @@ fetchOneProfile dbConnection profileUrlFragment = do
     Nothing -> return $ Left err404
 
 
+-- TODO This needs authentication
 putProfile ::
   IConnection connection =>
   DbConnection connection

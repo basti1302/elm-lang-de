@@ -1,0 +1,16 @@
+Description: Creates the events table.
+Created: 2017-06-12 15:44:43.56588 UTC
+Depends: 2017-01-07_08-38-20_github_profile_data
+Apply: |
+  CREATE TABLE IF NOT EXISTS events (
+    id              UUID PRIMARY KEY,
+    title           VARCHAR,
+    url             VARCHAR,
+    description     VARCHAR,
+    created_by      VARCHAR,
+    created_at      TIMESTAMP WITH TIME ZONE
+  );
+
+Revert: |
+  DROP TABLE IF EXISTS events;
+

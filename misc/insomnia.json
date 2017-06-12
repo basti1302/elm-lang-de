@@ -1,7 +1,7 @@
 {
 	"_type": "export",
 	"__export_format": 3,
-	"__export_date": "2017-06-12T15:36:42.973Z",
+	"__export_date": "2017-06-13T07:24:28.312Z",
 	"__export_source": "insomnia.desktop.app:v5.0.10",
 	"resources": [
 		{
@@ -26,7 +26,7 @@
 		{
 			"_id": "jar_a0a63462e9fa437aa8f21c93c4e0f769",
 			"parentId": "wrk_784b8ee2f5334ff092fda5db0745646c",
-			"modified": 1497281773535,
+			"modified": 1497338428629,
 			"created": 1482086936203,
 			"name": "Default Jar",
 			"cookies": [],
@@ -104,9 +104,9 @@
 		{
 			"_id": "req_d6c1e6cc69de4b4a8ef76c013900c4a3",
 			"parentId": "wrk_784b8ee2f5334ff092fda5db0745646c",
-			"modified": 1497281701167,
+			"modified": 1497302169357,
 			"created": 1482087704134,
-			"url": "http://localhost:8000/api/profiles/9b8e0779-8a63-4453-92d6-8ad49e153d2e",
+			"url": "http://localhost:8000/api/profiles/2cab788b-c320-453d-a9e7-d8f168c74f5",
 			"name": "PUT profile",
 			"method": "PUT",
 			"body": {
@@ -132,7 +132,7 @@
 		{
 			"_id": "req_98b23725bcd944ad88c2180b642aa974",
 			"parentId": "wrk_784b8ee2f5334ff092fda5db0745646c",
-			"modified": 1497281469252,
+			"modified": 1497282087497,
 			"created": 1482089060168,
 			"url": "http://localhost:8000/api/profiles/a30a3f79-7f3c-4e64-a173-628f09d94b65",
 			"name": "DELETE profile",
@@ -143,7 +143,126 @@
 			"parameters": [],
 			"headers": [],
 			"authentication": {},
-			"metaSortKey": 300,
+			"metaSortKey": 262.5,
+			"settingStoreCookies": true,
+			"settingSendCookies": true,
+			"settingDisableRenderRequestBody": false,
+			"settingEncodeUrl": true,
+			"_type": "request"
+		},
+		{
+			"_id": "req_15558f87f77f4f37b939ec3395749e7a",
+			"parentId": "wrk_784b8ee2f5334ff092fda5db0745646c",
+			"modified": 1497302346346,
+			"created": 1497282071407,
+			"url": "http://localhost:8000/api/events",
+			"name": "GET events",
+			"method": "GET",
+			"body": {
+				"text": ""
+			},
+			"parameters": [],
+			"headers": [],
+			"authentication": {},
+			"metaSortKey": 265.625,
+			"settingStoreCookies": true,
+			"settingSendCookies": true,
+			"settingDisableRenderRequestBody": false,
+			"settingEncodeUrl": true,
+			"_type": "request"
+		},
+		{
+			"_id": "req_4874e58dbe04431fa1892acba681936b",
+			"parentId": "wrk_784b8ee2f5334ff092fda5db0745646c",
+			"modified": 1497338378724,
+			"created": 1497302336973,
+			"url": "http://localhost:8000/api/events",
+			"name": "POST event",
+			"method": "POST",
+			"body": {
+				"mimeType": "application/json",
+				"text": "{\n\t\"title\": \"DELETE ME\",\n\t\"url\": \"http://\",\n\t\"description\": \"An event\"\n\n}"
+			},
+			"parameters": [],
+			"headers": [
+				{
+					"name": "Content-Type",
+					"value": "application/json",
+					"id": "pair_379d2df912c7442d83ae65565cbf0066"
+				}
+			],
+			"authentication": {},
+			"metaSortKey": 268.75,
+			"settingStoreCookies": true,
+			"settingSendCookies": true,
+			"settingDisableRenderRequestBody": false,
+			"settingEncodeUrl": true,
+			"_type": "request"
+		},
+		{
+			"_id": "req_81320692a7c444bd87197525fcc02bba",
+			"parentId": "wrk_784b8ee2f5334ff092fda5db0745646c",
+			"modified": 1497302658339,
+			"created": 1497302612005,
+			"url": "http://localhost:8000/api/events/d84b519b-22ee-49b1-a3f9-12864315e723",
+			"name": "GET event",
+			"method": "GET",
+			"body": {
+				"text": ""
+			},
+			"parameters": [],
+			"headers": [],
+			"authentication": {},
+			"metaSortKey": 267.1875,
+			"settingStoreCookies": true,
+			"settingSendCookies": true,
+			"settingDisableRenderRequestBody": false,
+			"settingEncodeUrl": true,
+			"_type": "request"
+		},
+		{
+			"_id": "req_b556d34f40c440ae9f64fe7e766ffe37",
+			"parentId": "wrk_784b8ee2f5334ff092fda5db0745646c",
+			"modified": 1497338397051,
+			"created": 1497338304191,
+			"url": "http://localhost:8000/api/events/d84b519b-22ee-49b1-a3f9-12864315e723",
+			"name": "PUT event",
+			"method": "PUT",
+			"body": {
+				"mimeType": "application/json",
+				"text": "{\n\t\"title\": \"TOAST\",\n\t\"url\": \"http://url.de\",\n\t\"description\": \"An updated event\"\n\n}"
+			},
+			"parameters": [],
+			"headers": [
+				{
+					"name": "Content-Type",
+					"value": "application/json",
+					"id": "pair_379d2df912c7442d83ae65565cbf0066"
+				}
+			],
+			"authentication": {},
+			"metaSortKey": 281.25,
+			"settingStoreCookies": true,
+			"settingSendCookies": true,
+			"settingDisableRenderRequestBody": false,
+			"settingEncodeUrl": true,
+			"_type": "request"
+		},
+		{
+			"_id": "req_ffd53fef596d4f30b9a943c43cfac44f",
+			"parentId": "wrk_784b8ee2f5334ff092fda5db0745646c",
+			"modified": 1497338424064,
+			"created": 1497338393761,
+			"url": "http://localhost:8000/api/events/d7ab309a-62a4-4a18-bced-6dd678ddb5b3",
+			"name": "DELETE event",
+			"method": "DELETE",
+			"body": {
+				"text": ""
+			},
+			"parameters": [],
+			"headers": [],
+			"authentication": {},
+			"metaSortKey": 293.75,
 			"settingStoreCookies": true,
 			"settingSendCookies": true,
 			"settingDisableRenderRequestBody": false,
