@@ -1,7 +1,7 @@
 module Events.View exposing (view)
 
-import Html exposing (..)
 import Events.Types exposing (..)
+import Html exposing (..)
 import Markdown
 
 
@@ -12,30 +12,17 @@ view model =
 Termine
 =======
 
-### [Zero Defect Front Ends (XP2017)](http://sched.co/9hlf)
+### [Elm Zürich - Elm Night](https://www.meetup.com/de-DE/Elm-Zurich/events/240910051)
 
-* Vortrag im Rahmen der XP2017 in Köln
-* <span class="fa fa-calendar"></span> 25.05.2017 15:15 - 16:15
-* <span class="fa fa-globe"></span> Pullman Hotel Köln, Ballroom C, 1st Floor
-* <span class="fa fa-link"></span> http://sched.co/9hlf
+* <span class="fa fa-calendar"></span> 11.07.2017, 18:30 Uhr
+* <span class="fa fa-globe"></span> XIAG AG, Archstrasse 7, Winterthur
+* <span class="fa fa-meetup"></span> https://www.meetup.com/de-DE/Elm-Zurich/events/240910051
 
-### [Elm Europe](https://elmeurope.org)
+### [Elmoin Meetup August 2017](https://www.meetup.com/de-DE/Elmoin/events/241017369)
 
-* <span class="fa fa-calendar"></span> 08. - 09.06.2017
-* <span class="fa fa-globe"></span> Paris/Villejuif, Frankreich
-* <span class="fa fa-link"></span> https://elmeurope.org
-
-### [Elm User Group Cologne - Get-Together/Hackathon](https://www.meetup.com/Elm-user-group-Cologne/events/238793825/)
-
-* <span class="fa fa-calendar"></span> 12.06.2017, 19:00 Uhr
-* <span class="fa fa-globe"></span> REWE Digital GmbH, Schanzenstrasse 6-20 (Gebäude Kupferwerk 2.15, 1. Etage), Köln
-* <span class="fa fa-meetup"></span> https://www.meetup.com/Elm-user-group-Cologne/events/238793825/
-
-### [Elm Netherlands - 4rd Edition - Elm Europe Roundup](https://www.meetup.com/Elm-Netherlands/events/239817171/)
-
-* <span class="fa fa-calendar"></span> 14.06.2017, 18:00 Uhr
-* <span class="fa fa-globe"></span> Arthur van Schendelstraat 500, Utrecht
-* <span class="fa fa-meetup"></span> https://www.meetup.com/Elm-Netherlands/events/239817171/
+* <span class="fa fa-calendar"></span> 22.08.2017, 18:30 Uhr
+* <span class="fa fa-globe"></span> PhraseApp, ABC-Straße 4, Hamburg
+* <span class="fa fa-meetup"></span> https://www.meetup.com/de-DE/Elmoin/events/241017369
 
 
 ## Regelmäßige Meetups mit Bezug zu Elm
@@ -51,11 +38,7 @@ Termine
 
 * <span class="fa fa-meetup"></span> https://www.meetup.com/Elm-user-group-Cologne
 
-### [Functional Programming Berlin](https://www.meetup.com/Functional-Programming-Berlin)
-
-* <span class="fa fa-meetup"></span> https://www.meetup.com/Functional-Programming-Berlin
-
-### [Elm Berlin](https://www.meetup.com/https://www.meetup.com/Elm-Berlin/)
+### [Elm Berlin](https://www.meetup.com/Elm-Berlin/)
 
 * <span class="fa fa-meetup"></span> https://www.meetup.com/Elm-Berlin/
 
@@ -83,12 +66,40 @@ Termine
 
 * <span class="fa fa-meetup"></span> https://www.meetup.com/Elm-Netherlands
 
-### [Elm Meetup Brussels](https://www.meetup.com/Meetup-Elm-Brussels)
-
-* <span class="fa fa-meetup"></span> https://www.meetup.com/Meetup-Elm-Brussels
-
 
 ## Vergangene Termine
+
+
+### [Elm Netherlands - 4rd Edition - Elm Europe Roundup](https://www.meetup.com/Elm-Netherlands/events/239817171/)
+
+* <span class="fa fa-calendar"></span> 14.06.2017, 18:00 Uhr
+* <span class="fa fa-globe"></span> Arthur van Schendelstraat 500, Utrecht
+* <span class="fa fa-meetup"></span> https://www.meetup.com/Elm-Netherlands/events/239817171/
+
+### [Elm User Group Cologne - Get-Together/Hackathon](https://www.meetup.com/Elm-user-group-Cologne/events/238793825/)
+
+* <span class="fa fa-calendar"></span> 12.06.2017, 19:00 Uhr
+* <span class="fa fa-globe"></span> REWE Digital GmbH, Schanzenstrasse 6-20 (Gebäude Kupferwerk 2.15, 1. Etage), Köln
+* <span class="fa fa-meetup"></span> https://www.meetup.com/Elm-user-group-Cologne/events/238793825/
+
+### [Elm Europe](https://elmeurope.org)
+
+* <span class="fa fa-calendar"></span> 08. - 09.06.2017
+* <span class="fa fa-globe"></span> Paris/Villejuif, Frankreich
+* <span class="fa fa-link"></span> https://elmeurope.org
+
+### [Zero Defect Front Ends (XP2017)](http://sched.co/9hlf)
+
+* Vortrag im Rahmen der XP2017 in Köln
+* <span class="fa fa-calendar"></span> 25.05.2017 15:15 - 16:15
+* <span class="fa fa-globe"></span> Pullman Hotel Köln, Ballroom C, 1st Floor
+* <span class="fa fa-link"></span> http://sched.co/9hlf
+
+
+
+
+
+
 
 ### [Workshop: Elm für Einsteiger](https://react-days.de/session/elm-fuer-einsteiger/)
 
