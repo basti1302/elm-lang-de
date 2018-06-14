@@ -74,6 +74,7 @@ initialize appConfig connection = do
              (show $ Warp.getPort serverSettings)
   Warp.runSettings serverSettings $ app appConfig dbConnection
 
+
 withPostgreSQL ::
   Config.DbConfig
   -> (PostgreSQL.Connection -> IO a)
