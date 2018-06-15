@@ -25,7 +25,7 @@ hero =
                 ]
             , div [ class "homepage-subheader" ]
                 [ p [ class "homepage-subheader-large" ] [ text "Die deutsche Elm-Community" ]
-                , p [] [ text "Alles rund um Elm im deutschprachigen Raum" ]
+                , p [] [ text "Alles rund um Elm im deutschsprachigen Raum" ]
                 ]
             ]
         ]
